@@ -1,3 +1,4 @@
+div.selectize-input,
 input.address_field {
     border-width: 0 !important;
     border-bottom-width: 1px !important;
@@ -9,6 +10,11 @@ input.address_field {
     padding-left: 0.1rem !important;
     padding-right: 0.1rem !important;
     box-sizing: content-box !important;
+}
+div.selectize-input {
+    padding-top: 0.2rem !important;
+    background-image: none !important;
+    box-shadow: none !important;
 }
 input.address_field[readonly] {
     color: #828282 !important;

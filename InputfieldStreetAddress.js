@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     function resizeInput() {
         var add = 1;
         var len = this.value.length;
@@ -9,12 +10,21 @@ $(document).ready(function() {
         }
 
 
-        if ($(this).hasClass('address_field_has_list')) {
-            add = 4;
-        }
+        // if ($(this).hasClass('address_field_has_list')) {
+        //     add = 4;
+        // }
 
-        this.style.width = (len + add) + 'ch';
+        if ($(this).hasClass('address_field_country')) {
+            this.style.width = '26ch';
+        } else {
+            this.style.width = (len + add) + 'ch';
+        }
     }
 
     $('.address_field').each(resizeInput).on('input', resizeInput);
+
+    $('.address_field_country').selectize({
+        closeAfterSelect: true,
+        selectOnTab: true
+    });
 });
