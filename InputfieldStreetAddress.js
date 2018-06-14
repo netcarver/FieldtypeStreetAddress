@@ -25,6 +25,10 @@ $(document).ready(function() {
 
     $('.address_field_country').selectize({
         closeAfterSelect: true,
-        selectOnTab: true
+        selectOnTab: true,
+        onChange: function(value) {
+            if (!value.length) return;
+            $('#Inputfield_streetaddress_country_iso').val(value); // TODO extract and use our ID - just append '_iso'
+        }
     });
 });

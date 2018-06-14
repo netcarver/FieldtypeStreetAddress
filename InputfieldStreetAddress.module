@@ -275,7 +275,7 @@ class InputfieldStreetAddress extends Inputfield {
                 }
                 $ph    = __('Country ISO');
                 $title = __('Required');
-                $out[] = "<input class='address_field' title='$ph, $title' placeholder='$ph' style='width:100%' type='text' name='{$this->name}_country_iso' maxlength=128 id='Inputfield_{$this->name}_country_iso' value='{$iso}'/>";
+                $out[] = "<input hidden class='address_field' title='$ph, $title' placeholder='$ph' style='width:100%' type='text' name='{$this->name}_country_iso' maxlength=128 id='Inputfield_{$this->name}_country_iso' value='{$iso}'/>";
                 $out = implode('', $out);
                 $out = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $out);
                 $out = nl2br($out);
