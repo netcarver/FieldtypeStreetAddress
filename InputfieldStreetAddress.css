@@ -23,7 +23,9 @@ input.streetaddress[readonly] {
 input.streetaddress_optional {
     font-size: xx-small !important;
     height: 1.0rem;
-    border-bottom-width: 0 !important;
+}
+input.streetaddress_optional_nonempty {
+    font-size: inherit !important;
 }
 input.streetaddress_upper {
     text-transform: uppercase !important;
