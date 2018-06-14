@@ -1,4 +1,4 @@
-div.selectize-input,
+.streetaddress_country > div.selectize-input,
 input.streetaddress {
     border-width: 0 !important;
     border-bottom-width: 1px !important;
