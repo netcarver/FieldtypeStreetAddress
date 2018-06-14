@@ -62,7 +62,13 @@ $(document).ready(function() {
         selectOnTab: true,
         onChange: function(value) {
             if (!value.length) return;
-            $('#Inputfield_streetaddress_country_iso').val(value); // TODO extract and use our ID - just append '_iso'
+
+            // Try to determine the id of the country_iso field for this input...
+            var id = this.$control_input[0].id;
+            var id = '#' + id.replace('-selectized', '_iso');
+
+            // Set the value of the country_iso field from the selected country.
+            $(id).val(value);
         }
     });
 });

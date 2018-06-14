@@ -124,6 +124,7 @@ class InputfieldStreetAddress extends Inputfield {
         $value         = htmlspecialchars($allowed_countries[$current_value], ENT_HTML5 | ENT_QUOTES, 'utf-8');
         $readonly_attr = '';
         $hidden_attr   = '';
+        $id            = "Inputfield_{$this->name}_country";
         if ($readonly) {
             // Build a readonly text input...
             $readonly_attr = ' readonly=readonly ';
@@ -131,10 +132,10 @@ class InputfieldStreetAddress extends Inputfield {
                 $hidden_attr = ' hidden ';
             }
 
-            $out = "<input $hidden_attr$readonly_attr title='$title' class='$classes' placeholder='$title' type='text' name='{$this->name}_country' maxlength=128 id='Inputfield_{$this->name}_country' value='$value'/>";
+            $out = "<input $hidden_attr$readonly_attr title='$title' class='$classes' placeholder='$title' type='text' name='{$this->name}_country' maxlength=128 id='$id' value='$value'/>";
         } else {
-            $datalist_id   = "{$this->name}_country_options";
-            $out      = self::makeDatalist($allowed_countries, $datalist_id, $current_value);
+            /* $datalist_id   = "{$this->name}_country_options"; */
+            $out      = self::makeDatalist($allowed_countries, $id, $current_value);
 //\TD::barDump($datalist, "Country Options");
         }
 
