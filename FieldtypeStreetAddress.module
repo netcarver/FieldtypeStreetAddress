@@ -1,0 +1,324 @@
+<?php namespace ProcessWire;
+
+include_once __DIR__ . "/StreetAddress.php";
+
+/**
+ * ProcessWire Address Fieldtype
+ * by Netcarver.
+ *
+ * Field that stores string values for street addresses.
+ *
+ * ProcessWire 3
+ * Copyright (C) 2017 by Ryan Cramer
+ *
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FieldtypeStreetAddress extends Fieldtype
+{
+
+    public static function getModuleInfo()
+    {
+        return [
+            'title'    => __('Street Address'),
+            'summary'  => __('Stores a street address and allows access to it\'s subfields.'),
+            'version'  => '0.0.1',
+            'author'   => 'Netcarver',
+            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
+            'icon'     => 'envelope',
+            'require'  => 'php>5.4.0',
+        ];
+    }
+
+
+    /**
+     * Format value for output
+     */
+    public function ___formatValue(Page $page, Field $field, $value)
+    {
+        return $value->formatHtml();
+    }
+
+
+
+    /**
+     * Add mapping to different name for use in page selectors
+     * This enables us to use it like "address.city=Exeter, address.country=GB"
+     */
+    public function getMatchQuery($query, $table, $subfield, $operator, $value)
+    {
+        $subfields = StreetAddress::getAddressFieldNames();
+        if (in_array($subfield, $subfields)) {
+            $subfield = 'data_' . $subfield;
+        } else if ($subfield == 'country_iso') {
+            $subfield = 'data';
+        }
+        return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
+    }
+
+
+
+    /**
+     */
+    public function getInputfield(Page $page, Field $field)
+    {
+        $inputfield = $this->modules->get('InputfieldStreetAddress');
+        /* $inputfield->defaultISO = $field->defaultISO; */
+        /* $inputfield->originISO  = $field->originISO; */
+        /* $inputfield->showOutputCountryField = $field->showOutputCountryField; */
+        /* $inputfield->surpressUnneededFields = $field->surpressUnneededFields; */
+        return $inputfield;
+    }
+
+
+
+    /**
+     * There are no compatible fieldtypes that I know of.
+     */
+    public function ___getCompatibleFieldtypes(Field $field)
+    {
+        return null;
+    }
+
+
+
+    /**
+     *
+     */
+    public function getBlankValue(Page $page, Field $field)
+    {
+        return new StreetAddress();
+    }
+
+
+
+    /**
+     * Any value will get sanitized before setting it to a page object
+     * and before saving the data
+     */
+    public function sanitizeValue(Page $page, Field $field, $value)
+    {
+
+        if(!$value instanceof StreetAddress) {
+            $value = $this->getBlankValue($page, $field);
+        }
+
+        $changes   = 0;
+        $subfields = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            if ($value->isChanged($f)) {
+                $changes++;
+            }
+        }
+        if ($changes > 0) {
+            $page->trackChange($field->name);
+        }
+
+        return $value;
+    }
+
+
+
+    /**
+     *
+     */
+    public function ___wakeupValue(Page $page, Field $field, $value)
+    {
+        $address = $this->getBlankValue($page, $field);
+        $subfields = StreetAddress::getAddressFieldNames();
+
+        // populate the address
+        $address->country_iso = $value['data'];
+        foreach ($subfields as $f) {
+            if ('country_iso' === $f) continue;
+            $address->$f = $value['data_'.$f];
+        }
+        $address->snapshot(); // Allow the isChanged() function to work.
+
+        return $address;
+    }
+
+
+
+
+    /**
+     */
+    public function ___sleepValue(Page $page, Field $field, $value)
+    {
+        if(!$value instanceof StreetAddress) {
+            throw new WireException("Expecting an instance of StreetAddress");
+        }
+
+        $sleepValue = [];
+        $changed    = [];
+        $subfields = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            $pre  = $value->$f;
+            $post = strip_tags(trim($pre));
+            if ('country_iso' === $f) {
+                $sleepValue["data"] = $post;
+            } else {
+                $sleepValue["data_$f"] = $post;
+            }
+        }
+
+        if (!empty($changed)) {
+            // Cache formatted HTML and standard values?
+        }
+        // recalculate if values have changed (TODO do this?)
+        /* if($value->isChanged('width') || $value->isChanged('height') || $value->isChanged('depth')){ */
+        /*     $sleepValue['data_volume'] = (int) ($value->width * $value->height * $value->depth); */
+        /* } */
+
+        return $sleepValue;
+    }
+
+
+
+    /**
+     * Get the database schema for this field
+     *
+     * @param Field $field In case it's needed for the schema, but usually should not.
+     * @return array
+     */
+    public function getDatabaseSchema(Field $field)
+    {
+        $schema = parent::getDatabaseSchema($field);
+        $subfields = StreetAddress::getAddressFieldNames();
+        foreach ($subfields as $f) {
+            if ('country_iso' === $f) {
+                $schema['data']        = 'VARCHAR(128) NOT NULL default ""';
+            } else {
+                $schema['data_'.$f] = 'VARCHAR(128) NOT NULL default ""';
+                $schema['keys']['data_'.$f] = "KEY data_$f(`data_$f`)";
+            }
+        }
+
+        return $schema;
+    }
+
+
+
+    protected function ___getCountryList()
+    {
+        return include __DIR__ . "/countries.php";
+    }
+
+
+    /**
+     * Get any inputfields used for configuration of this Fieldtype.
+     *
+     * This is in addition any configuration fields supplied by the parent Inputfield.
+     *
+     * @param Field $field
+     * @return InputfieldWrapper
+     *
+     */
+    public function ___getConfigInputfields(Field $field)
+    {
+        $inputfields = parent::___getConfigInputfields($field);
+
+        $input_wrapper = $this->modules->get('InputfieldFieldset');
+        $input_wrapper->label = __("Input Options");
+        $inputfields->append($input_wrapper);
+
+        /**
+         * Set the allowable countries for this address field.
+         *
+         * This determines the field layout for the inputfield and also the format of the output address (as it varies
+         * from country to country.)
+         *
+         * not set => user has unrestricted choice of countries and the defaultISO defines the default country
+         *  1  set => user has no input choice, the addresses have a fixed country (and therefore format)
+         *  n  set => user has a restricted choice of n countries in the input field.
+         */
+        $f = $this->modules->get('InputfieldAsmSelect');
+        $f->label = $this->_('Allowable Countries');
+        $f->attr('name', 'permittedISOs');
+        $f->attr('id', 'permittedISOs');
+        $f->description = $this->_('Destination countries control the layout of the inputfields and the formatted output.');
+        $f->notes = $this->_('For a single country, please choose one country from the list.') . ' ' .
+            $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
+        $f->attr('value', $field->permittedISOs);
+        foreach($this->getCountryList() as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $input_wrapper->append($f);
+
+        /**
+         * Set the default address format - country ISO.
+         */
+        $f = $this->modules->get('InputfieldSelect');
+        $f->label = $this->_('Default Country');
+        $f->attr('id+name', 'defaultISO');
+        $f->description = $this->_('Which country will be selected by default - this country will be added to the "Allowable Countries" if needed.');
+        $f->attr('value', $field->defaultISO);
+        foreach($this->getCountryList() as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $f->showIf = "permittedISOs.count!=1";
+        $input_wrapper->append($f);
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Country Input?');
+        $f->attr('id+name', 'showInputCountry');
+        $f->description = $this->_('Should the country field be shown, even though these addresses all use the same country?');
+        $f->addOption(0, $this->_('No, do not show the country field.'));
+        $f->addOption(1, $this->_('Yes, show the country field.'));
+        $f->attr('value', (int) $field->showInputCountry);
+        $f->showIf = "permittedISOs.count=1";
+        $input_wrapper->add($f);
+
+        /**
+         * Validate postal_code field?
+         */
+        /* $f = $this->wire('modules')->get('InputfieldRadios'); */
+        /* $f->label = $this->_('Validate Postal Code?'); */
+        /* $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_(''); */
+        /* $f->attr('name', 'validatePostalCode'); */
+        /* $f->addOption(0, $this->_('No, don\'t bother.')); */
+        /* $f->addOption(1, $this->_('Yes, validate the postal code field.')); */
+        /* $f->attr('value', (int) $field->validatePostalCode); */
+        /* $input_wrapper->add($f); */
+
+        $output_wrapper = $this->modules->get('InputfieldFieldset');
+        $output_wrapper->label = __("Output Formatting Options");
+
+        /**
+         * Set the Country-of-Origin ISO.
+         */
+        $f = $this->modules->get('InputfieldSelect');
+        $f->label = $this->_('Country of Origin');
+        $f->attr('name', 'originISO');
+        $f->description = $this->_('If you are including addresses in other countries, please specify the country of origin for any post you might send. This allows conditional output of country fields in formatted addresses.');
+        foreach($this->getCountryList() as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $f->attr('value', $field->originISO);
+        $f->columnWidth = 50;
+        $output_wrapper->append($f);
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show the country field?');
+        $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_('');
+        $f->attr('name', 'showOutputCountry');
+        $f->addOption(0, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
+        $f->addOption(1, $this->_('Never - Do not show the country field.'));
+        $f->addOption(2, $this->_('Always - Show the country field, even if it is not needed.'));
+        $f->attr('value', (int) $field->showOutputCountry);
+        $f->columnWidth = 50;
+        $output_wrapper->add($f);
+
+        $inputfields->append($output_wrapper);
+
+        return $inputfields;
+    }
+}
