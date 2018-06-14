@@ -1,5 +1,5 @@
 div.selectize-input,
-input.address_field {
+input.streetaddress {
     border-width: 0 !important;
     border-bottom-width: 1px !important;
     border-bottom: 1px dotted #e0e0e0 !important;
@@ -16,34 +16,34 @@ div.selectize-input {
     background-image: none !important;
     box-shadow: none !important;
 }
-input.address_field[readonly] {
+input.streetaddress[readonly] {
     color: #828282 !important;
     border-bottom-width: 0 !important;
 }
-input.address_field_optional {
+input.streetaddress_optional {
     font-size: xx-small !important;
     height: 1.0rem;
     border-bottom-width: 0 !important;
 }
-input.address_field_upper {
+input.streetaddress_upper {
     text-transform: uppercase !important;
 }
-input.address_field_upper::placeholder {
+input.streetaddress_upper::placeholder {
     text-transform: none;
 }
-input.address_field_optional::placeholder {
+input.streetaddress_optional::placeholder {
     font-size: xx-small;
     text-align: right;
 }
-span.address_field_suffix {
+span.streetaddress_suffix {
     padding-left:  0.2rem;
     padding-right: 0.2rem;
 }
-div.streetaddress-frame {
+div.streetaddress_frame {
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 0.6rem;
 }
-div.streetaddress-unused-fields {
+div.streetaddress_unused_fields {
     display: hidden;
 }

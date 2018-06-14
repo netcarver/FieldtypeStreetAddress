@@ -9,21 +9,37 @@ $(document).ready(function() {
             len = ph.length;
         }
 
-
-        // if ($(this).hasClass('address_field_has_list')) {
-        //     add = 4;
-        // }
-
-        if ($(this).hasClass('address_field_country')) {
+        if ($(this).hasClass('streetaddress_country')) {
             this.style.width = '26ch';
         } else {
             this.style.width = (len + add) + 'ch';
         }
     }
 
-    $('.address_field').each(resizeInput).on('input', resizeInput);
 
-    $('.address_field_country').selectize({
+    function reduceAddress() {
+        // Hide optional fields.
+        $(this).children('.streetaddress_optional').each(function() {
+            val = $(this).val();
+            if (!val.length) {
+                $(this).hide();
+                $(this).next().hide(); // TODO Make this conditional on being a <br>
+            }
+        });
+    }
+
+    function expandAddress() {
+        // Show optional fields
+        $(this).children('.streetaddress_optional').each(function() {
+            $(this).fadeIn();
+            $(this).next().show(); // TODO Make this conditional on being a <br>
+        });
+    }
+
+    $('.streetaddress').each(resizeInput).on('input', resizeInput);
+    //$('.streetaddress_frame').each(reduceAddress).on('mouseenter', expandAddress).on('mouseleave', reduceAddress);
+
+    $('.streetaddress_country').selectize({
         closeAfterSelect: true,
         selectOnTab: true,
         onChange: function(value) {
