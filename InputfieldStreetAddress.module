@@ -3,7 +3,6 @@
 require_once __DIR__ . '/StreetAddress.php';
 
 /**
-// TODO add preservation of non-required fields - allows switching between formats.
  *
  */
 
@@ -109,14 +108,9 @@ class InputfieldStreetAddress extends Inputfield {
             $current_value = $default_country;
         }
 
-//\TD::barDump($default_country);
-//\TD::barDump($allowed_countries, "Allowed Countries - pre");
-
         // Build array of allowed countries and their names...
         $allowed_countries = array_flip($allowed_countries);
         $allowed_countries = array_intersect_key($all, $allowed_countries);
-
-//\TD::barDump($allowed_countries, "Allowed Countries - post");
 
         $classes       = 'streetaddress streetaddress_upper address_field_has_list';
         $title         = 'Country, required';
@@ -131,15 +125,10 @@ class InputfieldStreetAddress extends Inputfield {
             if (0 == $this->showInputCountry) {
                 $hidden_attr = ' hidden ';
             }
-
             $out = "<input $hidden_attr$readonly_attr title='$title' class='$classes' placeholder='$title' type='text' name='{$this->name}_country' maxlength=128 id='$id' value='$value'/>";
         } else {
-            /* $datalist_id   = "{$this->name}_country_options"; */
             $out      = self::makeDatalist($allowed_countries, $id, $current_value);
-//\TD::barDump($datalist, "Country Options");
         }
-
-//\TD::barDump($out, "Country Output");
 
         return $out;
     }
@@ -155,13 +144,8 @@ class InputfieldStreetAddress extends Inputfield {
     {
         $this->modules->JquerySelectize;
 
-        $value = $this->attr('value') ? $this->attr('value') : new StreetAddress();
-//\TD::barDump($this, "InputfieldStreetAddress");
-\TD::barDump($value, "Value");
-
-
+        $value             = $this->attr('value') ? $this->attr('value') : new StreetAddress();
         $country_input     = $this->makeCountryInput($this->permittedISOs, $this->defaultISO, $value->country_iso);
-
         $country_of_origin = $this->originISO;
         $show_country      = $this->inputShowCountryField;
         $fields            = StreetAddress::getAddressFieldNames();
@@ -184,15 +168,12 @@ class InputfieldStreetAddress extends Inputfield {
 
         if ('' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
-//\TD::barDump($fmt, "fmt");
             if ('' !== $fmt) {
-//\TD::barDump($unused, "Unused - initial");
                 /**
                  * Address format is known, so build the input form from the format.
                  */
                 $known = true;
                 $out   = [];
-                //$w     = '33%';
 
                 $upper_fields    = str_split(@$fmt['upper']);
                 $required_fields = str_split(@$fmt['require']);
@@ -226,7 +207,6 @@ class InputfieldStreetAddress extends Inputfield {
 
                     $classes     = ['streetaddress'];
                     if (!$is_required && 'country' !== $key) {
-                        // TODO remove optional attribute if optional field has a value?
                         $classes[] = 'streetaddress_optional';
                         if (!empty($key) && strlen((string)$value->$key) > 0) {
                             $classes[] = 'streetaddress_optional_nonempty';
@@ -241,18 +221,8 @@ class InputfieldStreetAddress extends Inputfield {
                     $classes = implode(' ', $classes);
 
 
-//\TD::barDump(['Field' => $f, 'mapping' => $key, 'Suffix' => $suffix], "Field => Mapping");
                     if ('R' === $fmtcode) {
                         $out[] = $country_input;
-                        /* if ('' === $value->$key) { */
-                        /*     // Use the country name from the fmt info if the field is blank. */
-                        /*     $fieldvalue = $fmt['name']; */
-                        /* } else { */
-                        /*     // Otherwise, use whatever is stored in the country field - which may not match the ISO!!?? */
-                        /*     $fieldvalue = $value->$key; */
-                        /* } */
-                        /* $fieldvalue = htmlspecialchars($fieldvalue, ENT_HTML5 | ENT_QUOTES, 'UTF-8'); */
-                        /* $out[] = "<input title='$title' class='$classes' placeholder='$title' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$fieldvalue}'/>"; */
                     } else if ('A' === $fmtcode) {
                         $key2 = 'street_address_2';
                         $fieldvalue   = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
@@ -317,7 +287,6 @@ HTML;
                 __("Value"),
             ]);
             foreach ($fields as $f) {
-                // TODO re-order according to country format (if known)
                 $label = mb_convert_case($f, MB_CASE_TITLE, 'utf-8');
                 $label = str_replace('_', ' ', $label);
                 $label = str_replace('Iso', 'ISO', $label);
