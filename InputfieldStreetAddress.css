@@ -15,6 +15,7 @@ div.selectize-input {
     padding-top: 0.2rem !important;
     background-image: none !important;
     box-shadow: none !important;
+    max-width: 96%;
 }
 input.streetaddress[readonly] {
     color: #828282 !important;
