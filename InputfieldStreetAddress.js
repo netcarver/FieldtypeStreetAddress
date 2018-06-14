@@ -8,7 +8,11 @@ $(document).ready(function() {
         if (len === 0) {
             // If the placeholder is showing, resize to it's width
             var ph = $(this).attr('placeholder');
-            len = ph.length + 4;
+            if (ph) {
+                len = ph.length + 4;
+            } else {
+                len = 16;
+            }
         } else {
 
         }
