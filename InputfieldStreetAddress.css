@@ -48,5 +48,5 @@ div.streetaddress_frame {
     padding: 0.6rem;
 }
 div.streetaddress_unused_fields {
-    display: hidden;
+    display: none;
 }
