@@ -26,6 +26,7 @@ class InputfieldStreetAddress extends Inputfield {
         $this->set('defaultISO', 'us');             // The default country code for new address fields when there is more than one allowable
         $this->set('showInputCountry', 0);          // Show country input if there is only one allowable country?
         $this->set('showOutputCountry', 0);         // Show country in output (never/always/if international)
+        $this->set('inputFormat', 0);               // Controls how the inputfield looks
         $this->set('surpressUnneededFields', 0);    // Show optional fields by default.
         $this->set('validatePostalCode', 0);        // Off by default.
         $this->set('originISO', 'us');              // Helps control address formatting output.
@@ -166,7 +167,7 @@ class InputfieldStreetAddress extends Inputfield {
         /*     break; */
         /* } */
 
-        if ('' !== $iso) {
+        if (0 == $this->inputFormat && '' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
             if ('' !== $fmt) {
                 /**

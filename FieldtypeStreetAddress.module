@@ -275,6 +275,18 @@ class FieldtypeStreetAddress extends Fieldtype
         $input_wrapper->add($f);
 
         /**
+         * How should the input fields be shown?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Select Input Format');
+        $f->attr('id+name', 'inputFormat');
+        $f->description = $this->_('How should the inputfields be configured?');
+        $f->addOption(0, $this->_('Automatically adjusting widths using destination country field layout.'));
+        $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
+        $f->attr('value', (int) $field->inputFormat);
+        $input_wrapper->add($f);
+
+        /**
          * Validate postal_code field?
          */
         /* $f = $this->wire('modules')->get('InputfieldRadios'); */
