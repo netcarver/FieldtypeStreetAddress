@@ -15,6 +15,7 @@ div.selectize-input {
     padding-top: 0.2rem !important;
     background-image: none !important;
     box-shadow: none !important;
+    max-width: 96%;
 }
 input.streetaddress[readonly] {
     color: #828282 !important;
@@ -23,7 +24,9 @@ input.streetaddress[readonly] {
 input.streetaddress_optional {
     font-size: xx-small !important;
     height: 1.0rem;
-    border-bottom-width: 0 !important;
+}
+input.streetaddress_optional_nonempty {
+    font-size: inherit !important;
 }
 input.streetaddress_upper {
     text-transform: uppercase !important;
@@ -45,5 +48,5 @@ div.streetaddress_frame {
     padding: 0.6rem;
 }
 div.streetaddress_unused_fields {
-    display: hidden;
+    display: none;
 }
