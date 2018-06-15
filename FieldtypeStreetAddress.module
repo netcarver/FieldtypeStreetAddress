@@ -189,7 +189,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
             if ('country_iso' === $f) {
-                $schema['data']        = 'VARCHAR(128) NOT NULL default ""';
+                $schema['data']     = 'VARCHAR(3) NOT NULL default ""';
             } else {
                 $schema['data_'.$f] = 'VARCHAR(128) NOT NULL default ""';
                 $schema['keys']['data_'.$f] = "KEY data_$f(`data_$f`)";

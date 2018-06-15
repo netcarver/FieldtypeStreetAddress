@@ -73,10 +73,18 @@ class InputfieldStreetAddress extends Inputfield {
     }
 
 
-    protected static function makeDatalist($data, $id, $name, $current='')
+    /**
+     *
+     * @var $data     array     Array Keys are used as select option values, array Values are used as option labels.
+     * @var $id       string    The HTML id of the control
+     * @var $name     string    The HTML name of the control
+     * @var $current  string    The current value of the data. Defaults to an empty string
+     * @var $attr     string    String of extra HTML attributes to add to the control
+     */
+    protected static function makeDatalist($data, $id, $name, $current='', $attr='')
     {
         $id  = htmlspecialchars(strip_tags($id), ENT_HTML5 | ENT_QUOTES, 'utf-8');
-        $out = "<select id='$id' name='$name' placeholder='Country (required)' class='streetaddress streetaddress_country'>";
+        $out = "<select $attr id='$id' name='$name' placeholder='Country (required)' class='streetaddress streetaddress_country'>";
         foreach ($data as $iso => $country) {
             //$country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             $selected = ($current === $iso) ? 'selected=selected ' : '';
