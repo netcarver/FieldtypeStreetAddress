@@ -57,7 +57,17 @@ class InputfieldStreetAddress extends Inputfield {
 
     protected static function getCountryList()
     {
-        return include __DIR__."/countries.php";
+        $list = include __DIR__."/countries.php";
+        if (!is_array($list)) {
+            $list = ['gb' => 'United Kingdom'];
+        } else {
+            array_walk($list, function(&$item) {
+                //$item = htmlspecialchars(mb_convert_case(strip_tags($item), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
+                $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
+            });
+        }
+//\TD::barDump($list, "Processed Country List");
+        return $list;
     }
 
 
@@ -66,7 +76,7 @@ class InputfieldStreetAddress extends Inputfield {
         $id  = htmlspecialchars(strip_tags($id), ENT_HTML5 | ENT_QUOTES, 'utf-8');
         $out = "<select id='$id' name='$name' placeholder='Country (required)' class='streetaddress streetaddress_country'>";
         foreach ($data as $iso => $country) {
-            $country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
+            //$country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             $selected = ($current === $iso) ? 'selected=selected ' : '';
             $out .= "<option {$selected}value=\"$iso\" data-name=\"$country\">$country</option>";
         }
@@ -323,7 +333,7 @@ HTML;
         $fields = StreetAddress::getAddressFieldNames();
         foreach ($fields as $f) {
             $name      = "{$this->name}_$f";
-            $newvalue  = $input->$name;
+            $newvalue  = strip_tags($input->$name);
             $value->$f = $newvalue;
 \TD::barDump([$f => $newvalue], "Processing field $name");
         }
