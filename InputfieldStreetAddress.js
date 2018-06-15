@@ -65,10 +65,13 @@ $(document).ready(function() {
 
             // Try to determine the id of the country_iso field for this input...
             var id = this.$control_input[0].id;
-            var id = '#' + id.replace('-selectized', '_iso');
 
             // Set the value of the country_iso field from the selected country.
-            $(id).val(value);
+            var iso_id = '#' + id.replace('-selectized', '_iso');
+            $(iso_id).val(value);
+
+            // var country_id = '#' + id.replace('-selectized', '');
+            // $(country_id).val(value);
         }
     });
 });
