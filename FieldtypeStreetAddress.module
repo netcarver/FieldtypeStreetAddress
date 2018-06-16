@@ -1,6 +1,5 @@
 <?php namespace ProcessWire;
 
-include_once __DIR__ . "/StreetAddress.php";
 
 /**
  * ProcessWire Address Fieldtype
@@ -23,7 +22,7 @@ class FieldtypeStreetAddress extends Fieldtype
     {
         return [
             'title'    => __('Street Address'),
-            'summary'  => __('Stores a street address and allows access to it\'s subfields.'),
+            'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.0.1',
             'author'   => 'Netcarver',
             'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
@@ -31,6 +30,15 @@ class FieldtypeStreetAddress extends Fieldtype
             'require'  => 'php>5.4.0',
         ];
     }
+
+
+
+    public function init() {
+        parent::init();
+        $dir = dirname(__FILE__);
+        require_once "$dir/StreetAddress.php";
+    }
+
 
 
     /**
@@ -61,6 +69,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
+     *
      */
     public function getInputfield(Page $page, Field $field)
     {
@@ -202,7 +211,12 @@ class FieldtypeStreetAddress extends Fieldtype
 
     protected function ___getCountryList()
     {
-        return include __DIR__ . "/countries.php";
+        $countries = include __DIR__ . "/countries.php";
+        array_walk($countries, function(&$country) {
+            $country = str_replace('_', ' ', strip_tags($country));
+            $country = mb_convert_case($country, MB_CASE_TITLE, 'UTF-8');
+        });
+        return $countries;
     }
 
 
@@ -241,7 +255,8 @@ class FieldtypeStreetAddress extends Fieldtype
             $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
         $f->attr('value', $field->permittedISOs);
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $input_wrapper->append($f);
 
@@ -254,7 +269,8 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->description = $this->_('Which country will be selected by default - this country will be added to the "Allowable Countries" if needed.');
         $f->attr('value', $field->defaultISO);
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $f->showIf = "permittedISOs.count!=1";
         $input_wrapper->append($f);
@@ -302,12 +318,14 @@ class FieldtypeStreetAddress extends Fieldtype
         /**
          * Set the Country-of-Origin ISO.
          */
+        //$f = $this->modules->get('InputfieldSelectize');
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
         $f->attr('id+name', 'originISO');
         $f->description = $this->_('If you are including addresses in other countries, please specify the country of origin for any post you might send. This allows conditional output of country fields in formatted addresses.');
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $f->attr('value', $field->originISO);
         $f->columnWidth = 50;
