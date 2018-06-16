@@ -284,15 +284,26 @@ class InputfieldStreetAddress extends Inputfield {
                 //$icon   = '<i class="fa fa-tasks"></i>';
                 $icon   = '';
 
+                $formatted_address = $value->format();
+                if ('' === $formatted_address) {
+                    $message = __("Please Enter Address");
+                    $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
+                } else {
+                    $formatted_address = "<pre>$formatted_address</pre>";
+                }
+
                 return <<<HTML
     <div class="streetaddress">
-    <div class="streetaddress_frame">
-    <div class="streetaddress_controls" data-id="$id">$icon</div>
-    <div class="streetaddress_input" id="$id">
-    $out
-    </div>
-    </div>
-    <div class="streetaddress_unused_fields">$unused_out</div>
+        <div class="streetaddress_input_frame">
+            <div class="streetaddress_controls" data-id="$id">$icon</div>
+            <div class="streetaddress_input" id="$id">$out</div>
+        </div>
+        <div class="streetaddress_frame">
+            $formatted_address
+        </div>
+        <div class="streetaddress_unused_fields">
+            $unused_out
+        </div>
     </div>
 HTML;
             }

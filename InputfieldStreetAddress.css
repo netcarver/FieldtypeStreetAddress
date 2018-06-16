@@ -42,10 +42,23 @@ span.streetaddress_suffix {
     padding-left:  0.2rem;
     padding-right: 0.2rem;
 }
+div.streetaddress_input_frame {
+    width: 60%;
+    min-width: 300px;
+    float: left;
+}
 div.streetaddress_frame {
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 0.6rem;
+    width: 38%;
+    min-width: 200px;
+    overflow: hidden;
+    float: left;
+    line-height: 1.3rem;
+}
+div.streetaddress_warning {
+    text-align: center;
 }
 div.streetaddress_unused_fields {
     display: none;

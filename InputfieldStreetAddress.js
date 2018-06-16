@@ -9,15 +9,14 @@ $(document).ready(function() {
             // If the placeholder is showing, resize to it's width
             var ph = $(this).attr('placeholder');
             if (ph) {
-                len = ph.length + 4;
+                len = ph.length + 1;
             } else {
-                len = 16;
+                len = 12;
             }
-        } else {
-
         }
+
         if ($(this).hasClass('streetaddress_country')) {
-            this.style.width = '26ch';
+            this.style.width = '30ch';
         } else {
             this.style.width = (len + add) + 'ch';
         }
