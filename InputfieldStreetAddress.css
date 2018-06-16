@@ -1,3 +1,6 @@
+.streetaddress {
+    font-family: monospace !important;
+}
 .streetaddress_country > div.selectize-input,
 input.streetaddress {
     border-width: 0 !important;
@@ -6,7 +9,6 @@ input.streetaddress {
     background-color: white !important;
     padding-bottom: 0.1em !important;
     transition: width 0.1s !important;
-    font-family: monospace !important;
     padding-left: 0.1rem !important;
     padding-right: 0.1rem !important;
     box-sizing: content-box !important;
