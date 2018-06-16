@@ -100,7 +100,6 @@ class FieldtypeStreetAddress extends Fieldtype
      */
     public function sanitizeValue(Page $page, Field $field, $value)
     {
-
         if(!$value instanceof StreetAddress) {
             $value = $this->getBlankValue($page, $field);
         }
@@ -236,8 +235,7 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->modules->get('InputfieldAsmSelect');
         $f->label = $this->_('Allowable Countries');
-        $f->attr('name', 'permittedISOs');
-        $f->attr('id', 'permittedISOs');
+        $f->attr('id+name', 'permittedISOs');
         $f->description = $this->_('Destination countries control the layout of the inputfields and the formatted output.');
         $f->notes = $this->_('For a single country, please choose one country from the list.') . ' ' .
             $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
@@ -292,7 +290,7 @@ class FieldtypeStreetAddress extends Fieldtype
         /* $f = $this->wire('modules')->get('InputfieldRadios'); */
         /* $f->label = $this->_('Validate Postal Code?'); */
         /* $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_(''); */
-        /* $f->attr('name', 'validatePostalCode'); */
+        /* $f->attr('id+name', 'validatePostalCode'); */
         /* $f->addOption(0, $this->_('No, don\'t bother.')); */
         /* $f->addOption(1, $this->_('Yes, validate the postal code field.')); */
         /* $f->attr('value', (int) $field->validatePostalCode); */
@@ -306,7 +304,7 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
-        $f->attr('name', 'originISO');
+        $f->attr('id+name', 'originISO');
         $f->description = $this->_('If you are including addresses in other countries, please specify the country of origin for any post you might send. This allows conditional output of country fields in formatted addresses.');
         foreach($this->getCountryList() as $iso => $country) {
             $f->addOption($iso, "$country ($iso)");
@@ -321,7 +319,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Show the country field?');
         $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_('');
-        $f->attr('name', 'showOutputCountry');
+        $f->attr('id+name', 'showOutputCountry');
         $f->addOption(0, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
         $f->addOption(1, $this->_('Never - Do not show the country field.'));
         $f->addOption(2, $this->_('Always - Show the country field, even if it is not needed.'));
