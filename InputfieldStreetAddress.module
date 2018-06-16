@@ -360,26 +360,4 @@ HTML;
 
         return $this;
     }
-
-
-    /**
-     * Get any custom configuration fields for this Inputfield
-     *
-     * @return InputfieldWrapper
-     *
-     */
-    public function ___getConfigInputfields()
-    {
-        $inputfields = parent::___getConfigInputfields();
-
-        /* $f = $this->modules->get('InputfieldInteger'); */
-        /* $f->attr('name', 'input_width'); */
-        /* $f->label = 'Input width'; */
-        /* $f->attr('value', $this->input_width ? $this->input_width : 100 ); */
-        /* $f->attr('size', 10); */
-        /* $f->description = 'Width of the inputs in pixels.'; */
-        /* $inputfields->append($f); */
-
-        return $inputfields;
-    }
 }
