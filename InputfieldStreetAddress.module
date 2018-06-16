@@ -135,18 +135,19 @@ class InputfieldStreetAddress extends Inputfield {
         // Build array of allowed countries and their names...
         $allowed_country_codes = array_flip($allowed_country_codes);
         $allowed_country_codes = array_intersect_key($all_countries, $allowed_country_codes);
-        $attr                  = [];
+        $attr                  = '';
         $name                  = "{$this->name}_country";
         $id                    = "Inputfield_{$this->name}_country";
 
         if (1 === count($allowed_country_codes)) {
-            $attr[] = 'disabled=disabled';
-            if (0 == $this->showInputCountry) {
-                $attr[] = 'hidden';
-            }
+            $attr = 'disabled=disabled';
         }
-        $attr = implode(' ', $attr);
+
         $out = self::makeDatalist($allowed_country_codes, $id, $name, $current_country_iso, $attr);
+
+        if (0 == $this->showInputCountry) {
+            $out = "<div hidden>$out</div>";
+        }
         return $out;
     }
 
