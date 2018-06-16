@@ -139,13 +139,14 @@ class InputfieldStreetAddress extends Inputfield {
         $name                  = "{$this->name}_country";
         $id                    = "Inputfield_{$this->name}_country";
 
-        if (1 === count($allowed_country_codes)) {
+        $num_allowed = count($allowed_country_codes);
+        if (1 === $num_allowed) {
             $attr = 'disabled=disabled';
         }
 
         $out = self::makeDatalist($allowed_country_codes, $id, $name, $current_country_iso, $attr);
 
-        if (0 == $this->showInputCountry) {
+        if (1 === $num_allowed && 0 == $this->showInputCountry) {
             $out = "<div hidden>$out</div>";
         }
         return $out;
