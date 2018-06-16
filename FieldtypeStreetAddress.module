@@ -1,6 +1,5 @@
 <?php namespace ProcessWire;
 
-include_once __DIR__ . "/StreetAddress.php";
 
 /**
  * ProcessWire Address Fieldtype
@@ -23,7 +22,7 @@ class FieldtypeStreetAddress extends Fieldtype
     {
         return [
             'title'    => __('Street Address'),
-            'summary'  => __('Stores a street address and allows access to it\'s subfields.'),
+            'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.0.1',
             'author'   => 'Netcarver',
             'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
@@ -31,6 +30,15 @@ class FieldtypeStreetAddress extends Fieldtype
             'require'  => 'php>5.4.0',
         ];
     }
+
+
+
+    public function init() {
+        parent::init();
+        $dir = dirname(__FILE__);
+        require_once "$dir/StreetAddress.php";
+    }
+
 
 
     /**
@@ -61,14 +69,14 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
+     *
      */
     public function getInputfield(Page $page, Field $field)
     {
         $inputfield = $this->modules->get('InputfieldStreetAddress');
-        /* $inputfield->defaultISO = $field->defaultISO; */
-        /* $inputfield->originISO  = $field->originISO; */
-        /* $inputfield->showOutputCountryField = $field->showOutputCountryField; */
-        /* $inputfield->surpressUnneededFields = $field->surpressUnneededFields; */
+
+        // This inputfield uses a page object.
+        $inputfield->setPage($page);
         return $inputfield;
     }
 
@@ -100,7 +108,6 @@ class FieldtypeStreetAddress extends Fieldtype
      */
     public function sanitizeValue(Page $page, Field $field, $value)
     {
-
         if(!$value instanceof StreetAddress) {
             $value = $this->getBlankValue($page, $field);
         }
@@ -144,6 +151,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
+     *
      */
     public function ___sleepValue(Page $page, Field $field, $value)
     {
@@ -164,12 +172,8 @@ class FieldtypeStreetAddress extends Fieldtype
             }
         }
 
-        if (!empty($changed)) {
-            // Cache formatted HTML and standard values?
-        }
-        // recalculate if values have changed (TODO do this?)
-        /* if($value->isChanged('width') || $value->isChanged('height') || $value->isChanged('depth')){ */
-        /*     $sleepValue['data_volume'] = (int) ($value->width * $value->height * $value->depth); */
+        /* if (!empty($changed)) { */
+        /*     // Cache formatted HTML and standard values? */
         /* } */
 
         return $sleepValue;
@@ -189,7 +193,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
             if ('country_iso' === $f) {
-                $schema['data']        = 'VARCHAR(128) NOT NULL default ""';
+                $schema['data']     = 'VARCHAR(3) NOT NULL default ""';
             } else {
                 $schema['data_'.$f] = 'VARCHAR(128) NOT NULL default ""';
                 $schema['keys']['data_'.$f] = "KEY data_$f(`data_$f`)";
@@ -203,7 +207,13 @@ class FieldtypeStreetAddress extends Fieldtype
 
     protected function ___getCountryList()
     {
-        return include __DIR__ . "/countries.php";
+        $dir = dirname(__FILE__);
+        $countries = include "$dir/countries.php";
+        array_walk($countries, function(&$country) {
+            $country = str_replace('_', ' ', strip_tags($country));
+            $country = mb_convert_case($country, MB_CASE_TITLE, 'UTF-8');
+        });
+        return $countries;
     }
 
 
@@ -236,14 +246,14 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->modules->get('InputfieldAsmSelect');
         $f->label = $this->_('Allowable Countries');
-        $f->attr('name', 'permittedISOs');
-        $f->attr('id', 'permittedISOs');
+        $f->attr('id+name', 'permittedISOs');
         $f->description = $this->_('Destination countries control the layout of the inputfields and the formatted output.');
         $f->notes = $this->_('For a single country, please choose one country from the list.') . ' ' .
             $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
         $f->attr('value', $field->permittedISOs);
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $input_wrapper->append($f);
 
@@ -256,7 +266,8 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->description = $this->_('Which country will be selected by default - this country will be added to the "Allowable Countries" if needed.');
         $f->attr('value', $field->defaultISO);
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $f->showIf = "permittedISOs.count!=1";
         $input_wrapper->append($f);
@@ -292,7 +303,7 @@ class FieldtypeStreetAddress extends Fieldtype
         /* $f = $this->wire('modules')->get('InputfieldRadios'); */
         /* $f->label = $this->_('Validate Postal Code?'); */
         /* $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_(''); */
-        /* $f->attr('name', 'validatePostalCode'); */
+        /* $f->attr('id+name', 'validatePostalCode'); */
         /* $f->addOption(0, $this->_('No, don\'t bother.')); */
         /* $f->addOption(1, $this->_('Yes, validate the postal code field.')); */
         /* $f->attr('value', (int) $field->validatePostalCode); */
@@ -304,12 +315,14 @@ class FieldtypeStreetAddress extends Fieldtype
         /**
          * Set the Country-of-Origin ISO.
          */
+        //$f = $this->modules->get('InputfieldSelectize');
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
-        $f->attr('name', 'originISO');
+        $f->attr('id+name', 'originISO');
         $f->description = $this->_('If you are including addresses in other countries, please specify the country of origin for any post you might send. This allows conditional output of country fields in formatted addresses.');
         foreach($this->getCountryList() as $iso => $country) {
-            $f->addOption($iso, "$country ($iso)");
+            $code    = strtoupper($iso);
+            $f->addOption($iso, "$country ($code)");
         }
         $f->attr('value', $field->originISO);
         $f->columnWidth = 50;
@@ -321,7 +334,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Show the country field?');
         $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_('');
-        $f->attr('name', 'showOutputCountry');
+        $f->attr('id+name', 'showOutputCountry');
         $f->addOption(0, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
         $f->addOption(1, $this->_('Never - Do not show the country field.'));
         $f->addOption(2, $this->_('Always - Show the country field, even if it is not needed.'));
