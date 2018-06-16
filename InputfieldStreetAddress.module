@@ -1,6 +1,5 @@
 <?php namespace ProcessWire;
 
-require_once __DIR__ . '/StreetAddress.php';
 
 /**
  *
@@ -34,6 +33,7 @@ class InputfieldStreetAddress extends Inputfield {
         parent::__construct();
     }
 
+
     /**
      * Per the Module interface, init() is called when the system is ready for API usage
      *
@@ -41,6 +41,8 @@ class InputfieldStreetAddress extends Inputfield {
     public function init()
     {
         $this->modules->JquerySelectize;
+        $dir = dirname(__FILE__);
+        require_once "$dir/StreetAddress.php";
         return parent::init();
     }
 

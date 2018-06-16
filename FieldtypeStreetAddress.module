@@ -211,7 +211,8 @@ class FieldtypeStreetAddress extends Fieldtype
 
     protected function ___getCountryList()
     {
-        $countries = include __DIR__ . "/countries.php";
+        $dir = dirname(__FILE__);
+        $countries = include "$dir/countries.php";
         array_walk($countries, function(&$country) {
             $country = str_replace('_', ' ', strip_tags($country));
             $country = mb_convert_case($country, MB_CASE_TITLE, 'UTF-8');
