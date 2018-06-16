@@ -12,10 +12,10 @@ class InputfieldStreetAddress extends Inputfield {
         return [
             'title'    => __('Street Address'),
             'summary'  => __('Allows country-specific layout and formatting of street addresses.'),
-            'version'  => '0.0.2',
+            'version'  => '0.0.3',
             'icon'     => 'envelope',
             'author'   => 'Netcarver',
-            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize"],
+            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize", "TextformatterTagParser"],
         ];
     }
 
@@ -31,6 +31,17 @@ class InputfieldStreetAddress extends Inputfield {
         $this->set('validatePostalCode', 0);        // Off by default.
         $this->set('originISO', 'us');              // Helps control address formatting output.
         parent::__construct();
+    }
+
+
+    /**
+     * Page object that houses this field. Used to allow context-sensitive-tag-parser to pull in other fields from the
+     * page in to the address.
+     */
+    protected $page;
+    public function setPage(Page $page)
+    {
+        $this->page = $page;
     }
 
 
@@ -187,8 +198,8 @@ class InputfieldStreetAddress extends Inputfield {
                 }
 
                 $addressfields = $fmt['fmt']."%n%R";
-                $addressfields = str_replace('%N', '', $addressfields);
-                $addressfields = str_replace('%O', '', $addressfields);
+                //$addressfields = str_replace('%N', '', $addressfields);
+                //$addressfields = str_replace('%O', '', $addressfields);
                 $addressfields = explode('%', $addressfields);
                 array_shift($addressfields);
 
@@ -270,6 +281,11 @@ class InputfieldStreetAddress extends Inputfield {
                     $message = __("Please Enter Address");
                     $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
                 } else {
+                    $parser = $this->modules->get("TextformatterTagParser");
+                    $parser->set('context', ['page' => $this->page]);
+//\TD::barDump($this->page);
+//\TD::barDump($parser);
+                    $parser->format($formatted_address);
                     $formatted_address = "<pre>$formatted_address</pre>";
                 }
 

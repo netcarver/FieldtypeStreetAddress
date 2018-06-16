@@ -74,10 +74,9 @@ class FieldtypeStreetAddress extends Fieldtype
     public function getInputfield(Page $page, Field $field)
     {
         $inputfield = $this->modules->get('InputfieldStreetAddress');
-        /* $inputfield->defaultISO = $field->defaultISO; */
-        /* $inputfield->originISO  = $field->originISO; */
-        /* $inputfield->showOutputCountryField = $field->showOutputCountryField; */
-        /* $inputfield->surpressUnneededFields = $field->surpressUnneededFields; */
+
+        // This inputfield uses a page object.
+        $inputfield->setPage($page);
         return $inputfield;
     }
 
