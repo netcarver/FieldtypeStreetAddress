@@ -180,7 +180,7 @@ class InputfieldStreetAddress extends Inputfield {
                 $known = true;
                 $out   = [];
 
-                $upper_fields    = str_split(@$fmt['upper']);
+                //$upper_fields    = str_split(@$fmt['upper']);
                 $required_fields = str_split(@$fmt['require']);
                 if ('' === $required_fields) {
                     $required_fields = 'NOSACZ'; // If no required fields are mentioned, assume they all are
@@ -195,7 +195,8 @@ class InputfieldStreetAddress extends Inputfield {
                 foreach ($addressfields as $f) {
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
-                    $is_upper    = in_array($fmtcode, $upper_fields);
+                    //$is_upper    = in_array($fmtcode, $upper_fields);
+                    $is_upper    = false;
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
                     $parts       = [$key];
@@ -217,9 +218,9 @@ class InputfieldStreetAddress extends Inputfield {
                             $classes[] = 'streetaddress_optional_nonempty';
                         }
                     }
-                    if ($is_upper || 'country' == $key) {
-                        $classes[] = 'streetaddress_upper';
-                    }
+                    /* if ($is_upper || 'country' == $key) { */
+                    /*     $classes[] = 'streetaddress_upper'; */
+                    /* } */
                     if ($is_required) {
                         $classes[] = 'required';
                     }
