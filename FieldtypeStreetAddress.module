@@ -151,6 +151,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
+     *
      */
     public function ___sleepValue(Page $page, Field $field, $value)
     {
@@ -171,12 +172,8 @@ class FieldtypeStreetAddress extends Fieldtype
             }
         }
 
-        if (!empty($changed)) {
-            // Cache formatted HTML and standard values?
-        }
-        // recalculate if values have changed (TODO do this?)
-        /* if($value->isChanged('width') || $value->isChanged('height') || $value->isChanged('depth')){ */
-        /*     $sleepValue['data_volume'] = (int) ($value->width * $value->height * $value->depth); */
+        /* if (!empty($changed)) { */
+        /*     // Cache formatted HTML and standard values? */
         /* } */
 
         return $sleepValue;

@@ -352,7 +352,6 @@ HTML;
             $name      = "{$this->name}_$f";
             $newvalue  = strip_tags($input->$name);
             $value->$f = $newvalue;
-\TD::barDump([$f => $newvalue], "Processing field $name");
         }
         $this->trackChange('value');
 
