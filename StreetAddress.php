@@ -231,7 +231,7 @@ class StreetAddress
         'postal_code'        => '',
         'sorting_code'       => '',
         'country'            => '',
-        'country_iso'        => 'gb',
+        'country_iso'        => '',
     ];
 
 

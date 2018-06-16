@@ -90,70 +90,63 @@ class InputfieldStreetAddress extends Inputfield {
         foreach ($data as $iso => $country) {
             //$country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             $selected = ($current === $iso) ? 'selected=selected ' : '';
-            $out .= "<option {$selected}value=\"$iso\" data-name=\"$country\">$country</option>";
+            $code     = strtoupper($iso);
+            $out .= "<option {$selected}value=\"$iso\" data-name=\"$country\">$country ($code)</option>";
         }
         $out.= "</select>";
         return $out;
     }
 
 
-
-    protected function makeCountryInput($allowed_countries, $default_country, $current_value)
+    protected function makeCountryInput($allowed_country_codes, $default_country_iso, StreetAddress &$value)
     {
-        if (!is_array($allowed_countries)) {
-            $allowed_countries = [];
+        $readonly            = false;
+        $all_countries       = self::getCountryList();
+        $current_country_iso = strtolower($value->country_iso);
+
+        // An empty allowed countries list => free choice of any country, so populate the array.
+        if (empty($allowed_country_codes)) {
+            $allowed_country_codes = array_keys($all_countries);
         }
 
-        $all           = self::getCountryList();
-        $num_allowed   = count($allowed_countries);
-        $current_value = strtolower($current_value);
-        $readonly      = false;
+        $num_allowed = count($allowed_country_codes);
 
-        if ($num_allowed == 1) {
-            // Fixed choice: ignore $default_country - the only allowed country overrides it.
-            // The inputfield will be prefilled and read-only.
-            $default_country = $allowed_countries[0];
-            $readonly        = true;
-        } else if ($num_allowed > 1) {
-            // There is a set of valid choices.
-            // The $default_country should be in this set - if it isn't, add it!
-            if (!in_array($default_country, $allowed_countries)) {
-                $allowed_countries[] = $default_country;
-            }
+        // Make sure the default country is in the list - as long as there is more than one choice, otherwise the single
+        // choice will override the default_country_iso.
+        if ($num_allowed > 1 && !in_array($default_country_iso, $allowed_country_codes)) {
+//\TD::barDump("Adding default country [$default_country_iso] to country list.");
+            $allowed_country_codes[] = $default_country_iso;
+        }
+
+        if ('' === $current_country_iso) {
+//\TD::barDump("Setting current country for blank address.");
+            // Handle new, blank iso values. For a single entry list, the value overrides any default country as that is
+            // only used when there is a multiple choice.
+            $value->country_iso = (1 === $num_allowed) ? $allowed_country_codes[0] : $default_country_iso;
+            $current_country_iso = $value->country_iso;
+        } else if (!in_array($current_country_iso, $allowed_country_codes)) {
+            // Ensure the non-blank current country is in the list...
+//\TD::barDump("Adding current country [$current_country_iso] to country list.");
+            $allowed_country_codes[] = $current_country_iso;
         } else {
-            // Free choice from all countries
-            // Load the full set of allowed values...
-            $allowed_countries = array_keys($all);
-        }
-
-        // Handle the case where the current value is not in the allowed countries ISO list...
-        if (!in_array($current_value, $allowed_countries)) {
-            $current_value = $default_country;
+//\TD::barDump("Found current country [$current_country_iso] in country list.");
         }
 
         // Build array of allowed countries and their names...
-        $allowed_countries = array_flip($allowed_countries);
-        $allowed_countries = array_intersect_key($all, $allowed_countries);
+        $allowed_country_codes = array_flip($allowed_country_codes);
+        $allowed_country_codes = array_intersect_key($all_countries, $allowed_country_codes);
+        $attr                  = [];
+        $name                  = "{$this->name}_country";
+        $id                    = "Inputfield_{$this->name}_country";
 
-        $classes       = 'streetaddress streetaddress_upper address_field_has_list';
-        $title         = 'Country, required';
-        //$w             = '33%';
-        $value         = htmlspecialchars($allowed_countries[$current_value], ENT_HTML5 | ENT_QUOTES, 'utf-8');
-        $readonly_attr = '';
-        $hidden_attr   = '';
-        $name          = "{$this->name}_country";
-        $id            = "Inputfield_{$this->name}_country";
-        if ($readonly) {
-            // Build a readonly text input...
-            $readonly_attr = ' readonly=readonly ';
+        if (1 === count($allowed_country_codes)) {
+            $attr[] = 'disabled=disabled';
             if (0 == $this->showInputCountry) {
-                $hidden_attr = ' hidden ';
+                $attr[] = 'hidden';
             }
-            $out = "<input $hidden_attr$readonly_attr title='$title' class='$classes' placeholder='$title' type='text' name='{$this->name}_country' maxlength=128 id='$id' value='$value'/>";
-        } else {
-            $out = self::makeDatalist($allowed_countries, $id, $name, $current_value);
         }
-
+        $attr = implode(' ', $attr);
+        $out = self::makeDatalist($allowed_country_codes, $id, $name, $current_country_iso, $attr);
         return $out;
     }
 
@@ -166,28 +159,15 @@ class InputfieldStreetAddress extends Inputfield {
      */
     public function ___render()
     {
-
         $value             = $this->attr('value') ? $this->attr('value') : new StreetAddress();
-        $country_input     = $this->makeCountryInput($this->permittedISOs, $this->defaultISO, $value->country_iso);
+        $country_input     = $this->makeCountryInput($this->permittedISOs, $this->defaultISO, $value);
+        $iso               = $value->country_iso;
         $country_of_origin = $this->originISO;
         $show_country      = $this->inputShowCountryField;
         $fields            = StreetAddress::getAddressFieldNames();
         $mappings          = StreetAddress::getAddressMappings();
         $unused            = $mappings;
         $known             = false;
-        $iso               = $value->country_iso;
-
-        /* switch ($show_country) { */
-        /* case 0: */
-        /*     $show_country = ($iso !== $country_of_origin); */
-        /*     break; */
-        /* case 1: */
-        /*     $show_country = false; */
-        /*     break; */
-        /* case 2: */
-        /*     $show_country = true; */
-        /*     break; */
-        /* } */
 
         if (0 == $this->inputFormat && '' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
