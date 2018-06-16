@@ -195,8 +195,6 @@ class InputfieldStreetAddress extends Inputfield {
                 foreach ($addressfields as $f) {
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
-                    //$is_upper    = in_array($fmtcode, $upper_fields);
-                    $is_upper    = false;
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
                     $parts       = [$key];
@@ -218,9 +216,6 @@ class InputfieldStreetAddress extends Inputfield {
                             $classes[] = 'streetaddress_optional_nonempty';
                         }
                     }
-                    /* if ($is_upper || 'country' == $key) { */
-                    /*     $classes[] = 'streetaddress_upper'; */
-                    /* } */
                     if ($is_required) {
                         $classes[] = 'required';
                     }
