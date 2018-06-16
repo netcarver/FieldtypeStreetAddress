@@ -438,6 +438,21 @@ class StreetAddress
     }
 
 
+
+    public static function getBlankFormattedValue($iso)
+    {
+        $fmt = self::getFormat($iso);
+        $fmt = $fmt['fmt'];
+        foreach (self::$address_mapping as $id => $key) {
+            $fmt = str_replace("%{$id}", '', $fmt);
+        }
+        $fmt = trim(str_replace('%n', "\n", $fmt));
+        // Clean up runs of multiple newlines...
+        $fmt = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $fmt);
+        return $fmt;
+    }
+
+
     public static function getPostalCodeRegex($iso)
     {
         $info    = self::getFormat($iso);

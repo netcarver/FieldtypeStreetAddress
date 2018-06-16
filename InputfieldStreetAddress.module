@@ -267,7 +267,8 @@ class InputfieldStreetAddress extends Inputfield {
                 $icon   = '';
 
                 $formatted_address = $value->format();
-                if ('' === $formatted_address) {
+                $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
+                if ($blank_formatted_address === $formatted_address) {
                     $message = __("Please Enter Address");
                     $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
                 } else {
