@@ -56,7 +56,7 @@ class StreetAddress
      */
     public function formatHtml()
     {
-        return self::formatLines(get_object_vars($this), true);
+        return $this->format(true);
     }
 
 
@@ -66,7 +66,10 @@ class StreetAddress
      */
     public function format(bool $html = false)
     {
-        return self::formatLines(get_object_vars($this), $html);
+        $vars = get_object_vars($this);
+        unset($vars['snapshot']);
+        unset($vars['country']);
+        return self::formatLines($vars, $html);
     }
 
 
@@ -108,7 +111,10 @@ class StreetAddress
      */
     public function snapshot()
     {
-        $snapshot       = get_object_vars($this);
+        $snapshot = get_object_vars($this);
+        unset($snapshot['snapshot']);
+        unset($snapshot['country']);
+        unset($snapshot['origin_iso']);
         $this->snapshot = $snapshot;
         return $this;
     }
@@ -140,7 +146,7 @@ class StreetAddress
      *
      * @see Address::setCountryOfOriginISO()
      */
-    protected static $origin_country_iso = false;
+    /* protected static $origin_country_iso = false; */
 
 
     /**
@@ -225,20 +231,28 @@ class StreetAddress
         'organization'       => '',
         'street_address'     => '',
         'street_address_2'   => '',
-        'locality'           => '', // city/postal town
-        'dependent_locality' => '', // sub-district
-        'admin_area'         => '', // state/county
+        'locality'           => '', // usually city/postal town
+        'dependent_locality' => '', // usually sub-district
+        'admin_area'         => '', // usually state/county
         'postal_code'        => '',
         'sorting_code'       => '',
-        'country'            => '',
+        'country'            => '', // Internal use
         'country_iso'        => '',
+        'origin_iso'         => '', // Internal use
     ];
 
 
 
-    public static function getAddressFieldNames()
+    public static function getAddressFieldNames($all=false)
     {
-        return array_keys(self::$address_lines);
+        $lines = self::$address_lines;
+        if (!$all) {
+            // Remove 'internal' keys
+            unset($lines['country']);
+            unset($lines['origin_iso']);
+        }
+        $keys = array_keys($lines);
+        return $keys;
     }
 
 
@@ -277,20 +291,20 @@ class StreetAddress
 
 
         // Handle alternatives to postal_code such as "postcode", "zip" etc.....
-        $country = $data['country_iso'];
-        $lang    = @$info['lang'];
+        $country_iso = $data['country_iso'];
+        $lang        = @$info['lang'];
         if ('en' === $lang) {
-            if ($country === 'us' || $country === 'ph') {
+            if ($country_iso === 'us' || $country_iso === 'ph') {
                 self::remapAddressField('zip', 'postal_code', $data);
                 self::remapAddressField('zipcode', 'postal_code', $data);
                 self::remapAddressField('zip_code', 'postal_code', $data);
-            } else if ($country === 'ie') {
+            } else if ($country_iso === 'ie') {
                 self::remapAddressField('eircode', 'postal_code', $data);
             } else {
                 self::remapAddressField('postcode', 'postal_code', $data);
             }
         }
-        switch ($country) {
+        switch ($country_iso) {
         case 'nl':
             self::remapAddressField('postcode', 'postal_code', $data);
             break;
@@ -318,8 +332,6 @@ class StreetAddress
             self::remapAddressField('cap', 'postal_code', $data);
             break;
         }
-
-        // TODO Move this from static to dynamic property?
 
         // Apply any custom remappings...
         if (!empty(self::$remappings)) {
@@ -359,24 +371,23 @@ class StreetAddress
         $data = array_merge(self::$address_lines, $data);
 
         // Load country option
-        $address_country   = $data['country_iso'];
-        $format_info       = self::getFormat($data['country_iso']);
-        $data              = self::remapAddressFields($format_info, $data);
-        $upper             = @$format_info['upper'];
-        $formatted_address = $format_info['fmt'];
+        $address_country_iso = $data['country_iso'];
+        $origin_iso          = $data['origin_iso'];
+        $format_info         = self::getFormat($data['country_iso']);
+        $data                = self::remapAddressFields($format_info, $data);
+        $upper               = @$format_info['upper'];
+        $formatted_address   = $format_info['fmt'];
 
-        if (self::$origin_country_iso && ($address_country !== self::$origin_country_iso)) {
+        if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
             // This is an international address - add the country to the format if it is not already present...
             $pos = strpos($formatted_address, '%R');
             if (false === $pos) {
                 $formatted_address .= '%n%R';
             }
 
-            // handle case where country field is missing, but country_iso is defined.
-            if (empty($data['country'])) {
-                $country = @$format_info['name'];
-                $data['country'] = $country;
-            }
+            // Use the country_iso field to define the destination country field.
+            $country = @$format_info['name'];
+            $data['country'] = $country;
         }
 
 
@@ -535,24 +546,6 @@ class StreetAddress
 
 
     /**
-     * Sets the default country code.
-     */
-    public static function setDefaultCountryISO($iso = 'gb')
-    {
-        $address_lines['country_iso'] = strtolower((string) $iso);
-    }
-
-
-    /**
-     * Gets the default country code.
-     */
-    public static function getDefaultCountryISO()
-    {
-        return self::$address_lines['country_iso'];
-    }
-
-
-    /**
      * @param array|null $country_formats
      */
     public static function setFormats($country_formats)
@@ -583,17 +576,5 @@ class StreetAddress
         }
 
         return '';
-    }
-
-
-    public static function setCountryOfOriginISO($iso)
-    {
-        self::$origin_country_iso = $iso;
-    }
-
-
-    public static function getCountryOfOriginISO()
-    {
-        return self::$origin_country_iso;
     }
 }
