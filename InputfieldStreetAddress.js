@@ -58,19 +58,6 @@ $(document).ready(function() {
 
     $('.streetaddress_country').selectize({
         closeAfterSelect: true,
-        selectOnTab: true,
-        onChange: function(value) {
-            if (!value.length) return;
-
-            // Try to determine the id of the country_iso field for this input...
-            var id = this.$control_input[0].id;
-
-            // Set the value of the country_iso field from the selected country.
-            var iso_id = '#' + id.replace('-selectized', '_iso');
-            $(iso_id).val(value);
-
-            // var country_id = '#' + id.replace('-selectized', '');
-            // $(country_id).val(value);
-        }
+        selectOnTab: true
     });
 });
