@@ -290,24 +290,28 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Select Input Format');
-        $f->attr('id+name', 'inputFormat');
+        //$f->attr('id+name', 'inputFormat');
+        $f->attr('name', 'inputFormat');
         $f->description = $this->_('How should the inputfields be configured?');
         $f->addOption(0, $this->_('Dynamic, using country\'s field layout. (Not always possible)'));
         $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
         $f->attr('value', (int) $field->inputFormat);
+        $f->columnWidth = 50;
         $input_wrapper->add($f);
 
         /**
-         * Validate postal_code field?
+         * Show address preview panel?
          */
-        /* $f = $this->wire('modules')->get('InputfieldRadios'); */
-        /* $f->label = $this->_('Validate Postal Code?'); */
-        /* $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_(''); */
-        /* $f->attr('id+name', 'validatePostalCode'); */
-        /* $f->addOption(0, $this->_('No, don\'t bother.')); */
-        /* $f->addOption(1, $this->_('Yes, validate the postal code field.')); */
-        /* $f->attr('value', (int) $field->validatePostalCode); */
-        /* $input_wrapper->add($f); */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Address Preview?');
+        $f->attr('id+name', 'showAddressPreview');
+        $f->description = $this->_('Choose "Yes" to see what the address looks like once submitted.');
+        $f->addOption(0, $this->_('Yes.'));
+        $f->addOption(1, $this->_('No.'));
+        $f->attr('value', (int) $field->showAddressPreview);
+        $f->columnWidth = 50;
+        $f->showIf = "inputFormat=0";
+        $input_wrapper->add($f);
 
         $output_wrapper = $this->modules->get('InputfieldFieldset');
         $output_wrapper->label = __("Output Formatting Options");

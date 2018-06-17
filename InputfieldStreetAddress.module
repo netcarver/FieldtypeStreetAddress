@@ -30,6 +30,7 @@ class InputfieldStreetAddress extends Inputfield {
         $this->set('surpressUnneededFields', 0);    // Show optional fields by default.
         $this->set('validatePostalCode', 0);        // Off by default.
         $this->set('originISO', 'us');              // Helps control address formatting output.
+        $this->set('showAddressPreview', 0);        // Show a preview pane with the formatted address.
         parent::__construct();
     }
 
@@ -298,7 +299,7 @@ class InputfieldStreetAddress extends Inputfield {
                 $icon   = '';
 
                 $address_preview = '';
-                if ($this->showAddressPreview) {
+                if (0 == $this->showAddressPreview) {
                     $formatted_address = $value->format();
                     $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
                     if ($blank_formatted_address === $formatted_address) {
