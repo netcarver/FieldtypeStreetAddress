@@ -23,7 +23,7 @@ class FieldtypeStreetAddress extends Fieldtype
         return [
             'title'    => __('Street Address'),
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
-            'version'  => '0.0.1',
+            'version'  => '0.0.2',
             'author'   => 'Netcarver',
             'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
             'icon'     => 'envelope',
@@ -321,33 +321,35 @@ class FieldtypeStreetAddress extends Fieldtype
         $output_wrapper->label = __("Output Formatting Options");
 
         /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show the destination country field?');
+        $f->description = $this->_('Sometimes it is not necessary to show destination country, such as when mail is being send domestically.');
+        $f->attr('name', 'showOutputCountry');
+        $f->addOption(0, $this->_('Never - All mail is domestic.'));
+        $f->addOption(1, $this->_('Always - All mail is international.'));
+        $f->addOption(2, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
+        $f->attr('value', (int) $field->showOutputCountry);
+        $f->columnWidth = 100;
+        $output_wrapper->add($f);
+
+        /**
          * Set the Country-of-Origin ISO.
          */
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
-        $f->attr('id+name', 'originISO');
-        $f->description = $this->_('If you are including addresses in other countries, please specify the country of origin for any post you might send. This allows conditional output of country fields in formatted addresses.');
+        $f->attr('name', 'originISO');
+        $f->description = $this->_('please specify the country-of-origin for any post you might send.');
         foreach($this->getCountryList() as $iso => $country) {
             $code    = strtoupper($iso);
             $f->addOption($iso, "$country ($code)");
         }
         $f->attr('value', $field->originISO);
         $f->columnWidth = 50;
+        $f->showIf = 'showOutputCountry=2';
         $output_wrapper->append($f);
 
-        /**
-         * Force display of the country field in the output, even if it is fixed?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Show the country field?');
-        $f->description = $this->_('Sometimes it is not necessary to show the country field.') . ' ' . $this->_('');
-        $f->attr('id+name', 'showOutputCountry');
-        $f->addOption(0, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
-        $f->addOption(1, $this->_('Never - Do not show the country field.'));
-        $f->addOption(2, $this->_('Always - Show the country field, even if it is not needed.'));
-        $f->attr('value', (int) $field->showOutputCountry);
-        $f->columnWidth = 50;
-        $output_wrapper->add($f);
 
         $inputfields->append($output_wrapper);
 
