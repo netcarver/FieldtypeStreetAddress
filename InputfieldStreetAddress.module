@@ -216,7 +216,6 @@ class InputfieldStreetAddress extends Inputfield {
 
                     unset($unused[$fmtcode]);
 
-
                     $classes     = ['streetaddress'];
                     if (!$is_required && 'country' !== $key) {
                         $classes[] = 'streetaddress_optional';

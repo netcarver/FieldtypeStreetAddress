@@ -1,5 +1,8 @@
-.streetaddress {
-    font-family: monospace !important;
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+.streetaddress, div.streetaddress_frame pre {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 0.8rem;
 }
 .streetaddress_country > div.selectize-input,
 input.streetaddress {
