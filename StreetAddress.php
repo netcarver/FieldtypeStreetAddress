@@ -384,6 +384,10 @@ class StreetAddress
         foreach (self::$address_mapping as $id => $key) {
             $value = $data[$key];
 
+            if ('Z' === $id) {
+                $value = self::sanitizePostalCode($value, $data['country_iso']);
+            }
+
             // Make sure the fields marked as "upper" in the google feed are converted to uppercase.
             if ($upper && false !== stripos($upper, $id)) {
                 $value = mb_convert_case($value, MB_CASE_UPPER, 'utf-8');
@@ -465,8 +469,21 @@ class StreetAddress
     {
         $regex = self::getPostalCodeRegex($iso);
         if (empty($regex)) return true;
-        $ok = (bool) preg_match("~$regex~", $pc, $m);
-        return $ok;
+        $result = preg_match("~$regex~", $pc, $m);
+        $malformed = (0 === $result) || ($m[0] !== $pc);
+        return !$malformed;
+    }
+
+
+    public static function sanitizePostalCode($pc, $iso)
+    {
+        $regex = self::getPostalCodeRegex($iso);
+        if (empty($regex)) return $pc;
+        $result = preg_match("~$regex~", $pc, $m);
+        if (1 === $result) {
+            return $m[0];
+        }
+        return '';
     }
 
 

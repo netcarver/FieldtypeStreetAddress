@@ -40,6 +40,9 @@ input.streetaddress_optional::placeholder {
     font-size: xx-small;
     text-align: right;
 }
+input.streetaddress_malformed {
+    border-bottom: 1px solid #e96969 !important;
+}
 span.streetaddress_suffix {
     padding-left:  0.2rem;
     padding-right: 0.2rem;
