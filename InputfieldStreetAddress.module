@@ -182,8 +182,6 @@ class InputfieldStreetAddress extends Inputfield {
             $fmt = StreetAddress::getFormat($iso);
             if ('' !== $fmt) {
 
-//\TD::barDump($fmt, "\$fmt");
-
                 /**
                  * Address format is known, so build the input form from the format.
                  */
@@ -401,15 +399,6 @@ HTML;
             $name      = "{$this->name}_$f";
             $newvalue  = strip_tags($input->$name);
             $value->$f = $newvalue;
-if ('clientaddress' == $this->name && false !== stripos($f, 'country')) {
-    \TD::barDump([
-        'input'    => $input,
-        'fields'   => $fields,
-        'name'     => $name,
-        'value'    => $value,
-        'newvalue' => $newvalue,
-    ]);
-}
         }
         $this->trackChange('value');
 

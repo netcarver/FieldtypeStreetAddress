@@ -145,7 +145,6 @@ class FieldtypeStreetAddress extends Fieldtype
         }
         $address->snapshot(); // Allow the isChanged() function to work.
 
-//\TD::barDump(['subfields' => $subfields, 'address' => $address], __METHOD__);
         return $address;
     }
 
@@ -178,7 +177,6 @@ class FieldtypeStreetAddress extends Fieldtype
         /* if (!empty($changed)) { */
         /*     // Cache formatted HTML and standard values? */
         /* } */
-//\TD::barDump(['subfields' => $subfields, 'sleepValue' => $sleepValue], __METHOD__);
 
         return $sleepValue;
     }
