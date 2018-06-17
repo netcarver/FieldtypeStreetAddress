@@ -53,7 +53,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
     /**
      * Add mapping to different name for use in page selectors
-     * This enables us to use it like "address.city=Exeter, address.country=GB"
+     * This enables us to use it like "address.city=Exeter, address.country_iso=GB"
      */
     public function getMatchQuery($query, $table, $subfield, $operator, $value)
     {
@@ -140,10 +140,12 @@ class FieldtypeStreetAddress extends Fieldtype
         $address->country_iso = $value['data'];
         foreach ($subfields as $f) {
             if ('country_iso' === $f) continue;
+            if ('origin_iso' === $f) continue;
             $address->$f = $value['data_'.$f];
         }
         $address->snapshot(); // Allow the isChanged() function to work.
 
+//\TD::barDump(['subfields' => $subfields, 'address' => $address], __METHOD__);
         return $address;
     }
 
@@ -163,6 +165,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $changed    = [];
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
+            if (in_array($f, ['origin_iso', 'country'])) continue;
             $pre  = $value->$f;
             $post = strip_tags(trim($pre));
             if ('country_iso' === $f) {
@@ -175,6 +178,7 @@ class FieldtypeStreetAddress extends Fieldtype
         /* if (!empty($changed)) { */
         /*     // Cache formatted HTML and standard values? */
         /* } */
+//\TD::barDump(['subfields' => $subfields, 'sleepValue' => $sleepValue], __METHOD__);
 
         return $sleepValue;
     }
@@ -319,7 +323,6 @@ class FieldtypeStreetAddress extends Fieldtype
         /**
          * Set the Country-of-Origin ISO.
          */
-        //$f = $this->modules->get('InputfieldSelectize');
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
         $f->attr('id+name', 'originISO');
