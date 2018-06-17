@@ -208,15 +208,21 @@ class InputfieldStreetAddress extends Inputfield {
                     $suffix      = substr($f, 1);
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
+                    $classes     = ['streetaddress'];
                     $parts       = [$key];
-                    $parts[]     = ($is_required) ? __('Required') :
-                        __('Optional');
+                    $parts[]     = ($is_required) ?
+                                    __('Required') :
+                                    __('Optional');
+                    $is_missing  = ($is_required && empty($value->$key));
+                    if ($is_missing) {
+                        $parts[] = __('Missing');
+                        $classes[] = 'streetaddress_missing streetaddress_malformed';
+                    }
                     $title       = self::makeTitle($parts);
                     $ph          = self::makeTitle([$key]);
 
                     unset($unused[$fmtcode]);
 
-                    $classes     = ['streetaddress'];
                     if (!$is_required && 'country' !== $key) {
                         $classes[] = 'streetaddress_optional';
                         if (!empty($key) && strlen((string)$value->$key) > 0) {
@@ -256,6 +262,7 @@ class InputfieldStreetAddress extends Inputfield {
                             $malformed = (0 === $result) || ($m[0] !== $fieldvalue);
                             if ($malformed) {
                                 $classes .= " streetaddress_malformed";
+                                $title   .= ', ' . __("Malformed");
                             }
                         }
 
@@ -290,16 +297,24 @@ class InputfieldStreetAddress extends Inputfield {
                 //$icon   = '<i class="fa fa-tasks"></i>';
                 $icon   = '';
 
-                $formatted_address = $value->format();
-                $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
-                if ($blank_formatted_address === $formatted_address) {
-                    $message = __("Please Enter Address");
-                    $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
-                } else {
-                    $parser = $this->modules->get("TextformatterTagParser");
-                    $parser->set('context', ['page' => $this->page]);
-                    $parser->format($formatted_address);
-                    $formatted_address = "<pre>$formatted_address</pre>";
+                $address_preview = '';
+                if ($this->showAddressPreview) {
+                    $formatted_address = $value->format();
+                    $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
+                    if ($blank_formatted_address === $formatted_address) {
+                        $message = __("Please Enter Address");
+                        $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
+                    } else {
+                        $parser = $this->modules->get("TextformatterTagParser");
+                        $parser->set('context', ['page' => $this->page]);
+                        $parser->format($formatted_address);
+                        $formatted_address = "<pre>$formatted_address</pre>";
+                    }
+                    $address_preview = <<<HTML
+        <div class="streetaddress_frame">
+            $formatted_address
+        </div>
+HTML;
                 }
 
                 return <<<HTML
@@ -308,9 +323,7 @@ class InputfieldStreetAddress extends Inputfield {
             <div class="streetaddress_controls" data-id="$id">$icon</div>
             <div class="streetaddress_input" id="$id">$out</div>
         </div>
-        <div class="streetaddress_frame">
-            $formatted_address
-        </div>
+        $address_preview
         <div class="streetaddress_unused_fields">
             $unused_out
         </div>
