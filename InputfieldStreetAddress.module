@@ -126,22 +126,18 @@ class InputfieldStreetAddress extends Inputfield {
         // Make sure the default country is in the list - as long as there is more than one choice, otherwise the single
         // choice will override the default_country_iso.
         if ($num_allowed > 1 && !in_array($default_country_iso, $allowed_country_codes)) {
-//\TD::barDump("Adding default country [$default_country_iso] to country list.");
             $allowed_country_codes[] = $default_country_iso;
         }
 
         if ('' === $current_country_iso) {
-//\TD::barDump("Setting current country for blank address.");
             // Handle new, blank iso values. For a single entry list, the value overrides any default country as that is
             // only used when there is a multiple choice.
             $value->country_iso = (1 === $num_allowed) ? $allowed_country_codes[0] : $default_country_iso;
             $current_country_iso = $value->country_iso;
         } else if (!in_array($current_country_iso, $allowed_country_codes)) {
             // Ensure the non-blank current country is in the list...
-//\TD::barDump("Adding current country [$current_country_iso] to country list.");
             $allowed_country_codes[] = $current_country_iso;
         } else {
-//\TD::barDump("Found current country [$current_country_iso] in country list.");
         }
 
         // Build array of allowed countries and their names...
@@ -365,7 +361,7 @@ HTML;
 
 
     /**
-     * Process the input from the given WireInputData (usually $input->get or $input->post), load and clean the value for use in this Inputfield.
+     * Process the input
      *
      * @param WireInputData $input
      * @return $this
