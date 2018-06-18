@@ -82,7 +82,6 @@ class InputfieldStreetAddress extends Inputfield {
                 $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             });
         }
-//\TD::barDump($list, "Processed Country List");
         return $list;
     }
 
@@ -144,8 +143,8 @@ class InputfieldStreetAddress extends Inputfield {
         $allowed_country_codes = array_flip($allowed_country_codes);
         $allowed_country_codes = array_intersect_key($all_countries, $allowed_country_codes);
         $attr                  = '';
-        $name                  = "{$this->name}_country";
-        $id                    = "Inputfield_{$this->name}_country";
+        $name                  = "{$this->name}_country_iso";
+        $id                    = "Inputfield_$name";
 
         $num_allowed = count($allowed_country_codes);
         if (1 === $num_allowed) {
@@ -176,26 +175,30 @@ class InputfieldStreetAddress extends Inputfield {
         $show_country      = $this->inputShowCountryField;
         $fields            = StreetAddress::getAddressFieldNames();
         $mappings          = StreetAddress::getAddressMappings();
-        $unused            = $mappings;
         $known             = false;
 
         if (0 == $this->inputFormat && '' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
-            if ('' !== $fmt) {
+            $addressfields = @$fmt['fmt'];
+
+            if ('' !== trim($addressfields)) {
                 /**
                  * Address format is known, so build the input form from the format.
                  */
-                $known = true;
-                $out   = [];
+                $known  = true;
+                $out    = [];
+                $unused = $mappings;
 
-                //$upper_fields    = str_split(@$fmt['upper']);
-                $required_fields = str_split(@$fmt['require']);
-                if ('' === $required_fields) {
-                    $required_fields = 'NOSACZ'; // If no required fields are mentioned, assume they all are
+                $required_fields = @$fmt['require'];
+                if (empty($required_fields)) {
+                    $required_fields = 'ACZ';
                 }
+                $required_fields = str_split($required_fields);
 
-                $addressfields = $fmt['fmt']."%n%R";
-                //$addressfields = str_replace('%N', '', $addressfields);
+                if (false === strpos($addressfields, '%R')) {
+                    $addressfields .= "%n%R";
+                }
+                //$addressfields = str_replace('%N', '', $addressfields); // TODO Make these configurable?
                 //$addressfields = str_replace('%O', '', $addressfields);
                 $addressfields = explode('%', $addressfields);
                 array_shift($addressfields);
@@ -203,6 +206,12 @@ class InputfieldStreetAddress extends Inputfield {
                 foreach ($addressfields as $f) {
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
+
+                    /**
+                     * Remove this field from the unused pool that will be output as hidden controls later...
+                     */
+                    unset($unused[$fmtcode]);
+
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
                     $classes     = ['streetaddress'];
@@ -217,8 +226,6 @@ class InputfieldStreetAddress extends Inputfield {
                     }
                     $title       = self::makeTitle($parts);
                     $ph          = self::makeTitle([$key]);
-
-                    unset($unused[$fmtcode]);
 
                     if (!$is_required && 'country' !== $key) {
                         $classes[] = 'streetaddress_optional';
@@ -252,7 +259,7 @@ class InputfieldStreetAddress extends Inputfield {
                         // Regex verify the postal code field...
                         $regex = @$fmt['zip'];
 
-                        if ('' !== $regex) {
+                        if ($regex) {
                             $m = [];
                             $regex = "~$regex~";
                             $result = preg_match($regex, $fieldvalue, $m);
@@ -279,29 +286,58 @@ class InputfieldStreetAddress extends Inputfield {
                         $out[] = "<span class='streetaddress_suffix'>$suffix</span>";
                     }
                 }
-                $ph    = __('Country ISO');
-                $title = __('Required');
-                $out[] = "<input hidden class='streetaddress' title='$ph, $title' placeholder='$ph' style='width:100%' type='text' name='{$this->name}_country_iso' maxlength=128 id='Inputfield_{$this->name}_country_iso' value='{$iso}'/>";
+
+                /**
+                 * Compose into output, removing unneeded repeat newlines...
+                 */
                 $out = implode('', $out);
                 $out = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $out);
                 $out = nl2br($out);
+
+                /**
+                 * Render the unused fields so they get saved too. This is done to avoid loss of data from fields should
+                 * the country be switched.
+                 */
                 $unused_out = '';
                 foreach ($unused as $key) {
-                    $fieldvalue   = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                    $unused_out .= "<input hidden class='streetaddress' type='text' placeholder='' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='$fieldvalue'/>";
+                    $ph          = self::makeTitle([$key]);
+                    $name  = $this->name . "_$key";
+                    $id    = 'Inputfield_' . $name;
+                    $fieldvalue  = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                    $unused_out .= "<input hidden readonly class='streetaddress' type='text' placeholder='$ph' name='$name' maxlength=128 id='$id' value='$fieldvalue'/>";
                 }
                 $id     = 'streetaddress_' . $this->name;
-                //$icon   = '<i class="fa fa-tasks"></i>';
                 $icon   = '';
 
+                /**
+                 * Generate an address preview (if needed)
+                 */
                 $address_preview = '';
                 if (0 == $this->showAddressPreview) {
+                    $value->origin_iso = $iso;
                     $formatted_address = $value->format();
                     $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
                     if ($blank_formatted_address === $formatted_address) {
                         $message = __("Please Enter Address");
                         $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
                     } else {
+                        /**
+                         * Re-render with country as needed...
+                         */
+                        switch ($this->showOutputCountry) {
+                        case 0:
+                            $value->origin_iso = $iso;
+                            break;
+
+                        case 1:
+                            $value->origin_iso = '++';
+                            break;
+
+                        case 2:
+                            $value->origin_iso = $this->originISO;
+                            break;
+                        }
+                        $formatted_address = $value->format();
                         $parser = $this->modules->get("TextformatterTagParser");
                         $parser->set('context', ['page' => $this->page]);
                         $parser->format($formatted_address);
@@ -343,10 +379,8 @@ HTML;
                 $label = str_replace('_', ' ', $label);
                 $label = str_replace('Iso', 'ISO', $label);
                 $fieldvalue = htmlspecialchars($value->$f, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                if ('country' === $f) {
+                if ('country_iso' === $f) {
                     $input = $country_input;
-                } else if ('country_iso' === $f) {
-                    $input = "<input readonly=readonly class='streetaddress' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$fieldvalue}'/>";
                 } else {
                     $input = "<input class='streetaddress' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$fieldvalue}'/>";
                 }
