@@ -314,25 +314,30 @@ class InputfieldStreetAddress extends Inputfield {
                  */
                 $address_preview = '';
                 if (0 == $this->showAddressPreview) {
-                    switch ($this->showOutputCountry) {
-                    case 0:
-                        $value->origin_iso = $iso;
-                        break;
-
-                    case 1:
-                        $value->origin_iso = '--';
-                        break;
-
-                    case 2:
-                        $value->origin_iso = $this->originISO;
-                        break;
-                    }
+                    $value->origin_iso = $iso;
                     $formatted_address = $value->format();
                     $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
                     if ($blank_formatted_address === $formatted_address) {
                         $message = __("Please Enter Address");
                         $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
                     } else {
+                        /**
+                         * Re-render with country as needed...
+                         */
+                        switch ($this->showOutputCountry) {
+                        case 0:
+                            $value->origin_iso = $iso;
+                            break;
+
+                        case 1:
+                            $value->origin_iso = '++';
+                            break;
+
+                        case 2:
+                            $value->origin_iso = $this->originISO;
+                            break;
+                        }
+                        $formatted_address = $value->format();
                         $parser = $this->modules->get("TextformatterTagParser");
                         $parser->set('context', ['page' => $this->page]);
                         $parser->format($formatted_address);
