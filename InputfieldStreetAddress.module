@@ -37,7 +37,7 @@ class InputfieldStreetAddress extends Inputfield {
 
     /**
      * Page object that houses this field. Used to allow context-sensitive-tag-parser to pull in other fields from the
-     * page in to the address.
+     * page into the address.
      */
     protected $page;
     public function setPage(Page $page)
@@ -47,7 +47,6 @@ class InputfieldStreetAddress extends Inputfield {
 
 
     /**
-     * Per the Module interface, init() is called when the system is ready for API usage
      *
      */
     public function init()
@@ -60,6 +59,9 @@ class InputfieldStreetAddress extends Inputfield {
 
 
 
+    /**
+     *
+     */
     protected static function makeTitle(array $parts)
     {
         array_walk($parts, function(&$item, $key) {
@@ -71,6 +73,9 @@ class InputfieldStreetAddress extends Inputfield {
 
 
 
+    /**
+     *
+     */
     protected static function getCountryList()
     {
         $list = include __DIR__."/countries.php";
@@ -87,7 +92,6 @@ class InputfieldStreetAddress extends Inputfield {
 
 
     /**
-     *
      * @var $data     array     Array Keys are used as select option values, array Values are used as option labels.
      * @var $id       string    The HTML id of the control
      * @var $name     string    The HTML name of the control
@@ -109,6 +113,9 @@ class InputfieldStreetAddress extends Inputfield {
     }
 
 
+    /**
+     *
+     */
     protected function makeCountryInput($allowed_country_codes, $default_country_iso, StreetAddress &$value)
     {
         $readonly            = false;
@@ -136,7 +143,6 @@ class InputfieldStreetAddress extends Inputfield {
         } else if (!in_array($current_country_iso, $allowed_country_codes)) {
             // Ensure the non-blank current country is in the list...
             $allowed_country_codes[] = $current_country_iso;
-        } else {
         }
 
         // Build array of allowed countries and their names...
@@ -164,7 +170,6 @@ class InputfieldStreetAddress extends Inputfield {
      * Return the completed output of this Inputfield, ready for insertion in an XHTML form
      *
      * @return string
-     *
      */
     public function ___render()
     {

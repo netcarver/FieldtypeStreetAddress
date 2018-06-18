@@ -58,11 +58,11 @@ These control how the output of this field will be formatted. The layout of the 
 
 If you are sending mail domestically, it usually isn't necessary to include the destination country - but you can choose to tweak how this is decided here.
 
-You can choose to _never_ show the value, to _always_ show the value, or to conditionally show the value.
+You can choose to _never_ show the value, to _always_ show the value, or to _conditionally_ show the value.
 
-Conditionality depends upon the country of origin field. If the country of origin differs from the country of destination in the address. In this case the address is assumed to be going via international post and the address field will be appended as needed.
+Conditionality depends upon the country-of-origin field. If the country of origin differs from the country of destination in the address. In this case the address is assumed to be going via international post and the address field will be appended as needed.
 
-#### Country Of Origin
+#### Country-Of-Origin
 
-Select the country of origin from the list.
+Select the country-of-origin from the list. This is the country from which you will be sending any physical mail.
 
