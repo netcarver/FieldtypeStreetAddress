@@ -435,21 +435,26 @@ class StreetAddress
      * @param string $country
      * @return mixed
      */
-    public static function getFormat($country)
+    public static function getFormat($country_iso)
     {
+        $international_layout = '%N%n%O%n%A%n%C, %S %Z %R';
+
         if (self::$country_formats === null) {
             self::setFormats(include(__DIR__ . '/formats.php'));
         }
 
-        // Ensure it's upper cased
-        $country = strtoupper($country);
-
+        $country_iso = strtoupper($country_iso);
         // Return international format for missing
-        if (array_key_exists($country, self::$country_formats) === false) {
-            return ['fmt' => '%N%n%O%n%A%n%C, %S %Z %R'];
+        if (false === array_key_exists($country_iso, self::$country_formats)) {
+            $format_info = ['fmt' => $international_layout];
+        } else {
+            $format_info = self::$country_formats[$country_iso];
+            if (!isset($format_info['fmt'])) {
+                $format_info['fmt'] = $international_layout;
+            }
         }
 
-        return self::$country_formats[$country];
+        return $format_info;
     }
 
 

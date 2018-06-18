@@ -180,7 +180,8 @@ class InputfieldStreetAddress extends Inputfield {
 
         if (0 == $this->inputFormat && '' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
-            if ('' !== $fmt) {
+            $addressfields = @$fmt['fmt'];
+            if ('' !== trim($addressfields)) {
 
                 /**
                  * Address format is known, so build the input form from the format.
@@ -188,13 +189,15 @@ class InputfieldStreetAddress extends Inputfield {
                 $known = true;
                 $out   = [];
 
-                //$upper_fields    = str_split(@$fmt['upper']);
-                $required_fields = str_split(@$fmt['require']);
-                if ('' === $required_fields) {
-                    $required_fields = 'NOSACZ'; // If no required fields are mentioned, assume they all are
+                $required_fields = @$fmt['require'];
+                if (empty($required_fields)) {
+                    $required_fields = 'ACZ';
                 }
+                $required_fields = str_split($required_fields);
 
-                $addressfields = $fmt['fmt']."%n%R";
+                if (false === strpos($addressfields, '%R')) {
+                    $addressfields .= "%n%R";
+                }
                 //$addressfields = str_replace('%N', '', $addressfields); // TODO Make these configurable?
                 //$addressfields = str_replace('%O', '', $addressfields);
                 $addressfields = explode('%', $addressfields);
@@ -252,7 +255,7 @@ class InputfieldStreetAddress extends Inputfield {
                         // Regex verify the postal code field...
                         $regex = @$fmt['zip'];
 
-                        if ('' !== $regex) {
+                        if ($regex) {
                             $m = [];
                             $regex = "~$regex~";
                             $result = preg_match($regex, $fieldvalue, $m);
