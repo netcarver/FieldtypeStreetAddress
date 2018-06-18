@@ -175,19 +175,19 @@ class InputfieldStreetAddress extends Inputfield {
         $show_country      = $this->inputShowCountryField;
         $fields            = StreetAddress::getAddressFieldNames();
         $mappings          = StreetAddress::getAddressMappings();
-        $unused            = $mappings;
         $known             = false;
 
         if (0 == $this->inputFormat && '' !== $iso) {
             $fmt = StreetAddress::getFormat($iso);
             $addressfields = @$fmt['fmt'];
-            if ('' !== trim($addressfields)) {
 
+            if ('' !== trim($addressfields)) {
                 /**
                  * Address format is known, so build the input form from the format.
                  */
-                $known = true;
-                $out   = [];
+                $known  = true;
+                $out    = [];
+                $unused = $mappings;
 
                 $required_fields = @$fmt['require'];
                 if (empty($required_fields)) {
@@ -206,6 +206,12 @@ class InputfieldStreetAddress extends Inputfield {
                 foreach ($addressfields as $f) {
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
+
+                    /**
+                     * Remove this field from the unused pool that will be output as hidden controls later...
+                     */
+                    unset($unused[$fmtcode]);
+
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
                     $classes     = ['streetaddress'];
@@ -220,8 +226,6 @@ class InputfieldStreetAddress extends Inputfield {
                     }
                     $title       = self::makeTitle($parts);
                     $ph          = self::makeTitle([$key]);
-
-                    unset($unused[$fmtcode]);
 
                     if (!$is_required && 'country' !== $key) {
                         $classes[] = 'streetaddress_optional';
