@@ -181,7 +181,7 @@ class FieldtypeStreetAddress extends Fieldtype
         foreach ($subfields as $f) {
             if ('country_iso' === $f) continue;
             if ('origin_iso' === $f) continue;
-            $address->$f = $value['data_'.$f];
+            $address->$f = $value["data_$f"];
         }
         $address->snapshot(); // Allow the isChanged() function to work.
 
