@@ -18,6 +18,9 @@
 class FieldtypeStreetAddress extends Fieldtype
 {
 
+    /**
+     *
+     */
     public static function getModuleInfo()
     {
         return [
@@ -33,6 +36,9 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
 
+    /**
+     *
+     */
     public function init() {
         parent::init();
         $dir = dirname(__FILE__);

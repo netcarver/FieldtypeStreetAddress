@@ -4,9 +4,12 @@
 /**
  *
  */
+class InputfieldStreetAddress extends Inputfield
+{
 
-class InputfieldStreetAddress extends Inputfield {
-
+    /**
+     *
+     */
     public static function getModuleInfo()
     {
         return [
@@ -20,6 +23,10 @@ class InputfieldStreetAddress extends Inputfield {
     }
 
 
+
+    /**
+     *
+     */
     public function __construct()
     {
         $this->set('permittedISOs', '');            // Allowable country codes
@@ -33,6 +40,7 @@ class InputfieldStreetAddress extends Inputfield {
         $this->set('showAddressPreview', 0);        // Show a preview pane with the formatted address.
         parent::__construct();
     }
+
 
 
     /**
@@ -72,7 +80,6 @@ class InputfieldStreetAddress extends Inputfield {
 
 
 
-
     /**
      *
      */
@@ -89,6 +96,7 @@ class InputfieldStreetAddress extends Inputfield {
         }
         return $list;
     }
+
 
 
     /**
@@ -113,12 +121,12 @@ class InputfieldStreetAddress extends Inputfield {
     }
 
 
+
     /**
      *
      */
     protected function makeCountryInput($allowed_country_codes, $default_country_iso, StreetAddress &$value)
     {
-        $readonly            = false;
         $all_countries       = self::getCountryList();
         $current_country_iso = strtolower($value->country_iso);
 
@@ -129,7 +137,7 @@ class InputfieldStreetAddress extends Inputfield {
 
         $num_allowed = count($allowed_country_codes);
 
-        // Make sure the default country is in the list - as long as there is more than one choice, otherwise the single
+        // Make sure the default country is in the list as long as there is more than one choice. Otherwise the single
         // choice will override the default_country_iso.
         if ($num_allowed > 1 && !in_array($default_country_iso, $allowed_country_codes)) {
             $allowed_country_codes[] = $default_country_iso;
@@ -164,6 +172,7 @@ class InputfieldStreetAddress extends Inputfield {
         }
         return $out;
     }
+
 
 
     /**
@@ -397,6 +406,7 @@ HTML;
             return $table->render();
         }
     }
+
 
 
     /**

@@ -138,18 +138,6 @@ class StreetAddress
 
 
     /**
-     * Set to false to exclude addition of country field.
-     *
-     * If you are formatting addresses that might involve international post, please set this to the ISO code of the
-     * country of origin. This will force the addition of the destination country to the formatted address - if it is
-     * not already present in the destination country's 'fmt' field.
-     *
-     * @see Address::setCountryOfOriginISO()
-     */
-    /* protected static $origin_country_iso = false; */
-
-
-    /**
      * If set, entries in the remappings array allow you to specify custom names for supplied address fields
      * beyond those used by google's i18n feed.
      *
@@ -346,16 +334,6 @@ class StreetAddress
 
 
     /**
-     *
-     */
-    /* public static function formatHtml(array $data) */
-    /* { */
-    /*     return self::format($data, true); */
-    /* } */
-
-
-
-    /**
      * Format the given address data into an address string.
      *
      * @param array $data A set of named address strings.
@@ -378,6 +356,7 @@ class StreetAddress
         $upper               = @$format_info['upper'];
         $formatted_address   = $format_info['fmt'];
 
+        // Do we need the destination country field?
         if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
             // This is an international address - add the country to the format if it is not already present...
             $pos = strpos($formatted_address, '%R');
