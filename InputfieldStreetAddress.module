@@ -359,7 +359,7 @@ class InputfieldStreetAddress extends Inputfield
                             $value->origin_iso = $this->originISO;
                             break;
                         }
-                        $formatted_address = $value->format();
+                        $formatted_address = $value->format(true);
                         $parser = $this->modules->get("TextformatterTagParser");
                         $parser->set('context', ['page' => $this->page]);
                         $parser->format($formatted_address);
