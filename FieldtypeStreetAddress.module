@@ -28,7 +28,7 @@ class FieldtypeStreetAddress extends Fieldtype
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.0.2',
             'author'   => 'Netcarver',
-            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
+            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect, TextfomatterTagParser',
             'icon'     => 'envelope',
             'require'  => 'php>5.4.0',
         ];
@@ -73,7 +73,11 @@ class FieldtypeStreetAddress extends Fieldtype
         /**
          * Get the address to format itself...
          */
-        $address = $value->format(true);
+        if ($field->outputSingleLine == 1) {
+            $address = $value->formatSingle(0 == $field->outputHTML);
+        } else {
+            $address = $value->format(0 == $field->outputHTML);
+        }
 
         /**
          * Run the tag parser on the output
@@ -359,18 +363,45 @@ class FieldtypeStreetAddress extends Fieldtype
         $output_wrapper->label = __("Output Formatting Options");
 
         /**
+         * HTML or plaintext output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Include HTML Microformat Spans In Output?');
+        $f->attr('id+name', 'outputHTML');
+        $f->addOption(0, $this->_('Yes, include spans.'));
+        $f->addOption(1, $this->_('No, just plaintext.'));
+        $f->attr('value', (int) $field->outputHTML);
+        $f->columnWidth = 50;
+        $output_wrapper->add($f);
+
+
+        /**
+         * Single or Multiline output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Format as Single/Multiline Output?');
+        $f->attr('id+name', 'outputSingleLine');
+        $f->addOption(0, $this->_('Use as many lines as needed.'));
+        $f->addOption(1, $this->_('Just a single line.'));
+        $f->attr('value', (int) $field->outputSingleLine);
+        $f->columnWidth = 50;
+        $output_wrapper->add($f);
+
+
+        /**
          * Force display of the country field in the output, even if it is fixed?
          */
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Show the destination country field?');
-        $f->description = $this->_('Sometimes it is not necessary to show destination country, such as when mail is being sent domestically.');
+        $f->description = $this->_('Sometimes it is not necessary to show the destination country, such as when mail is being sent domestically.');
         $f->attr('name', 'showOutputCountry');
-        $f->addOption(0, $this->_('Never - All mail is domestic.'));
-        $f->addOption(1, $this->_('Always - All mail is international.'));
+        $f->addOption(0, $this->_('Never - All addresses are domestic.'));
+        $f->addOption(1, $this->_('Always - All addresses are international.'));
         $f->addOption(2, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
         $f->attr('value', (int) $field->showOutputCountry);
         $f->columnWidth = 100;
         $output_wrapper->add($f);
+
 
         /**
          * Set the Country-of-Origin ISO.
@@ -378,7 +409,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
         $f->attr('name', 'originISO');
-        $f->description = $this->_('please specify the country-of-origin for any post you might send.');
+        $f->description = $this->_('please specify the country of origin for any post you might send.');
         foreach($this->getCountryList() as $iso => $country) {
             $code    = strtoupper($iso);
             $f->addOption($iso, "$country ($code)");

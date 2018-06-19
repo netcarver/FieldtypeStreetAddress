@@ -38,6 +38,8 @@ class InputfieldStreetAddress extends Inputfield
         $this->set('validatePostalCode', 0);        // Off by default.
         $this->set('originISO', 'us');              // Helps control address formatting output.
         $this->set('showAddressPreview', 0);        // Show a preview pane with the formatted address.
+        $this->set('outputHTML', 0);
+        $this->set('outputSingleLine', 0);
         parent::__construct();
     }
 
@@ -359,7 +361,12 @@ class InputfieldStreetAddress extends Inputfield
                             $value->origin_iso = $this->originISO;
                             break;
                         }
-                        $formatted_address = $value->format(true);
+
+                        if ($this->outputSingleLine == 1) {
+                            $formatted_address = $value->formatSingle(0 == $this->outputHTML);
+                        } else {
+                            $formatted_address = $value->format(0 == $this->outputHTML);
+                        }
                         $parser = $this->modules->get("TextformatterTagParser");
                         $parser->set('context', ['page' => $this->page]);
                         $parser->format($formatted_address);

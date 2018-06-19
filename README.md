@@ -54,6 +54,14 @@ If you've chosen the dynamic layout option, you can also choose to show a previe
 
 These control how the output of this field will be formatted. The layout of the formatted address always depends upon the cached layout data from Google, but some aspects of the output can be tweaked here.
 
+#### Include HTML Microformat Spans?
+
+You can choose to include HTML spans implementing schema.org's [PostalAddress](https://schema.org/PostalAddress) microformat.
+
+#### Single/Multiline Output?
+
+Controls how the lines of the output are merged, either into a single line address, or into a multiline address.
+
 #### Show Destination Country Field
 
 If you are sending mail domestically, it usually isn't necessary to include the destination country - but you can choose to tweak how this is decided here.
