@@ -74,3 +74,11 @@ Conditionality depends upon the country-of-origin field. If the country of origi
 
 Select the country-of-origin from the list. This is the country from which you will be sending any physical mail.
 
+
+
+API Usage
+---------
+
+As with all ProcessWire templates, you can output the formatted value in your template files by referencing the field:
+
+    <div class='client-address'>{$page->client_adress}</div>
