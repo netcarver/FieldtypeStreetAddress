@@ -81,8 +81,10 @@ class FieldtypeStreetAddress extends Fieldtype
     {
         $inputfield = $this->modules->get('InputfieldStreetAddress');
 
-        // This inputfield uses a page object.
+        // This inputfield uses a page & field object.
         $inputfield->setPage($page);
+        $inputfield->setField($field);
+
         return $inputfield;
     }
 
