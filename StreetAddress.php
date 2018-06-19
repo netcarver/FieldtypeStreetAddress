@@ -80,7 +80,9 @@ class StreetAddress
     public function formatSingle($html = false, $glue = ', ')
     {
         $multiline = $this->format($html);
-        $multiline = str_replace("<br>", '', $multiline);
+        if ($html) {
+            $multiline = str_replace("<br>", '', $multiline);
+        }
         $single = str_replace("\n", $glue, $multiline);
         return $single;
     }
