@@ -81,7 +81,7 @@ API Usage
 
 As with all ProcessWire templates, you can output the formatted value in your template files by referencing the field:
 
-``` #php
+```#php
     <div class='client-address'>{$page->client_address}</div>
 ```
 
