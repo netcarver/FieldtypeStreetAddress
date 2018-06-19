@@ -43,7 +43,7 @@ If you allow a choice of more than one country, then you will be able to choose 
 
 You can select between a dynamic field layout, that changes when (and if) you change the destination country, or a fixed, tabular input layout.
 
-The dynamic layout of address subfields is driven by the country address format string cached from the google i18n data feed, whilst the tabular layout is fixed, no matter what destination contry you choose.
+The dynamic layout of address subfields is driven by the country address format string cached from the google i18n data feed. The tabular layout is fixed, no matter what destination contry you choose.
 
 #### Show Address Preview (with Dynamic option above)
 
