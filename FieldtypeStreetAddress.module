@@ -28,7 +28,7 @@ class FieldtypeStreetAddress extends Fieldtype
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.0.2',
             'author'   => 'Netcarver',
-            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
+            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect, TextfomatterTagParser',
             'icon'     => 'envelope',
             'require'  => 'php>5.4.0',
         ];
