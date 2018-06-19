@@ -47,12 +47,44 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
 
+
     /**
-     * Format value for output
+     * Format value for HTML output
      */
     public function ___formatValue(Page $page, Field $field, $value)
     {
-        return $value->formatHtml();
+        /**
+         * Use the owning field's settings to determine display of the address field...
+         */
+        switch ($field->showOutputCountry) {
+        case 0:
+            $value->origin_iso = $iso;
+            break;
+
+        case 1:
+            $value->origin_iso = '++';
+            break;
+
+        case 2:
+            $value->origin_iso = $field->originISO;
+            break;
+        }
+
+        /**
+         * Get the address to format itself...
+         */
+        $address = $value->format(true);
+
+        /**
+         * Run the tag parser on the output
+         */
+        if ($this->modules->isInstalled('TextformatterTagParser')) {
+            $parser = $this->modules->get("TextformatterTagParser");
+            $parser->set('context', ['page' => $page]);
+            $parser->format($address);
+        }
+
+        return $address;
     }
 
 
