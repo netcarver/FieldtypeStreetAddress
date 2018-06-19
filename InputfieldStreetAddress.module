@@ -370,7 +370,9 @@ class InputfieldStreetAddress extends Inputfield
                         $parser = $this->modules->get("TextformatterTagParser");
                         $parser->set('context', ['page' => $this->page]);
                         $parser->format($formatted_address);
-                        $formatted_address = "<pre>$formatted_address</pre>";
+
+                        $full_formatted_address = htmlentities($formatted_address, ENT_QUOTES | ENT_HTML5, 'utf-8');
+                        $formatted_address .= "<pre class=\"streetaddress_raw\">$full_formatted_address</pre>";
                     }
                     $address_preview = <<<HTML
         <div class="streetaddress_frame">

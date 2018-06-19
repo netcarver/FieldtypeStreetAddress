@@ -80,6 +80,7 @@ class StreetAddress
     public function formatSingle($html = false, $glue = ', ')
     {
         $multiline = $this->format($html);
+        $multiline = str_replace("<br>", '', $multiline);
         $single = str_replace("\n", $glue, $multiline);
         return $single;
     }
@@ -404,6 +405,10 @@ class StreetAddress
 
         // Clean up runs of multiple newlines...
         $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address);
+
+        if ($html === true) {
+            $formatted_address = nl2br($formatted_address, false);
+        }
 
         return $formatted_address;
     }

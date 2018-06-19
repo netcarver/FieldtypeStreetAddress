@@ -62,6 +62,11 @@ You can choose to include HTML spans implementing schema.org's [PostalAddress](h
 
 Controls how the lines of the output are merged, either into a single line address, or into a multiline address.
 
+_NB_ Lines in the output are delimited by a single "\n" character unless you have chosen inclusion of HTML spans, in
+which case the line delimeters are ```<br>\n```, which are suitable for output in HTML5. If you output this within a
+```<pre>``` element, you will see double line spacing.  If you have your field setup to just output plaintext, and then
+show this in an HTML element other than a preformatted block, you will see the text as a single line.
+
 #### Show Destination Country Field
 
 If you are sending mail domestically, it usually isn't necessary to include the destination country - but you can choose to tweak how this is decided here.
@@ -73,6 +78,7 @@ Conditionality depends upon the country-of-origin field. If the country of origi
 #### Country-Of-Origin
 
 Select the country-of-origin from the list. This is the country from which you will be sending any physical mail.
+
 
 
 

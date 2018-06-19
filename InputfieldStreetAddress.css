@@ -50,6 +50,13 @@ span.streetaddress_suffix {
     padding-left:  0.2rem;
     padding-right: 0.2rem;
 }
+pre.streetaddress_raw {
+    margin-top: 0.25em;
+    padding-top: 0.25em;
+    border-top: 1px dotted #e0e0e0;
+    overflow: auto;
+    /* display: none; */
+}
 div.streetaddress_input_frame {
     width: 60%;
     min-width: 300px;
