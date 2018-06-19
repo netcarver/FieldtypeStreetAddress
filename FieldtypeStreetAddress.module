@@ -363,7 +363,7 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Show the destination country field?');
-        $f->description = $this->_('Sometimes it is not necessary to show destination country, such as when mail is being send domestically.');
+        $f->description = $this->_('Sometimes it is not necessary to show destination country, such as when mail is being sent domestically.');
         $f->attr('name', 'showOutputCountry');
         $f->addOption(0, $this->_('Never - All mail is domestic.'));
         $f->addOption(1, $this->_('Always - All mail is international.'));
