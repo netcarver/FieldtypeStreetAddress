@@ -77,9 +77,9 @@ class StreetAddress
     /**
      * Format address to a single line of text.
      */
-    public function formatSingle($glue = ', ')
+    public function formatSingle($html = false, $glue = ', ')
     {
-        $multiline = $this->format();
+        $multiline = $this->format($html);
         $single = str_replace("\n", $glue, $multiline);
         return $single;
     }
@@ -91,7 +91,7 @@ class StreetAddress
      */
     public function __toString()
     {
-        return $this->formatSingle();
+        return $this->format();
     }
 
 
