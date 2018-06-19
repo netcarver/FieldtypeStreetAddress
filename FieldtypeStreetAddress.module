@@ -74,9 +74,9 @@ class FieldtypeStreetAddress extends Fieldtype
          * Get the address to format itself...
          */
         if ($field->outputSingleLine == 1) {
-            $address = $value->formatSingle(0 == $this->outputHTML);
+            $address = $value->formatSingle(0 == $field->outputHTML);
         } else {
-            $address = $value->format(0 == $this->outputHTML);
+            $address = $value->format(0 == $field->outputHTML);
         }
 
         /**
