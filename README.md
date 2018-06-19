@@ -85,8 +85,8 @@ As with all ProcessWire templates, you can output the formatted value in your te
     <div class='client-address'>{$page->client_address}</div>
 ```
 
-The returned value will, by default, be laid out according to the address meta data from the Google feed and will have
-any substitutions already made in it by the TextformatterTagParser module.
+The returned value will, by default, be laid out according to the address meta data from the Google feed, honouring your
+options for destination country inclusion, HTML tags and multi-vs-single line. It will also have any substitutions already made in it by the Tag Parser module.
 
 ### Interaction with PW's Output Formatting Flag
 
