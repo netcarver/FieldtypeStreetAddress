@@ -68,7 +68,7 @@ If you are sending mail domestically, it usually isn't necessary to include the 
 
 You can choose to _never_ show the value, to _always_ show the value, or to _conditionally_ show the value.
 
-Conditionality depends upon the country-of-origin field. If the country of origin differs from the country of destination in the address. In this case the address is assumed to be going via international post and the address field will be appended as needed.
+Conditionality depends upon the country-of-origin field. If the country of origin differs from the country of destination in the address, then the address is assumed to be going via international post and the address field will be appended.
 
 #### Country-Of-Origin
 
