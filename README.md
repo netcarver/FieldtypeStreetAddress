@@ -82,8 +82,28 @@ API Usage
 As with all ProcessWire templates, you can output the formatted value in your template files by referencing the field:
 
 ```
-    #php
     <div class='client-address'>{$page->client_address}</div>
 ```
+
+The returned value will, by default, be laid out according to the address meta data from the Google feed and will have
+any substitutions already made in it by the TextformatterTagParser module.
+
+### Interaction with PW's Output Formatting Flag
+
+If you access the field with PWs output formatting turned off, then the address you get back will honour the settings
+for the inclusion (or otherwise) of the destination address but will ignore settings for singleline, HTML spans and
+field substitutions via the tag parser. It's up to you to do what you need with it in these cases.
+
+
+### Accessing The Underlying Object
+
+If you need to customise the output in your template files - or set values, you can get at the underlying StreetAddress
+object via the ```getUnformatted()``` call.
+
+```
+    $address_object = $page->getUnformatted('client_address');
+```
+
+
 
 2018/06
