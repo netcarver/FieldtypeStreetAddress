@@ -82,8 +82,8 @@ class InputfieldStreetAddress extends Inputfield
     protected static function makeTitle(array $parts)
     {
         array_walk($parts, function(&$item, $key) {
-            $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             $item = mb_convert_case(str_replace('_', ' ', $item), MB_CASE_TITLE, 'UTF-8');
+            $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
         });
         return implode(__(', '), $parts);
     }
