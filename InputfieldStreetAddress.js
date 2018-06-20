@@ -1,7 +1,6 @@
 $(document).ready(function() {
 
     function resizeInput() {
-
         // Firstly, adjust the widths...
         var add = 1;
         var len = this.value.length;
@@ -52,9 +51,8 @@ $(document).ready(function() {
         });
     }
 
-    $('input.streetaddress').each(resizeInput).on('input', resizeInput);
-    $('select.streetaddress').each(resizeInput).on('input', resizeInput);
-    //$('.streetaddress_frame').each(reduceAddress).on('mouseenter', expandAddress).on('mouseleave', reduceAddress);
+    $('input.streetaddress').on('input', resizeInput);
+    $('select.streetaddress').on('input', resizeInput);
 
     $('.streetaddress_country').selectize({
         closeAfterSelect: true,
