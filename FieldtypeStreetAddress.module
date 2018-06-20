@@ -47,12 +47,59 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
 
+    /**
+     *
+     */
+    public static function prepareLinesCallback($line, $key, $data = [])
+    {
+        static $parser = false;
+
+        /* \TD::barDump([ */
+        /*     'key'  => $key, */
+        /*     'line' => $line, */
+        /*     'data' => $data, */
+        /* ], __method__); */
+
+        /**
+         * Run the tag parser on the output
+         */
+        if (!$parser && wire('modules')->isInstalled('TextformatterTagParser')) {
+            $parser = wire('modules')->get("TextformatterTagParser");
+            $parser->set('context', ['page' => $data['page']]);
+        }
+
+        if ($parser) {
+            $parser->format($line);
+        }
+
+        /* \TD::barDump([ */
+        /*     'key'  => $key, */
+        /*     'line' => $line, */
+        /*     'data' => $data, */
+        /* ], __method__); */
+
+        return $line;
+    }
+
+
 
     /**
-     * Format value for HTML output
+     *
      */
     public function ___formatValue(Page $page, Field $field, $value)
     {
+        return self::format($page, $field, $value);
+    }
+
+
+
+    /**
+     * Format value for output
+     */
+    public static function format(Page $page, Field $field, $value)
+    {
+        $html = 0 == $field->outputHTML;
+
         /**
          * Use the owning field's settings to determine display of the address field...
          */
@@ -70,22 +117,15 @@ class FieldtypeStreetAddress extends Fieldtype
             break;
         }
 
+        $value->prepareLines([__CLASS__, 'prepareLinesCallback'], ['page' => $page]);
+
         /**
          * Get the address to format itself...
          */
         if ($field->outputSingleLine == 1) {
-            $address = $value->formatSingle(0 == $field->outputHTML);
+            $address = $value->formatSingle($html);
         } else {
-            $address = $value->format(0 == $field->outputHTML);
-        }
-
-        /**
-         * Run the tag parser on the output
-         */
-        if ($this->modules->isInstalled('TextformatterTagParser')) {
-            $parser = $this->modules->get("TextformatterTagParser");
-            $parser->set('context', ['page' => $page]);
-            $parser->format($address);
+            $address = $value->format($html);
         }
 
         return $address;
@@ -339,7 +379,7 @@ class FieldtypeStreetAddress extends Fieldtype
         //$f->attr('id+name', 'inputFormat');
         $f->attr('name', 'inputFormat');
         $f->description = $this->_('How should the inputfields be configured?');
-        $f->addOption(0, $this->_('Dynamic, using country\'s field layout. (Not always possible)'));
+        $f->addOption(0, $this->_("Dynamic, using country's field layout."));
         $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
         $f->attr('value', (int) $field->inputFormat);
         $f->columnWidth = 50;
@@ -350,13 +390,27 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         $f = $this->wire('modules')->get('InputfieldRadios');
         $f->label = $this->_('Show Address Preview?');
-        $f->attr('id+name', 'showAddressPreview');
+        $f->attr('name', 'showAddressPreview');
         $f->description = $this->_('Choose "Yes" to see what the address looks like once submitted.');
-        $f->addOption(0, $this->_('Yes.'));
-        $f->addOption(1, $this->_('No.'));
+        $f->addOption(0, $this->_('No.'));
+        $f->addOption(1, $this->_('Yes.'));
         $f->attr('value', (int) $field->showAddressPreview);
         $f->columnWidth = 50;
         $f->showIf = "inputFormat=0";
+        $input_wrapper->add($f);
+
+        /**
+         * Include preview of HTML output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Underlying HTML in Preview?');
+        $f->attr('id+name', 'showAddressPreviewHTML');
+        $f->description = $this->_('Choose "Yes" to see underlying HTML (if any)');
+        $f->addOption(0, $this->_('No.'));
+        $f->addOption(1, $this->_('Yes.'));
+        $f->attr('value', (int) $field->showAddressPreviewHTML);
+        //$f->columnWidth = 100;
+        $f->showIf = "showAddressPreview=1";
         $input_wrapper->add($f);
 
         $output_wrapper = $this->modules->get('InputfieldFieldset');

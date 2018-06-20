@@ -29,17 +29,19 @@ class InputfieldStreetAddress extends Inputfield
      */
     public function __construct()
     {
-        $this->set('permittedISOs', '');            // Allowable country codes
-        $this->set('defaultISO', 'us');             // The default country code for new address fields when there is more than one allowable
-        $this->set('showInputCountry', 0);          // Show country input if there is only one allowable country?
-        $this->set('showOutputCountry', 0);         // Show country in output (never/always/if international)
-        $this->set('inputFormat', 0);               // Controls how the inputfield looks
-        $this->set('surpressUnneededFields', 0);    // Show optional fields by default.
-        $this->set('validatePostalCode', 0);        // Off by default.
-        $this->set('originISO', 'us');              // Helps control address formatting output.
-        $this->set('showAddressPreview', 0);        // Show a preview pane with the formatted address.
-        $this->set('outputHTML', 0);
-        $this->set('outputSingleLine', 0);
+        $this->set('permittedISOs', '');               // Allowable country codes
+        $this->set('defaultISO', 'us');                // The default country code for new address fields when there is more than one allowable
+        $this->set('showInputCountry', 0);             // Show country input if there is only one allowable country?
+        $this->set('showOutputCountry', 0);            // Show country in output (never/always/if international)
+        $this->set('inputFormat', 0);                  // Controls how the inputfield looks
+        $this->set('surpressUnneededFields', 0);       // Show optional fields by default.
+        $this->set('validatePostalCode', 0);           // Off by default.
+        $this->set('originISO', 'us');                 // Helps control address formatting output.
+        $this->set('showAddressPreview', 0);           // Show a preview pane with the formatted address.
+        $this->set('showAddressPreviewHTML', 0);       // Controls display of HTML spans in preview field
+        $this->set('outputHTML', 0);                   // Controls inclusion of HTML spans in formatted output
+        $this->set('outputSingleLine', 0);             // Controls formatting as single vs multiple lines
+        $this->set('outputSingleLineGlue', __(', '));  // The glue to use if formatting as a single line.
         parent::__construct();
     }
 
@@ -337,7 +339,7 @@ class InputfieldStreetAddress extends Inputfield
                  * Generate an address preview (if needed)
                  */
                 $address_preview = '';
-                if (0 == $this->showAddressPreview) {
+                if (1 == $this->showAddressPreview) {
                     $value->origin_iso = $iso;
                     $formatted_address = $value->format();
                     $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
@@ -346,33 +348,17 @@ class InputfieldStreetAddress extends Inputfield
                         $formatted_address = "<div class='streetaddress_warning'><i class='fa fa-exclamation-triangle'></i><br><pre>$message</pre></div>";
                     } else {
                         /**
-                         * Re-render with country as needed...
+                         * Render with country as needed...
                          */
-                        switch ($this->showOutputCountry) {
-                        case 0:
-                            $value->origin_iso = $iso;
-                            break;
-
-                        case 1:
-                            $value->origin_iso = '++';
-                            break;
-
-                        case 2:
-                            $value->origin_iso = $this->originISO;
-                            break;
+                        $formatted_address = FieldtypeStreetAddress::format($this->page, $this->field, $value);
+                        if (0 == $this->outputHTML && $this->showAddressPreviewHTML) {
+                            $full_formatted_address = htmlentities($formatted_address, ENT_QUOTES | ENT_HTML5, 'utf-8');
+                            $formatted_address .= "<pre class=\"streetaddress_raw\">$full_formatted_address</pre>";
                         }
 
-                        if ($this->outputSingleLine == 1) {
-                            $formatted_address = $value->formatSingle(0 == $this->outputHTML);
-                        } else {
-                            $formatted_address = $value->format(0 == $this->outputHTML);
+                        if (1 == $this->outputHTML) {
+                            $formatted_address = "<pre>$formatted_address</pre>";
                         }
-                        $parser = $this->modules->get("TextformatterTagParser");
-                        $parser->set('context', ['page' => $this->page]);
-                        $parser->format($formatted_address);
-
-                        $full_formatted_address = htmlentities($formatted_address, ENT_QUOTES | ENT_HTML5, 'utf-8');
-                        $formatted_address .= "<pre class=\"streetaddress_raw\">$full_formatted_address</pre>";
                     }
                     $address_preview = <<<HTML
         <div class="streetaddress_frame">
