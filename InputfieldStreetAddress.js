@@ -58,6 +58,9 @@ $(document).ready(function() {
 
     $('.streetaddress_country').selectize({
         closeAfterSelect: true,
-        selectOnTab: true
+        selectOnTab: true,
+        onFocus: function(value) {
+            this.clear();
+        }
     });
 });
