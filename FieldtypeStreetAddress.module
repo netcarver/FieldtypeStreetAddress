@@ -52,31 +52,11 @@ class FieldtypeStreetAddress extends Fieldtype
      */
     public static function prepareLinesCallback($line, $key, $data = [])
     {
-        static $parser = false;
-
-        /* \TD::barDump([ */
-        /*     'key'  => $key, */
-        /*     'line' => $line, */
-        /*     'data' => $data, */
-        /* ], __method__); */
-
-        /**
-         * Run the tag parser on the output
-         */
-        if (!$parser && wire('modules')->isInstalled('TextformatterTagParser')) {
-            $parser = wire('modules')->get("TextformatterTagParser");
-            $parser->set('context', ['page' => $data['page']]);
-        }
-
+        $parser = @$data['parser'];
         if ($parser) {
+            $line = str_replace('.parent', '', $line); // prevent traversal up the page tree
             $parser->format($line);
         }
-
-        /* \TD::barDump([ */
-        /*     'key'  => $key, */
-        /*     'line' => $line, */
-        /*     'data' => $data, */
-        /* ], __method__); */
 
         return $line;
     }
@@ -84,48 +64,62 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
-     *
+     * Add a before hook to this method to allow adjustment of the address lines stored in the street address.
      */
-    public function ___formatValue(Page $page, Field $field, $value)
+    public function ___formatValue(Page $page, Field $field, $street_address)
     {
-        return self::format($page, $field, $value);
+        return self::format($page, $field, $street_address);
     }
 
 
 
     /**
-     * Format value for output
+     * Format street address for output
      */
-    public static function format(Page $page, Field $field, $value)
+    public static function format(Page $page, Field $field, $street_address)
     {
-        $html = 0 == $field->outputHTML;
+        $parser = false;
+        $html   = 0 == $field->outputHTML;
+
+        /**
+         * Set up the tag parser to process the line...
+         */
+        if (wire('modules')->isInstalled('TextformatterTagParser')) {
+            $parser = wire('modules')->get("TextformatterTagParser");
+            $parser->set('context', ['page' => $page]);
+        }
 
         /**
          * Use the owning field's settings to determine display of the address field...
          */
         switch ($field->showOutputCountry) {
         case 0:
-            $value->origin_iso = $iso;
+            $street_address->origin_iso = $iso;
             break;
 
         case 1:
-            $value->origin_iso = '++';
+            $street_address->origin_iso = '++';
             break;
 
         case 2:
-            $value->origin_iso = $field->originISO;
+            $street_address->origin_iso = $field->originISO;
             break;
         }
 
-        $value->prepareLines([__CLASS__, 'prepareLinesCallback'], ['page' => $page]);
+        $street_address->prepareLines(
+            [__CLASS__, 'prepareLinesCallback'],
+            [
+                'parser' => $parser,
+            ]
+        );
 
         /**
          * Get the address to format itself...
          */
         if ($field->outputSingleLine == 1) {
-            $address = $value->formatSingle($html);
+            $address = $street_address->formatSingle($html);
         } else {
-            $address = $value->format($html);
+            $address = $street_address->format($html);
         }
 
         return $address;
