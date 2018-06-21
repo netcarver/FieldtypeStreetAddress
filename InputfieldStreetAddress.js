@@ -29,6 +29,28 @@ $(document).ready(function() {
         if ($(this).hasClass('streetaddress_optional_nonempty') && this.value.length === 0) {
             $(this).removeClass('streetaddress_optional_nonempty');
         }
+
+
+        if (!$(this).hasClass('streetaddress_optional')) {
+            var len = this.value.length;
+            var regex = $(this).attr('data-regex');
+
+            if (len > 0) {
+                if (regex) {
+                    regex_ok = this.value.match('^' + regex + '$');
+                } else {
+                    regex_ok = true;
+                }
+
+                if (regex_ok) {
+                    $(this).removeClass('streetaddress_malformed');
+                } else {
+                    $(this).addClass('streetaddress_malformed');
+                }
+            } else if (0 === len) {
+                $(this).addClass('streetaddress_malformed');
+            }
+        }
     }
 
 
