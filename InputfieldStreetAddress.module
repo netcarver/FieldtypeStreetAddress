@@ -229,6 +229,7 @@ class InputfieldStreetAddress extends Inputfield
                 'organization'       => __('Organisation'),
                 'street_address'     => __('Street Address'),
                 'street_address_2'   => __('Street Address Line 2'),
+                'street_address_3'   => __('Street Address Line 3'),
                 'locality'           => __('Locality'),
                 'dependent_locality' => __('Dependent Locality'),
                 'admin_area'         => __('Admin Area'),
@@ -392,8 +393,9 @@ class InputfieldStreetAddress extends Inputfield
                     if ('R' === $fmtcode) {
                         $out[] = $country_input;
                     } else if ('A' === $fmtcode) {
-                        $key2 = 'street_address_2';
                         $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$fieldvalue}'/><br>";
+
+                        $key2 = 'street_address_2';
                         $fieldvalue2  = htmlspecialchars($value->$key2, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
                         $classes .= ' streetaddress_optional';
                         if ('' !== $fieldvalue2) {
@@ -402,7 +404,18 @@ class InputfieldStreetAddress extends Inputfield
                         $title = __('Street Address Line 2, Optional');
                         $ph    = __('Street Address Line 2');
                         $width = $this->fieldWidth($fieldvalue2, $ph);
-                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$fieldvalue2}'/>";
+                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$fieldvalue2}'/><br>";
+
+                        $key3 = 'street_address_3';
+                        $fieldvalue3  = htmlspecialchars($value->$key3, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                        $classes .= ' streetaddress_optional';
+                        if ('' !== $fieldvalue3) {
+                            $classes .= ' streetaddress_optional_nonempty';
+                        }
+                        $title = __('Street Address Line 3, Optional');
+                        $ph    = __('Street Address Line 3');
+                        $width = $this->fieldWidth($fieldvalue3, $ph);
+                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$fieldvalue3}'/>";
                     } else if ('Z' === $fmtcode) {
                         // Regex verify the postal code field...
                         $regex = @$metadata['zip'];

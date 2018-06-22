@@ -241,6 +241,7 @@ class StreetAddress
         'organization'       => '',
         'street_address'     => '',
         'street_address_2'   => '',
+        'street_address_3'   => '',
         'locality'           => '', // usually city/postal town
         'dependent_locality' => '', // usually sub-district
         'admin_area'         => '', // usually state/county
@@ -411,6 +412,7 @@ class StreetAddress
             // Deal with it here instead...
             if ($key == 'street_address') {
                 $value = $value . ($data['street_address_2'] ? ($html ? '<br>' : '%n') . $data['street_address_2'] : '');
+                $value = $value . ($data['street_address_3'] ? ($html ? '<br>' : '%n') . $data['street_address_3'] : '');
             }
 
             // HMTL gets the postal address microformat wrapping spans...
