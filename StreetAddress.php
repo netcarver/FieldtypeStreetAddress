@@ -2,24 +2,6 @@
 
 /**
  *
- * DONE
- * ----
- * Apply uppercase rules.
- * Detect if country field is required (address country != origin country).
- * Allow state/locality/postcode alternative keys.
- * Add postcode checking.
- * Add custom field mapping.
- * Add required fields validation.
- * Add snapshots.
- * Add change detection of fields.
- *
- *
- * WIP
- * ---
- *
- *
- * TODO
- * ----
  *
  */
 
