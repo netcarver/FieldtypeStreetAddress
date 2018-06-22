@@ -58,16 +58,17 @@ pre.streetaddress_raw {
     /* display: none; */
 }
 div.streetaddress_input_frame {
-    width: 60%;
-    min-width: 300px;
+    width: 49%;
+    min-width: 400px;
     float: left;
 }
 div.streetaddress_frame {
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 0.6rem;
-    width: 38%;
-    min-width: 200px;
+    min-width: 400px;
+    width: 400px;
+    max-width: 49%;
     overflow: hidden;
     float: left;
     line-height: 1.3rem;
