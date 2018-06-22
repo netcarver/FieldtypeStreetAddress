@@ -1,55 +1,56 @@
 $(document).ready(function() {
 
     function resizeInput() {
+        var add                  = 1;
+        var len                  = this.value.length;
+        var mathlen              = len;
+        var is_optional          = $(this).hasClass('streetaddress_optional');
+        var is_optional_nonempty = $(this).hasClass('streetaddress_optional_nonempty');
+        var is_country           = $(this).hasClass('streetaddress_country');
+        var has_content          = len > 0;
+
         // Firstly, adjust the widths...
-        var add = 1;
-        var len = this.value.length;
-        if (len === 0) {
+        if (!has_content) {
             // If the placeholder is showing, resize to it's width
             var ph = $(this).attr('placeholder');
             if (ph) {
-                len = ph.length + 1;
+                mathlen = ph.length + 1;
             } else {
-                len = 12;
+                mathlen = 12;
             }
         }
 
-        if ($(this).hasClass('streetaddress_country')) {
-            this.style.width = '30ch';
+        if (is_country) {
+            this.style.width = '36ch';
         } else {
-            this.style.width = (len + add) + 'ch';
+            this.style.width = (mathlen + add) + 'ch';
         }
 
 
         // Now consider the heights of optional fields...
-        if ($(this).hasClass('streetaddress_optional') && this.value.length > 0) {
+        if (is_optional && has_content) {
             $(this).addClass('streetaddress_optional_nonempty');
         }
 
-        if ($(this).hasClass('streetaddress_optional_nonempty') && this.value.length === 0) {
+        if (is_optional_nonempty && !has_content) {
             $(this).removeClass('streetaddress_optional_nonempty');
         }
 
 
-        if (!$(this).hasClass('streetaddress_optional')) {
-            var len = this.value.length;
-            var regex = $(this).attr('data-regex');
+        // Check if we are malformed or OK...
+        var regex = $(this).attr('data-regex');
+        if (regex && has_content) {
+            malformed = null === this.value.match('^' + regex + '$');
+        } else if (!is_optional && !has_content) {
+            malformed = true;
+        } else {
+            malformed = false;
+        }
 
-            if (len > 0) {
-                if (regex) {
-                    regex_ok = this.value.match('^' + regex + '$');
-                } else {
-                    regex_ok = true;
-                }
-
-                if (regex_ok) {
-                    $(this).removeClass('streetaddress_malformed');
-                } else {
-                    $(this).addClass('streetaddress_malformed');
-                }
-            } else if (0 === len) {
-                $(this).addClass('streetaddress_malformed');
-            }
+        if (malformed) {
+            $(this).addClass('streetaddress_malformed');
+        } else {
+            $(this).removeClass('streetaddress_malformed');
         }
     }
 
