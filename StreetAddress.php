@@ -403,6 +403,7 @@ class StreetAddress
             // Make sure the fields marked as "upper" in the google feed are converted to uppercase.
             if ($upper && false !== stripos($upper, $id)) {
                 $value = mb_convert_case($value, MB_CASE_UPPER, 'utf-8');
+                $value = str_replace('&NBSP;', '&nbsp;', $value);
             }
 
             // Skip over the address_2 entry (for now)

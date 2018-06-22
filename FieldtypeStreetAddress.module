@@ -58,6 +58,10 @@ class FieldtypeStreetAddress extends Fieldtype
             $parser->format($line);
         }
 
+        if (@$data['html']) {
+            $line = str_replace(' ', '&nbsp;', $line);
+        }
+
         return $line;
     }
 
@@ -110,6 +114,7 @@ class FieldtypeStreetAddress extends Fieldtype
             [__CLASS__, 'prepareLinesCallback'],
             [
                 'parser' => $parser,
+                'html'   => $html,
             ]
         );
 
