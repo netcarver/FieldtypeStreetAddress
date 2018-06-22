@@ -78,15 +78,24 @@ class InputfieldStreetAddress extends Inputfield
 
 
 
+
+    protected static function makeSafeString($string, $titlecase = false) {
+        $string = str_replace('_', ' ', trim($string));
+        $string = htmlentities(strip_tags($string), ENT_HTML5 | ENT_QUOTES, 'utf-8');
+        if ($titlecase) {
+            $string = mb_convert_case($string, MB_CASE_TITLE, 'UTF-8');
+        }
+        return $string;
+    }
+
+
     /**
      *
      */
     protected static function makeTitle(array $parts)
     {
         array_walk($parts, function(&$item, $key) {
-            //$item = mb_convert_case(str_replace('_', ' ', $item), MB_CASE_TITLE, 'UTF-8');
-            $item = str_replace('_', ' ', $item);
-            $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
+            $item = self::makeSafeString($item);
         });
         return implode(__(', '), $parts);
     }
@@ -231,12 +240,18 @@ class InputfieldStreetAddress extends Inputfield
 
             $state_remap    = @$metadata['state_name_type'];
             $locality_remap = @$metadata['locality_name_type'];
+            $zip_remap      = @$metadata['zip_name_type'];
 
-            if ($state_remap)    $fields['admin_area'] = $state_remap;
-            if ($locality_remap) $fields['locality']   = $locality_remap;
+            if ($state_remap)    $fields['admin_area']  = self::makeSafeString($state_remap, true);
+            if ($locality_remap) $fields['locality']    = self::makeSafeString($locality_remap, true);
+            if ($zip_remap)      $fields['postal_code'] = self::makeSafeString($zip_remap, true);
 
             $iso = strtolower($iso);
             switch ($iso) {
+            case 'ca':
+                $fields['admin_area']   = __('Province');
+                break;
+
             case 'br':
                 $fields['postal_code']  = __('CEP');
                 break;
@@ -265,9 +280,11 @@ class InputfieldStreetAddress extends Inputfield
                 $fields['postal_code']  = __('CAP');
                 break;
 
-            case 'us':
             case 'ph':
                 $fields['postal_code']  = __('Zip Code');
+                break;
+
+            case 'us':
                 $fields['organization'] = __('Organization');
                 break;
             }
@@ -276,7 +293,8 @@ class InputfieldStreetAddress extends Inputfield
             /*     'metadata'    => $metadata, */
             /*     'state_remap' => $state_remap, */
             /*     'local_remap' => $locality_remap, */
-            /*     'iso' => $iso, */
+            /*     'zip_remap'   => $zip_remap, */
+            /*     'iso'         => $iso, */
             /*     'fields'      => $fields, */
             /*     'original'    => $original, */
             /* ], __method__); */
