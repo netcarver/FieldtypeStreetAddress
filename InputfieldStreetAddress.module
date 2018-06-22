@@ -214,7 +214,7 @@ class InputfieldStreetAddress extends Inputfield
             if ($width > 0) {
                 $width += 2;
             } else {
-                $width = 14;
+                $width = 12;
             }
         }
         return " style='width: {$width}ch;' ";
