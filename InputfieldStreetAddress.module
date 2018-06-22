@@ -34,6 +34,7 @@ class InputfieldStreetAddress extends Inputfield
         $this->set('showInputCountry', 0);             // Show country input if there is only one allowable country?
         $this->set('showOutputCountry', 0);            // Show country in output (never/always/if international)
         $this->set('inputFormat', 0);                  // Controls how the inputfield looks
+        $this->set('hideEmptyFields', []);
         $this->set('surpressUnneededFields', 0);       // Show optional fields by default.
         $this->set('validatePostalCode', 0);           // Off by default.
         $this->set('originISO', 'us');                 // Helps control address formatting output.
@@ -78,7 +79,9 @@ class InputfieldStreetAddress extends Inputfield
 
 
 
-
+    /**
+     *
+     */
     protected static function makeSafeString($string, $titlecase = false) {
         $string = str_replace('_', ' ', trim($string));
         $string = htmlentities(strip_tags($string), ENT_HTML5 | ENT_QUOTES, 'utf-8');
@@ -353,11 +356,6 @@ class InputfieldStreetAddress extends Inputfield
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
 
-                    /**
-                     * Remove this field from the unused pool that will be output as hidden controls later...
-                     */
-                    unset($unused[$fmtcode]);
-
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
                     $classes     = ['streetaddress'];
@@ -385,10 +383,31 @@ class InputfieldStreetAddress extends Inputfield
                     }
                     $classes = implode(' ', $classes);
 
+                    $width      = '';
+                    $fieldvalue = null;
                     if (isset($value->$key)) {
                         $fieldvalue = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
                         $width      = $this->fieldWidth($fieldvalue, $ph);
                     }
+
+
+                    $hide_field = in_array($key, $this->hideEmptyFields);
+/* \TD::barDump([ */
+/*     'metadata'    => $metadata, */
+/*     'fieldvalue'  => $fieldvalue, */
+/*     'key'         => $key, */
+/*     'hide field'  => $hide_field, */
+/*     'hide fields' => $this->hideEmptyFields, */
+/*     'this'        => $this, */
+/* ], __method__); */
+                    if (empty($fieldvalue) && $hide_field && !$is_required) {
+                        continue;
+                    }
+
+                    /**
+                     * Remove this field from the unused pool that will be output as hidden controls later...
+                     */
+                    unset($unused[$fmtcode]);
 
                     if ('R' === $fmtcode) {
                         $out[] = $country_input;

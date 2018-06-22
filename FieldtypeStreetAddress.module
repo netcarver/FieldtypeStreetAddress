@@ -408,6 +408,22 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->showIf = "inputFormat=0, showAddressPreview=1";
         $input_wrapper->add($f);
 
+        /**
+         * Surpress fields...
+         */
+        $f = $this->modules->get('InputfieldAsmSelect');
+        $f->label = $this->_('Hide Empty Fields...');
+        $f->attr('id+name', 'hideEmptyFields');
+        $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
+        $f->attr('value', $field->hideEmptyFields);
+        foreach(StreetAddress::getAddressFieldNames() as $id => $fieldname) {
+            $f->addOption("$fieldname", "$fieldname");
+        }
+        $f->showIf = "inputFormat=0";
+        $input_wrapper->append($f);
+
+
+
         $output_wrapper = $this->modules->get('InputfieldFieldset');
         $output_wrapper->label = __("Output Formatting Options");
 
