@@ -9,7 +9,7 @@ $(document).ready(function() {
         var is_country           = $(this).hasClass('streetaddress_country');
         var has_content          = len > 0;
 
-        // Firstly, adjust the widths...
+        // Adjust the field width...
         if (!has_content) {
             // If the placeholder is showing, resize to it's width
             var ph = $(this).attr('placeholder');
@@ -19,7 +19,6 @@ $(document).ready(function() {
                 mathlen = 12;
             }
         }
-
         if (is_country) {
             this.style.width = '36ch';
         } else {
@@ -27,11 +26,10 @@ $(document).ready(function() {
         }
 
 
-        // Now consider the heights of optional fields...
+        // Adjust styling for optional fields...
         if (is_optional && has_content) {
             $(this).addClass('streetaddress_optional_nonempty');
         }
-
         if (is_optional_nonempty && !has_content) {
             $(this).removeClass('streetaddress_optional_nonempty');
         }
@@ -46,7 +44,6 @@ $(document).ready(function() {
         } else {
             malformed = false;
         }
-
         $(this).toggleClass('streetaddress_malformed', malformed);
     }
 
@@ -62,13 +59,6 @@ $(document).ready(function() {
         });
     }
 
-    function expandAddress() {
-        // Show optional fields
-        $(this).children('.streetaddress_optional').each(function() {
-            $(this).fadeIn();
-            $(this).next().show(); // TODO Make this conditional on being a <br>
-        });
-    }
 
     $('input.streetaddress').on('input', resizeInput);
     $('select.streetaddress').on('input', resizeInput);
@@ -81,5 +71,8 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * Only show the country selector after it's been initialised. This prevents a FOUC.
+     */
     $('.streetaddress_country').removeClass('streetaddress_hidden');
 });
