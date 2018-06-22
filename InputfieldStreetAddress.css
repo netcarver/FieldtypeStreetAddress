@@ -76,6 +76,7 @@ div.streetaddress_frame {
 div.streetaddress_warning {
     text-align: center;
 }
+.streetaddress_hidden,
 div.streetaddress_unused_fields {
     display: none;
 }

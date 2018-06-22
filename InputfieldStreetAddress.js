@@ -80,4 +80,6 @@ $(document).ready(function() {
             this.clear();
         }
     });
+
+    $('.streetaddress_country').removeClass('streetaddress_hidden');
 });
