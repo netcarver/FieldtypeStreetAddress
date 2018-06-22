@@ -377,7 +377,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(0, $this->_("Dynamic, using country's field layout."));
         $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
         $f->attr('value', (int) $field->inputFormat);
-        $f->columnWidth = 50;
+        $f->columnWidth = 33;
         $input_wrapper->add($f);
 
         /**
@@ -390,7 +390,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(0, $this->_('No.'));
         $f->addOption(1, $this->_('Yes.'));
         $f->attr('value', (int) $field->showAddressPreview);
-        $f->columnWidth = 50;
+        $f->columnWidth = 34;
         $f->showIf = "inputFormat=0";
         $input_wrapper->add($f);
 
@@ -404,8 +404,8 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(0, $this->_('No.'));
         $f->addOption(1, $this->_('Yes.'));
         $f->attr('value', (int) $field->showAddressPreviewHTML);
-        //$f->columnWidth = 100;
-        $f->showIf = "showAddressPreview=1";
+        $f->columnWidth = 33;
+        $f->showIf = "inputFormat=0, showAddressPreview=1";
         $input_wrapper->add($f);
 
         $output_wrapper = $this->modules->get('InputfieldFieldset');
