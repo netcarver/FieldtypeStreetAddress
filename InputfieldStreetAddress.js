@@ -47,11 +47,7 @@ $(document).ready(function() {
             malformed = false;
         }
 
-        if (malformed) {
-            $(this).addClass('streetaddress_malformed');
-        } else {
-            $(this).removeClass('streetaddress_malformed');
-        }
+        $(this).toggleClass('streetaddress_malformed', malformed);
     }
 
 
