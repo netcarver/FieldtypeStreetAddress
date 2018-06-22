@@ -94,7 +94,7 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         switch ($field->showOutputCountry) {
         case 0:
-            $street_address->origin_iso = $iso;
+            $street_address->origin_iso = $street_address->country_iso;
             break;
 
         case 1:
