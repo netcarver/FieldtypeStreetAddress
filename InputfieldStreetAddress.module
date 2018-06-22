@@ -347,8 +347,7 @@ class InputfieldStreetAddress extends Inputfield
                 if (false === strpos($addressfields, '%R')) {
                     $addressfields .= "%n%R";
                 }
-                //$addressfields = str_replace('%N', '', $addressfields); // TODO Make these configurable?
-                //$addressfields = str_replace('%O', '', $addressfields);
+
                 $addressfields = explode('%', $addressfields);
                 array_shift($addressfields);
 
