@@ -388,10 +388,10 @@ class StreetAddress
                 $value = mb_convert_case($value, MB_CASE_UPPER, 'utf-8');
             }
 
-            // Skip over the address_2 entry (for now)
-            if ($key == 'street_address_2') continue;
+            if ($key == 'street_address_2' || $key == 'street_address_3') {
+                continue;
+            }
 
-            // Deal with it here instead...
             if ($key == 'street_address') {
                 $value = $value . ($data['street_address_2'] ? ($html ? '<br>' : '%n') . $data['street_address_2'] : '');
                 $value = $value . ($data['street_address_3'] ? ($html ? '<br>' : '%n') . $data['street_address_3'] : '');
@@ -411,7 +411,7 @@ class StreetAddress
         // Clean up runs of multiple newlines...
         $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address);
 
-        if ($html === true) {
+        if ($html) {
             $formatted_address = nl2br($formatted_address, false);
         }
 
