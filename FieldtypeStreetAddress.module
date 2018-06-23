@@ -26,7 +26,7 @@ class FieldtypeStreetAddress extends Fieldtype
         return [
             'title'    => __('Street Address'),
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
-            'version'  => '0.0.2',
+            'version'  => '0.1.0',
             'author'   => 'Netcarver',
             'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect, TextfomatterTagParser',
             'icon'     => 'envelope',

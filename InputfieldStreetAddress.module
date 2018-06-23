@@ -15,7 +15,7 @@ class InputfieldStreetAddress extends Inputfield
         return [
             'title'    => __('Street Address'),
             'summary'  => __('Allows country-specific layout and formatting of street addresses.'),
-            'version'  => '0.0.3',
+            'version'  => '0.1.0',
             'icon'     => 'envelope',
             'author'   => 'Netcarver',
             'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize", "TextformatterTagParser"],
