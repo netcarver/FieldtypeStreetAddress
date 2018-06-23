@@ -191,6 +191,9 @@ class FieldtypeStreetAddress extends Fieldtype
             $value = $this->getBlankValue($page, $field);
         }
 
+        // All known postal codes use capital letters if they use letters at all, so...
+        $value->postal_code = mb_convert_case($value->postal_code, MB_CASE_UPPER, 'UTF-8');
+
         $changes   = 0;
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
