@@ -374,7 +374,7 @@ class FieldtypeStreetAddress extends Fieldtype
         //$f->attr('id+name', 'inputFormat');
         $f->attr('name', 'inputFormat');
         $f->description = $this->_('How should the inputfields be configured?');
-        $f->addOption(0, $this->_("Dynamic, using country's field layout."));
+        $f->addOption(0, $this->_("Use the destination country's field layout."));
         $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
         $f->attr('value', (int) $field->inputFormat);
         $f->columnWidth = 33;
