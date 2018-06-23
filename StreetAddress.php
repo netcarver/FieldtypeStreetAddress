@@ -36,22 +36,36 @@ class StreetAddress
     /**
      * Format this address as HTML.
      */
-    public function formatHtml()
+    public function formatMultiHtml()
     {
         return $this->format(true);
     }
 
+    public function formatSingleHtml($line_glue = ', ')
+    {
+        return $this->format(true, $line_glue);
+    }
+
+    public function formatMultiPlain()
+    {
+        return $this->format(false);
+    }
+
+    public function formatSinglePlain($line_glue = ', ')
+    {
+        return $this->format(false, $line_glue);
+    }
 
 
     /**
      * Format this address - optionally as HTML.
      */
-    public function format(bool $html = false)
+    public function format(bool $html = false, $line_glue = false)
     {
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
         unset($vars['country']);
-        return self::formatLines($vars, $html);
+        return self::formatLines($vars, $html, $line_glue);
     }
 
 
@@ -59,14 +73,9 @@ class StreetAddress
     /**
      * Format address to a single line of text.
      */
-    public function formatSingle($html = false, $glue = ', ')
+    public function formatSingle($html = false, $line_glue = ', ')
     {
-        $multiline = $this->format($html);
-        if ($html) {
-            $multiline = str_replace("<br>", ' ', $multiline);
-        }
-        $single = str_replace("\n", $glue, $multiline);
-        return $single;
+        return $this->format($html, $line_glue);
     }
 
 
@@ -345,7 +354,7 @@ class StreetAddress
      * @param bool  $html true => wrap address elements in HTML markup that includes microformat classes...
      * @return string The formatted address.
      */
-    protected static function formatLines(array $data, $html = false)
+    protected static function formatLines(array $data, $html = false, $line_glue = false)
     {
         // Make sure address data uses lowercase keys...
         $data = array_change_key_case($data, CASE_LOWER);
@@ -360,6 +369,13 @@ class StreetAddress
         $data                = self::remapAddressFields($format_info, $data);
         $upper               = @$format_info['upper'];
         $formatted_address   = $format_info['fmt'];
+
+        // Setup the inter-line glue
+        if (!is_bool($line_glue)) {
+            $glue = $line_glue;
+        } else {
+            $glue = $html ? '<br>' : "\n";
+        }
 
         // Do we need the destination country field?
         if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
@@ -392,28 +408,34 @@ class StreetAddress
                 continue;
             }
 
+            if ($html && $value) {
+                $value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+            }
+
             if ($key == 'street_address') {
-                $value = $value . ($data['street_address_2'] ? ($html ? '<br>' : '%n') . $data['street_address_2'] : '');
-                $value = $value . ($data['street_address_3'] ? ($html ? '<br>' : '%n') . $data['street_address_3'] : '');
+                $value2 = $data['street_address_2'];
+                $value3 = $data['street_address_3'];
+                if ($html) {
+                    $value2 = htmlspecialchars($value2, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+                    $value3 = htmlspecialchars($value3, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+                }
+
+                $value = $value . ($value2 ? $glue . $value2 : '');
+                $value = $value . ($value3 ? $glue . $value3 : '');
             }
 
             // HMTL gets the postal address microformat wrapping spans...
-            if ($html === true && $value) {
+            if ($html && $value) {
                 $value = "<span" . self::getItemProp($key) . ">{$value}</span>";
             }
 
             $formatted_address = str_replace("%{$id}", $value, $formatted_address);
         }
 
-        // Insert newlines where needed...
         $formatted_address = trim(str_replace('%n', "\n", $formatted_address));
+        $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address); // \n2+ -> \n
 
-        // Clean up runs of multiple newlines...
-        $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address);
-
-        if ($html) {
-            $formatted_address = nl2br($formatted_address, false);
-        }
+        $formatted_address = str_replace("\n", $glue, $formatted_address);
 
         return $formatted_address;
     }
