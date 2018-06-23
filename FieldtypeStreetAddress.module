@@ -422,7 +422,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->modules->get('InputfieldAsmSelect');
         $f->label = $this->_('Hide Empty Fields...');
         $f->attr('id+name', 'hideEmptyFields');
-        $f->description = $this->_('Which uncommon fields should be hidden from the input by default? Choose all that apply.');
+        $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
         $f->attr('value', $field->hideEmptyFields);
         $f->addOption('recipient');
         $f->addOption('organization');
