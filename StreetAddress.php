@@ -63,7 +63,7 @@ class StreetAddress
     {
         $multiline = $this->format($html);
         if ($html) {
-            $multiline = str_replace("<br>", '', $multiline);
+            $multiline = str_replace("<br>", ' ', $multiline);
         }
         $single = str_replace("\n", $glue, $multiline);
         return $single;

@@ -10,6 +10,7 @@ See the README.md file for more information.
 
 - Use uppercase when saving postcode as no surveyed regex uses lowercase. Trim all values on save.
 - Bugfix: Correct use of country_iso in PW Selectors.
+- Bugfix: Correct spacing in single-line HTML output.
 
 ## 0.1.0 - 2018-06-23
 
