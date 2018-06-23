@@ -34,6 +34,7 @@ class InputfieldStreetAddress extends Inputfield
         $this->set('showInputCountry', 0);             // Show country input if there is only one allowable country?
         $this->set('showOutputCountry', 0);            // Show country in output (never/always/if international)
         $this->set('inputFormat', 0);                  // Controls how the inputfield looks
+        $this->set('hideEmptyFields', []);
         $this->set('surpressUnneededFields', 0);       // Show optional fields by default.
         $this->set('validatePostalCode', 0);           // Off by default.
         $this->set('originISO', 'us');                 // Helps control address formatting output.
@@ -78,7 +79,9 @@ class InputfieldStreetAddress extends Inputfield
 
 
 
-
+    /**
+     *
+     */
     protected static function makeSafeString($string, $titlecase = false) {
         $string = str_replace('_', ' ', trim($string));
         $string = htmlentities(strip_tags($string), ENT_HTML5 | ENT_QUOTES, 'utf-8');
@@ -190,7 +193,7 @@ class InputfieldStreetAddress extends Inputfield
 
         $out = self::makeDatalist($allowed_country_codes, $id, $name, $current_country_iso, $attr);
 
-        if (1 === $num_allowed && 0 == $this->showInputCountry) {
+        if (0 == $this->inputFormat && 1 === $num_allowed && 0 == $this->showInputCountry) {
             $out = "<div hidden>$out</div>";
         }
         return $out;
@@ -211,7 +214,7 @@ class InputfieldStreetAddress extends Inputfield
             if ($width > 0) {
                 $width += 2;
             } else {
-                $width = 14;
+                $width = 12;
             }
         }
         return " style='width: {$width}ch;' ";
@@ -344,19 +347,13 @@ class InputfieldStreetAddress extends Inputfield
                 if (false === strpos($addressfields, '%R')) {
                     $addressfields .= "%n%R";
                 }
-                //$addressfields = str_replace('%N', '', $addressfields); // TODO Make these configurable?
-                //$addressfields = str_replace('%O', '', $addressfields);
+
                 $addressfields = explode('%', $addressfields);
                 array_shift($addressfields);
 
                 foreach ($addressfields as $f) {
                     $fmtcode     = substr($f, 0, 1);
                     $suffix      = substr($f, 1);
-
-                    /**
-                     * Remove this field from the unused pool that will be output as hidden controls later...
-                     */
-                    unset($unused[$fmtcode]);
 
                     $is_required = in_array($fmtcode, $required_fields);
                     $key         = @$mappings[$fmtcode];
@@ -385,37 +382,74 @@ class InputfieldStreetAddress extends Inputfield
                     }
                     $classes = implode(' ', $classes);
 
+                    $width      = '';
+                    $raw_fieldvalue = null;
+                    $safe_fieldvalue = '';
                     if (isset($value->$key)) {
-                        $fieldvalue = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                        $width      = $this->fieldWidth($fieldvalue, $ph);
+                        $raw_fieldvalue  = $value->$key;
+                        $safe_fieldvalue = htmlspecialchars($raw_fieldvalue, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                        $width           = $this->fieldWidth($raw_fieldvalue, $label);
                     }
+
+                    $hide_field = in_array($key, $this->hideEmptyFields);
+/* \TD::barDump([ */
+/*     'metadata'    => $metadata, */
+/*     'raw_fieldvalue'  => $raw_fieldvalue, */
+/*     'safe_fieldvalue'  => $safe_fieldvalue, */
+/*     'key'         => $key, */
+/*     'hide field'  => $hide_field, */
+/*     'hide fields' => $this->hideEmptyFields, */
+/*     'this'        => $this, */
+/* ], __method__); */
+                    if (empty($safe_fieldvalue) && $hide_field && !$is_required) {
+                        continue;
+                    }
+
+                    /**
+                     * Remove this field from the unused pool that will be output as hidden controls later...
+                     */
+                    unset($unused[$fmtcode]);
 
                     if ('R' === $fmtcode) {
                         $out[] = $country_input;
                     } else if ('A' === $fmtcode) {
-                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$fieldvalue}'/><br>";
+                        $line2_br_class   = "{$this->name}_street_address_2_element";
+                        $line3_br_class   = "{$this->name}_street_address_3_element";
 
-                        $key2 = 'street_address_2';
-                        $fieldvalue2  = htmlspecialchars($value->$key2, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                        $classes .= ' streetaddress_optional';
-                        if ('' !== $fieldvalue2) {
-                            $classes .= ' streetaddress_optional_nonempty';
+                        $key2             = 'street_address_2';
+                        $raw_fieldvalue2  = $value->$key2;
+                        $safe_fieldvalue2 = htmlspecialchars($raw_fieldvalue2, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                        $line2_class = "streetaddress streetaddress_optional " . $line2_br_class;
+                        if ('' !== $raw_fieldvalue2) {
+                            $line2_class .= ' streetaddress_optional_nonempty';
                         }
-                        $title = __('Street Address Line 2, Optional');
-                        $ph    = __('Street Address Line 2');
-                        $width = $this->fieldWidth($fieldvalue2, $ph);
-                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$fieldvalue2}'/><br>";
+                        $title2 = __('Street Address Line 2, Optional');
+                        $ph2    = __('Street Address Line 2');
+                        $width2 = $this->fieldWidth($raw_fieldvalue2, $ph2);
 
-                        $key3 = 'street_address_3';
-                        $fieldvalue3  = htmlspecialchars($value->$key3, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                        $classes .= ' streetaddress_optional';
-                        if ('' !== $fieldvalue3) {
-                            $classes .= ' streetaddress_optional_nonempty';
+                        $key3             = 'street_address_3';
+                        $raw_fieldvalue3  = $value->$key3;
+                        $safe_fieldvalue3 = htmlspecialchars($raw_fieldvalue3, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                        $line3_class = "streetaddress streetaddress_optional " . $line3_br_class;
+                        if ('' !== $raw_fieldvalue3) {
+                            $line3_class .= ' streetaddress_optional_nonempty';
                         }
-                        $title = __('Street Address Line 3, Optional');
-                        $ph    = __('Street Address Line 3');
-                        $width = $this->fieldWidth($fieldvalue3, $ph);
-                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$fieldvalue3}'/>";
+                        $title3 = __('Street Address Line 3, Optional');
+                        $ph3    = __('Street Address Line 3');
+                        $width3 = $this->fieldWidth($raw_fieldvalue3, $ph3);
+
+                        if (empty($safe_fieldvalue) && empty($safe_fieldvalue2) && empty($safe_fieldvalue3)) {
+                            $line2_br_class .= ' streetaddress_hidden';
+                            $line2_class    .= ' streetaddress_hidden';
+                        }
+                        if (empty($safe_fieldvalue2) && empty($safe_fieldvalue3)) {
+                            $line3_br_class .= ' streetaddress_hidden';
+                            $line3_class    .= ' streetaddress_hidden';
+                        }
+
+                        $out[] = "<input $width  data-name='{$this->name}' data-field='street_address'   title='$title'  class='$classes'     placeholder='$ph'  type='text' name='{$this->name}_$key'  maxlength=128 id='Inputfield_{$this->name}_$key'  value='{$safe_fieldvalue}' /><br class='$line2_br_class'>";
+                        $out[] = "<input $width2 data-name='{$this->name}' data-field='street_address_2' title='$title2' class='$line2_class' placeholder='$ph2' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$safe_fieldvalue2}'/><br class='$line3_br_class'>";
+                        $out[] = "<input $width3 data-name='{$this->name}' data-field='street_address_3' title='$title3' class='$line3_class' placeholder='$ph3' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$safe_fieldvalue3}'/>";
                     } else if ('Z' === $fmtcode) {
                         // Regex verify the postal code field...
                         $regex = @$metadata['zip'];
@@ -423,8 +457,8 @@ class InputfieldStreetAddress extends Inputfield
                         if ($regex) {
                             $m = [];
                             $regex2 = "~$regex~";
-                            $result = preg_match($regex2, $fieldvalue, $m);
-                            $malformed = (0 === $result) || ($m[0] !== $fieldvalue);
+                            $result = preg_match($regex2, $raw_fieldvalue, $m);
+                            $malformed = (0 === $result) || ($m[0] !== $raw_fieldvalue);
                             if ($malformed) {
                                 $classes .= " streetaddress_malformed";
                                 $title   .= ', ' . __("Malformed");
@@ -441,10 +475,10 @@ class InputfieldStreetAddress extends Inputfield
                             $regex = '';
                         }
 
-                        $out[] = "<input $regex $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$fieldvalue}'/>";
+                        $out[] = "<input $regex $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
 
                     } else if (array_key_exists($fmtcode, $mappings)) {
-                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$fieldvalue}'/>";
+                        $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
                     } else if ('n' === $fmtcode) {
                         // Pass over leading 'n' markers. These can be left over from removing the recipient and/or organisation.
                         if (!empty($out)) {
@@ -473,8 +507,8 @@ class InputfieldStreetAddress extends Inputfield
                     $ph          = self::makeTitle([$key]);
                     $name  = $this->name . "_$key";
                     $id    = 'Inputfield_' . $name;
-                    $fieldvalue  = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
-                    $unused_out .= "<input hidden readonly class='streetaddress' type='text' placeholder='$ph' name='$name' maxlength=128 id='$id' value='$fieldvalue'/>";
+                    $safe_fieldvalue  = htmlspecialchars($value->$key, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                    $unused_out .= "<input hidden readonly class='streetaddress' type='text' placeholder='$ph' name='$name' maxlength=128 id='$id' value='$safe_fieldvalue'/>";
                 }
                 $id     = 'streetaddress_' . $this->name;
                 $icon   = '';
@@ -539,11 +573,11 @@ HTML;
                 $label = mb_convert_case($f, MB_CASE_TITLE, 'utf-8');
                 $label = str_replace('_', ' ', $label);
                 $label = str_replace('Iso', 'ISO', $label);
-                $fieldvalue = htmlspecialchars($value->$f, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+                $safe_fieldvalue = htmlspecialchars($value->$f, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
                 if ('country_iso' === $f) {
                     $input = $country_input;
                 } else {
-                    $input = "<input class='streetaddress' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$fieldvalue}'/>";
+                    $input = "<input class='streetaddress' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/>";
                 }
                 $table->row([
                     $label,

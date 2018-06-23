@@ -374,10 +374,10 @@ class FieldtypeStreetAddress extends Fieldtype
         //$f->attr('id+name', 'inputFormat');
         $f->attr('name', 'inputFormat');
         $f->description = $this->_('How should the inputfields be configured?');
-        $f->addOption(0, $this->_("Dynamic, using country's field layout."));
+        $f->addOption(0, $this->_("Use the destination country's field layout."));
         $f->addOption(1, $this->_('Fixed data table showing all fields as text inputs.'));
         $f->attr('value', (int) $field->inputFormat);
-        $f->columnWidth = 50;
+        $f->columnWidth = 33;
         $input_wrapper->add($f);
 
         /**
@@ -390,7 +390,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(0, $this->_('No.'));
         $f->addOption(1, $this->_('Yes.'));
         $f->attr('value', (int) $field->showAddressPreview);
-        $f->columnWidth = 50;
+        $f->columnWidth = 34;
         $f->showIf = "inputFormat=0";
         $input_wrapper->add($f);
 
@@ -404,9 +404,27 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(0, $this->_('No.'));
         $f->addOption(1, $this->_('Yes.'));
         $f->attr('value', (int) $field->showAddressPreviewHTML);
-        //$f->columnWidth = 100;
-        $f->showIf = "showAddressPreview=1";
+        $f->columnWidth = 33;
+        $f->showIf = "inputFormat=0, showAddressPreview=1";
         $input_wrapper->add($f);
+
+        /**
+         * Surpress fields...
+         */
+        $f = $this->modules->get('InputfieldAsmSelect');
+        $f->label = $this->_('Hide Empty Fields...');
+        $f->attr('id+name', 'hideEmptyFields');
+        $f->description = $this->_('Which uncommon fields should be hidden from the input by default? Choose all that apply.');
+        $f->attr('value', $field->hideEmptyFields);
+        $f->addOption('recipient');
+        $f->addOption('organization');
+        $f->addOption('dependent_locality');
+        $f->addOption('sorting_code');
+        $f->addOption('admin_area');
+        $f->showIf = "inputFormat=0";
+        $input_wrapper->append($f);
+
+
 
         $output_wrapper = $this->modules->get('InputfieldFieldset');
         $output_wrapper->label = __("Output Formatting Options");
