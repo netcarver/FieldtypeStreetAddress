@@ -58,6 +58,10 @@ class FieldtypeStreetAddress extends Fieldtype
             $parser->format($line);
         }
 
+        if (@$data['html']) {
+            $line = htmlspecialchars($line, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
         return $line;
     }
 
