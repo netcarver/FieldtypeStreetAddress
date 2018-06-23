@@ -135,10 +135,10 @@ class FieldtypeStreetAddress extends Fieldtype
     public function getMatchQuery($query, $table, $subfield, $operator, $value)
     {
         $subfields = StreetAddress::getAddressFieldNames();
-        if (in_array($subfield, $subfields)) {
-            $subfield = 'data_' . $subfield;
-        } else if ($subfield == 'country_iso') {
+        if ($subfield == 'country_iso') {
             $subfield = 'data';
+        } else if (in_array($subfield, $subfields)) {
+            $subfield = 'data_' . $subfield;
         }
         return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
     }
