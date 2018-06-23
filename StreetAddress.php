@@ -393,7 +393,8 @@ class StreetAddress
 
         // Replace formatted address elements with items from the data as needed.
         foreach (self::$address_mapping as $id => $key) {
-            $value = $data[$key];
+            $value = trim(strip_tags($data[$key]));
+            $value = str_replace(['&apos;', '&#039;'], "'", $value);
 
             if ('Z' === $id) {
                 $value = self::sanitizePostalCode($value, $data['country_iso']);
