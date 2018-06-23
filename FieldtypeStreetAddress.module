@@ -197,6 +197,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $changes   = 0;
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
+            $value->$f = trim($value->$f); // We don't store runs of spaces at start or end of a string.
             if ($value->isChanged($f)) {
                 $changes++;
             }
