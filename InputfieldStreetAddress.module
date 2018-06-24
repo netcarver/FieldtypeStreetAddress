@@ -546,14 +546,14 @@ HTML;
 HTML;
         } else {
             $required_fields = array_intersect_key($mappings, array_flip($required_fields));
-\TD::barDump([
-    'this'          => $this,
-    'metadata'      => $metadata,
-    'fields'        => $fields,
-    'mappings'      => $mappings,
-    'addressfields' => $addressfields,
-    'required'      => $required_fields,
-], __method__);
+/* \TD::barDump([ */
+/*     'this'          => $this, */
+/*     'metadata'      => $metadata, */
+/*     'fields'        => $fields, */
+/*     'mappings'      => $mappings, */
+/*     'addressfields' => $addressfields, */
+/*     'required'      => $required_fields, */
+/* ], __method__); */
             $table = $this->modules->MarkupAdminDataTable;
             $table->setID($this->className.'Table');
             $table->setEncodeEntities(false);
@@ -571,9 +571,9 @@ HTML;
                 $classes     = ['streetaddress'];
                 if (!$is_required && 'country' !== $f) {
                     $classes[] = 'streetaddress_optional';
-                    if (strlen($safe_fieldvalue) > 0) {
-                        $classes[] = 'streetaddress_optional_nonempty';
-                    }
+                    /* if (strlen($safe_fieldvalue) > 0) { */
+                    /*     $classes[] = 'streetaddress_optional_nonempty'; */
+                    /* } */
                 }
                 if ($is_required) {
                     $classes[] = 'required';
