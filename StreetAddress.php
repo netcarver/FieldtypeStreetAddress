@@ -85,7 +85,6 @@ class StreetAddress
 
 
 
-
     /**
      * Magic method to convert to a formatted string - non HTML.
      */
@@ -128,6 +127,29 @@ class StreetAddress
         return (@$this->snapshot[$field] != $this->$field);
     }
 
+
+    /**
+     * Check if this instance is empty or has at least a partial value.
+     *
+     * The country, origin_iso and country_iso are ignored in this check. In reality, we want values like
+     * street_address, locality and postal_code to be populated.
+     */
+    public function isEmpty()
+    {
+        $vars = get_object_vars($this);
+        unset($vars['snapshot']);
+        unset($vars['country']);
+        unset($vars['origin_iso']);
+        unset($vars['country_iso']);
+
+        $num_set_fields = 0;
+
+        foreach ($vars as $value) {
+            if (!empty($value)) $num_set_fields++;
+        }
+        $is_empty = 0 === $num_set_fields;
+        return $is_empty;
+    }
 
     /**
      * Passes each address line to a definable callback function to prepare it for output.

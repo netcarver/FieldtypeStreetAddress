@@ -79,6 +79,12 @@ class InputfieldStreetAddress extends Inputfield
 
 
 
+    public function isEmpty() {
+        $value = $this->attr('value');
+        return $value->isEmpty();
+    }
+
+
     /**
      *
      */

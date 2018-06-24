@@ -73,6 +73,11 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
 
+    public function isEmptyValue(Field $field, $value) {
+        return $value->isEmpty();
+    }
+
+
     /**
      * Format street address for output
      */
