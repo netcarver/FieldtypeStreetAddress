@@ -354,20 +354,16 @@ class StreetAddress
      * @param bool  $html true => wrap address elements in HTML markup that includes microformat classes...
      * @return string The formatted address.
      */
-    protected static function formatLines(array $data, $html = false, $line_glue = false)
+    protected static function formatLines(array $data, $html = false, $line_glue = false, $format_info = [])
     {
-        // Make sure address data uses lowercase keys...
-        $data = array_change_key_case($data, CASE_LOWER);
-
-        // Merge in defaults
-        $data = array_merge(self::$address_lines, $data);
-
-        // Load country option
+        $data                = array_change_key_case($data, CASE_LOWER);
+        $format_info         = array_change_key_case($format_info, CASE_LOWER);
+        $data                = array_merge(self::$address_lines, $data);
         $address_country_iso = $data['country_iso'];
         $origin_iso          = $data['origin_iso'];
-        $format_info         = self::getFormat($data['country_iso']);
+        $format_info         = array_merge(self::getFormat($data['country_iso']), $format_info);
         $data                = self::remapAddressFields($format_info, $data);
-        $upper               = @$format_info['upper'];
+        $upper               = isset($format_info['upper']) ? $format_info['upper'] : '';
         $formatted_address   = $format_info['fmt'];
 
         // Setup the inter-line glue
@@ -377,7 +373,6 @@ class StreetAddress
             $glue = $html ? '<br>' : "\n";
         }
 
-        // Do we need the destination country field?
         if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
             // This is an international address - add the country to the format if it is not already present...
             $pos = strpos($formatted_address, '%R');
@@ -393,29 +388,30 @@ class StreetAddress
 
         // Replace formatted address elements with items from the data as needed.
         foreach (self::$address_mapping as $id => $key) {
-            $value = trim(strip_tags($data[$key]));
-            $value = str_replace(['&apos;', '&#039;'], "'", $value);
+            $value    = trim(strip_tags($data[$key]));
+            $value    = str_replace(['&apos;', '&#039;'], "'", $value);
+            $is_upper = (false !== stripos($upper, $id));
 
             if ('Z' === $id) {
                 $value = self::sanitizePostalCode($value, $data['country_iso']);
             }
 
             // Make sure the fields marked as "upper" in the google feed are converted to uppercase.
-            if ($upper && false !== stripos($upper, $id)) {
+            if ($is_upper) {
                 $value = mb_convert_case($value, MB_CASE_UPPER, 'utf-8');
-            }
-
-            if ($key == 'street_address_2' || $key == 'street_address_3') {
-                continue;
             }
 
             if ($html && $value) {
                 $value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
             }
 
-            if ($key == 'street_address') {
+            if ('A' === $id) {
                 $value2 = $data['street_address_2'];
                 $value3 = $data['street_address_3'];
+                if ($is_upper) {
+                    $value2 = mb_convert_case($value2, MB_CASE_UPPER, 'utf-8');
+                    $value3 = mb_convert_case($value3, MB_CASE_UPPER, 'utf-8');
+                }
                 if ($html) {
                     $value2 = htmlspecialchars($value2, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
                     $value3 = htmlspecialchars($value3, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
