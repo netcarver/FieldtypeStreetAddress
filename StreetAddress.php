@@ -34,40 +34,55 @@ class StreetAddress
 
 
     /**
-     * Format this address as HTML.
+     * Convenience Format Methods...
      */
-    public function formatHtml()
+    public function formatMultiHtml($format_overrides = [])
     {
-        return $this->format(true);
+        return $this->format(true, false, $format_overrides);
+    }
+
+    public function formatSingleHtml($line_glue = ', ', $format_overrides = [])
+    {
+        return $this->format(true, $line_glue, $format_overrides);
+    }
+
+    public function formatMultiPlain($format_overrides = [])
+    {
+        return $this->format(false, false, $format_overrides);
+    }
+
+    public function formatSinglePlain($line_glue = ', ', $format_overrides = [])
+    {
+        return $this->format(false, $line_glue, $format_overrides);
+    }
+
+    public function formatSingle($html = false, $line_glue = ', ', $format_overrides = [])
+    {
+        return $this->format($html, $line_glue, $format_overrides);
     }
 
 
-
     /**
-     * Format this address - optionally as HTML.
+     * Format address
+     *
+     * @param $html bool Controls formatting for HTML. If true, HTML wrappers will be used and output will be escaped.
+     * @param $line_glue mixed False => Multiline output. A string acts as glue for joining the address lines.
+     * @param $format_overrides array Allows optional overrides of the formatting metadata. Most useful field is probably
+     * the 'upper' string. To prevent output from uppercasing fields use ['upper' => '']
+     *
+     * @see Contents of formats.php
+     * @see StreetAddress::formatLines()
      */
-    public function format(bool $html = false)
+    public function format(bool $html = false, $line_glue = false, $format_overrides = [])
     {
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
         unset($vars['country']);
-        return self::formatLines($vars, $html);
+        return self::formatLines($vars, $html, $line_glue, $format_overrides);
     }
 
 
 
-    /**
-     * Format address to a single line of text.
-     */
-    public function formatSingle($html = false, $glue = ', ')
-    {
-        $multiline = $this->format($html);
-        if ($html) {
-            $multiline = str_replace("<br>", '', $multiline);
-        }
-        $single = str_replace("\n", $glue, $multiline);
-        return $single;
-    }
 
 
 
@@ -345,23 +360,25 @@ class StreetAddress
      * @param bool  $html true => wrap address elements in HTML markup that includes microformat classes...
      * @return string The formatted address.
      */
-    protected static function formatLines(array $data, $html = false)
+    protected static function formatLines(array $data, $html = false, $line_glue = false, $format_info = [])
     {
-        // Make sure address data uses lowercase keys...
-        $data = array_change_key_case($data, CASE_LOWER);
-
-        // Merge in defaults
-        $data = array_merge(self::$address_lines, $data);
-
-        // Load country option
+        $data                = array_change_key_case($data, CASE_LOWER);
+        $format_info         = array_change_key_case($format_info, CASE_LOWER);
+        $data                = array_merge(self::$address_lines, $data);
         $address_country_iso = $data['country_iso'];
         $origin_iso          = $data['origin_iso'];
-        $format_info         = self::getFormat($data['country_iso']);
+        $format_info         = array_merge(self::getFormat($data['country_iso']), $format_info);
         $data                = self::remapAddressFields($format_info, $data);
-        $upper               = @$format_info['upper'];
+        $upper               = isset($format_info['upper']) ? $format_info['upper'] : '';
         $formatted_address   = $format_info['fmt'];
 
-        // Do we need the destination country field?
+        // Setup the inter-line glue
+        if (!is_bool($line_glue)) {
+            $glue = $line_glue;
+        } else {
+            $glue = $html ? '<br>' : "\n";
+        }
+
         if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
             // This is an international address - add the country to the format if it is not already present...
             $pos = strpos($formatted_address, '%R');
@@ -377,43 +394,51 @@ class StreetAddress
 
         // Replace formatted address elements with items from the data as needed.
         foreach (self::$address_mapping as $id => $key) {
-            $value = $data[$key];
+            $value    = trim(strip_tags($data[$key]));
+            $value    = str_replace(['&apos;', '&#039;'], "'", $value);
+            $is_upper = (false !== stripos($upper, $id));
 
             if ('Z' === $id) {
                 $value = self::sanitizePostalCode($value, $data['country_iso']);
             }
 
             // Make sure the fields marked as "upper" in the google feed are converted to uppercase.
-            if ($upper && false !== stripos($upper, $id)) {
+            if ($is_upper) {
                 $value = mb_convert_case($value, MB_CASE_UPPER, 'utf-8');
             }
 
-            // Skip over the address_2 entry (for now)
-            if ($key == 'street_address_2') continue;
+            if ($html && $value) {
+                $value = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+            }
 
-            // Deal with it here instead...
-            if ($key == 'street_address') {
-                $value = $value . ($data['street_address_2'] ? ($html ? '<br>' : '%n') . $data['street_address_2'] : '');
-                $value = $value . ($data['street_address_3'] ? ($html ? '<br>' : '%n') . $data['street_address_3'] : '');
+            if ('A' === $id) {
+                $value2 = $data['street_address_2'];
+                $value3 = $data['street_address_3'];
+                if ($is_upper) {
+                    $value2 = mb_convert_case($value2, MB_CASE_UPPER, 'utf-8');
+                    $value3 = mb_convert_case($value3, MB_CASE_UPPER, 'utf-8');
+                }
+                if ($html) {
+                    $value2 = htmlspecialchars($value2, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+                    $value3 = htmlspecialchars($value3, ENT_QUOTES | ENT_HTML5, 'utf-8', false);
+                }
+
+                $value = $value . ($value2 ? $glue . $value2 : '');
+                $value = $value . ($value3 ? $glue . $value3 : '');
             }
 
             // HMTL gets the postal address microformat wrapping spans...
-            if ($html === true && $value) {
+            if ($html && $value) {
                 $value = "<span" . self::getItemProp($key) . ">{$value}</span>";
             }
 
             $formatted_address = str_replace("%{$id}", $value, $formatted_address);
         }
 
-        // Insert newlines where needed...
         $formatted_address = trim(str_replace('%n', "\n", $formatted_address));
+        $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address); // \n2+ -> \n
 
-        // Clean up runs of multiple newlines...
-        $formatted_address = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $formatted_address);
-
-        if ($html === true) {
-            $formatted_address = nl2br($formatted_address, false);
-        }
+        $formatted_address = str_replace("\n", $glue, $formatted_address);
 
         return $formatted_address;
     }

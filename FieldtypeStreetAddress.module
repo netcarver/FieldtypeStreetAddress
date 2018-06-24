@@ -135,10 +135,10 @@ class FieldtypeStreetAddress extends Fieldtype
     public function getMatchQuery($query, $table, $subfield, $operator, $value)
     {
         $subfields = StreetAddress::getAddressFieldNames();
-        if (in_array($subfield, $subfields)) {
-            $subfield = 'data_' . $subfield;
-        } else if ($subfield == 'country_iso') {
+        if ($subfield == 'country_iso') {
             $subfield = 'data';
+        } else if (in_array($subfield, $subfields)) {
+            $subfield = 'data_' . $subfield;
         }
         return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
     }
@@ -197,6 +197,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $changes   = 0;
         $subfields = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
+            $value->$f = trim($value->$f); // We don't store runs of spaces at start or end of a string.
             if ($value->isChanged($f)) {
                 $changes++;
             }
@@ -417,7 +418,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->modules->get('InputfieldAsmSelect');
         $f->label = $this->_('Hide Empty Fields...');
         $f->attr('id+name', 'hideEmptyFields');
-        $f->description = $this->_('Which uncommon fields should be hidden from the input by default? Choose all that apply.');
+        $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
         $f->attr('value', $field->hideEmptyFields);
         $f->addOption('recipient');
         $f->addOption('organization');
