@@ -95,12 +95,12 @@ class InputfieldStreetAddress extends Inputfield
     /**
      *
      */
-    protected static function makeTitle(array $parts)
+    protected static function makeTitle(array $parts, $glue = ' — ')
     {
         array_walk($parts, function(&$item, $key) {
             $item = self::makeSafeString($item);
         });
-        return implode(__(', '), $parts);
+        return implode($glue, $parts);
     }
 
 
