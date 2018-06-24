@@ -8,12 +8,14 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+## [0.2.0] - 2018-06-24
+
 - Use uppercase when saving postcode as no surveyed regex uses lowercase. Trim all values on save.
+- Allow format overrides.
 - Bugfix: Correct use of country_iso in PW Selectors.
 - Bugfix: Correct spacing in single-line HTML output.
 - Bugfix: Correct line joins in most modes.
 - Bugfix: Apply uppercase rule to all street address lines, not just the first.
-- Allow format overrides.
 
 ## [0.1.0] - 2018-06-23
 
@@ -21,5 +23,6 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.1.0
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.2.0
+[0.2.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.2.0/
 [0.1.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.1.0/
