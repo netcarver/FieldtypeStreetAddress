@@ -2,7 +2,7 @@
 
 .streetaddress, div.streetaddress_frame pre {
     font-family: 'Roboto Mono', monospace !important;
-    font-size: 0.8rem;
+    font-size: 0.8rem !important;
 }
 .streetaddress_country > div.selectize-input,
 input.streetaddress {
@@ -27,8 +27,6 @@ input.streetaddress[readonly] {
     border-bottom-width: 0 !important;
 }
 input.streetaddress_optional {
-    font-size: xx-small !important;
-    height: 1.0rem;
 }
 input.streetaddress_optional_nonempty {
     font-size: inherit !important;
