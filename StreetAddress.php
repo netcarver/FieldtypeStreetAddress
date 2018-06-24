@@ -34,49 +34,55 @@ class StreetAddress
 
 
     /**
-     * Format this address as HTML.
+     * Convenience Format Methods...
      */
-    public function formatMultiHtml()
+    public function formatMultiHtml($format_overrides = [])
     {
-        return $this->format(true);
+        return $this->format(true, false, $format_overrides);
     }
 
-    public function formatSingleHtml($line_glue = ', ')
+    public function formatSingleHtml($line_glue = ', ', $format_overrides = [])
     {
-        return $this->format(true, $line_glue);
+        return $this->format(true, $line_glue, $format_overrides);
     }
 
-    public function formatMultiPlain()
+    public function formatMultiPlain($format_overrides = [])
     {
-        return $this->format(false);
+        return $this->format(false, false, $format_overrides);
     }
 
-    public function formatSinglePlain($line_glue = ', ')
+    public function formatSinglePlain($line_glue = ', ', $format_overrides = [])
     {
-        return $this->format(false, $line_glue);
+        return $this->format(false, $line_glue, $format_overrides);
+    }
+
+    public function formatSingle($html = false, $line_glue = ', ', $format_overrides = [])
+    {
+        return $this->format($html, $line_glue, $format_overrides);
     }
 
 
     /**
-     * Format this address - optionally as HTML.
+     * Format address
+     *
+     * @param $html bool Controls formatting for HTML. If true, HTML wrappers will be used and output will be escaped.
+     * @param $line_glue mixed False => Multiline output. A string acts as glue for joining the address lines.
+     * @param $format_overrides array Allows optional overrides of the formatting metadata. Most useful field is probably
+     * the 'upper' string. To prevent output from uppercasing fields use ['upper' => '']
+     *
+     * @see Contents of formats.php
+     * @see StreetAddress::formatLines()
      */
-    public function format(bool $html = false, $line_glue = false)
+    public function format(bool $html = false, $line_glue = false, $format_overrides = [])
     {
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
         unset($vars['country']);
-        return self::formatLines($vars, $html, $line_glue);
+        return self::formatLines($vars, $html, $line_glue, $format_overrides);
     }
 
 
 
-    /**
-     * Format address to a single line of text.
-     */
-    public function formatSingle($html = false, $line_glue = ', ')
-    {
-        return $this->format($html, $line_glue);
-    }
 
 
 
