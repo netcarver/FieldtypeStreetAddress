@@ -21,5 +21,5 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/compare/0.0.1...HEAD
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.1.0
 [0.1.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.1.0/
