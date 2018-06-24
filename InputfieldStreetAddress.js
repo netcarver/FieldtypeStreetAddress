@@ -100,6 +100,7 @@ $(document).ready(function() {
     $('select.streetaddress').on('input', updateInput);
 
 
+
     /**
      * Initialise the country selector.
      */
@@ -110,6 +111,32 @@ $(document).ready(function() {
             this.clear();
         }
     });
+
+
+
+    /**
+     * Allow Backspace to move to end of previous input. Tricky - we need to use keydown as we need to know if our
+     * input was empty before the backspace kills the char. Calling in keyup doesn't allow us to prevent deleting the
+     * last character from moving us straight to the end of the previous field. Doing it this way allows us to re-enter
+     * data in our field.
+     */
+    $('input.streetaddress[type=text]').on('keydown', function(event) {
+        var key = event.keyCode || event.charCode;
+        var inputs = $('input[type=text].streetaddress:not(.streetaddress_hidden)');
+        var is_empty = this.value.length === 0;
+        if (key == 8 || key == 46) {
+            var indexNum = inputs.index(this);
+            if(indexNum != 0 && is_empty) {
+                var target = inputs.eq(inputs.index(this) - 1);
+                var len    = target.val().length;
+                target.focus();                         // Move to previous visible streetaddress field
+                target[0].setSelectionRange(len, len);  // Move to end of any text in it
+                return false;                           // Prevent event deleting the final character in the now-focused field.
+            }
+        }
+    });
+
+
 
     /**
      * Only show the country selector after it's been initialised. This prevents a FOUC.
