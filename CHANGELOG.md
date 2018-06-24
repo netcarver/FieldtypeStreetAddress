@@ -8,6 +8,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+## [0.3.0] - 2018-06-24
+
 - Update fixed table input layout.
 
 
