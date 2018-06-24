@@ -9,6 +9,7 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Add StreetAddress::isEmpty() and use from Inputfield and Fieldtype. Allows field to be set to "Required" in PW admin.
+- Add ability for backspace to move to end of previous field once current field is empty.
 
 
 ## [0.3.0] - 2018-06-24
