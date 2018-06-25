@@ -5,8 +5,10 @@ address layouts and other postal metadata.
 
 See the README.md file for more information.
 
-
 ## [Upcoming]
+
+
+## [0.4.0] - 2018-06-25
 
 - Add StreetAddress::isEmpty() and use from Inputfield and Fieldtype. Allows field to be set to "Required" in PW admin.
 - Add ability for backspace to move to end of previous field once current field is empty.
@@ -33,7 +35,8 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.3.0
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.4.0
+[0.5.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.5.0/
 [0.4.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.4.0/
 [0.3.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.3.0/
 [0.2.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.2.0/
