@@ -298,16 +298,6 @@ class InputfieldStreetAddress extends Inputfield
                 $fields['organization'] = __('Organization');
                 break;
             }
-
-            /* \TD::barDump([ */
-            /*     'metadata'    => $metadata, */
-            /*     'state_remap' => $state_remap, */
-            /*     'local_remap' => $locality_remap, */
-            /*     'zip_remap'   => $zip_remap, */
-            /*     'iso'         => $iso, */
-            /*     'fields'      => $fields, */
-            /*     'original'    => $original, */
-            /* ], __method__); */
         }
 
         $label = @$fields[$original];
@@ -570,16 +560,6 @@ HTML;
             foreach ($fields as $f) {
                 $in_layout = (false !== stripos($addressfields, $f));
                 $is_iso    = 'country_iso' === $f;
-/* \TD::barDump([ */
-/*     'this'          => $this, */
-/*     'metadata'      => $metadata, */
-/*     'fields'        => $fields, */
-/*     'mappings'      => $mappings, */
-/*     'required'      => $required_fields, */
-/*     'field'         => $f, */
-/*     'addressfields' => $addressfields, */
-/*     'in_layout'     => $in_layout, */
-/* ], __method__); */
                 $regex = '';
                 $raw_fieldvalue  = $value->$f;
                 $safe_fieldvalue = htmlspecialchars($raw_fieldvalue, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
