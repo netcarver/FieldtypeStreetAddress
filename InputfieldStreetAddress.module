@@ -538,6 +538,7 @@ HTML;
         <div class="streetaddress_unused_fields">
             $unused_out
         </div>
+        <p class="streetaddress_clearfix"> </p>
     </div>
 HTML;
         } else {

@@ -16,6 +16,10 @@ input.streetaddress {
     padding-right: 0.1rem !important;
     box-sizing: content-box !important;
 }
+.streetaddress_clearfix{
+    content: " ";
+    clear: both;
+}
 div.selectize-input {
     padding-top: 0.2rem !important;
     background-image: none !important;
