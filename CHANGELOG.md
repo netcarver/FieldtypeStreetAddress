@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Bugfix: Layout of inputfield when admin user defines a note to go with the field.
+
 
 ## [0.4.0] - 2018-06-25
 
