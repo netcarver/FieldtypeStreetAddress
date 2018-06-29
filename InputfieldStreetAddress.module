@@ -550,7 +550,8 @@ HTML;
             $addressfields .= ' street_address_2 street_address_3';
 
             $table = $this->modules->MarkupAdminDataTable;
-            $table->setID($this->className.'Table');
+            $table->setID($this->className.'Table-'.$this->name);
+            $table->addClass($this->className.'Table');
             $table->setEncodeEntities(false);
             $table->setSortable(false);
             $table->headerRow([

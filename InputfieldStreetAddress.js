@@ -99,6 +99,9 @@ $(document).ready(function() {
     $('select.streetaddress').on('input', updateInput);
 
 
+    // Adjustments for UiKit Theme...
+    $('table.InputfieldStreetAddressTable').parent().removeClass('uk-overflow-auto');
+
 
     /**
      * Initialise the country selector.
@@ -110,8 +113,6 @@ $(document).ready(function() {
             this.clear();
         }
     });
-
-
 
 
     /**
