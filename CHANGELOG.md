@@ -9,7 +9,7 @@ See the README.md file for more information.
 
 ## [0.5.1] - 2018-06-29
 
-[Diff from 0.5.1]
+[Diff from 0.5.0]
 
 - Bugfix: Visual weirdness with SelectizeJs under Admin UiKit theme.
 
