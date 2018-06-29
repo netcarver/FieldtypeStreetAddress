@@ -92,7 +92,6 @@ $(document).ready(function() {
 
 
 
-
     /**
      * Adjust inputs as user types in the client.
      */
@@ -111,6 +110,13 @@ $(document).ready(function() {
             this.clear();
         }
     });
+
+
+    // Try fixing Admin UiKit theme...
+    // $("select#Inputfield_address_country_iso").removeClass('uk-select');
+    $("div.selectize-control").removeClass('uk-select');
+    $("div.selectize-dropdown").removeClass('uk-select');
+
 
 
 

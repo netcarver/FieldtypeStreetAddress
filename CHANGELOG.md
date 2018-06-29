@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Bugfix: Visual weirdness with SelectizeJs under Admin UiKit theme.
+
 
 ## [0.5.0] - 2018-06-29
 
