@@ -103,19 +103,13 @@ $(document).ready(function() {
     /**
      * Initialise the country selector.
      */
-    $('.streetaddress_country').selectize({
+    $('.streetaddress_country').removeClass('uk-select').selectize({
         closeAfterSelect: true,
         selectOnTab: true,
         onFocus: function(value) {
             this.clear();
         }
     });
-
-
-    // Try fixing Admin UiKit theme...
-    // $("select#Inputfield_address_country_iso").removeClass('uk-select');
-    $("div.selectize-control").removeClass('uk-select');
-    $("div.selectize-dropdown").removeClass('uk-select');
 
 
 
