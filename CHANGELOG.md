@@ -8,6 +8,7 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Bugfix: Layout of inputfield when admin user defines a note to go with the field.
+- Feature: Allow template-context config fields.
 
 
 ## [0.4.0] - 2018-06-25

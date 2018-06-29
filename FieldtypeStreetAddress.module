@@ -307,6 +307,28 @@ class FieldtypeStreetAddress extends Fieldtype
     }
 
 
+
+    /**
+     *
+     */
+    public function ___getConfigAllowContext(Field $field) {
+        return [
+            'permittedISOs',
+            'defaultISO',
+            'showInputCountry',
+            'inputFormat',
+            'showAddressPreview',
+            'showAddressPreviewHTML',
+            'hideEmptyFields',
+            'outputHTML',
+            'outputSingleLine',
+            'showOutputCountry',
+            /* 'originISO', */
+        ];
+    }
+
+
+
     /**
      * Get any inputfields used for configuration of this Fieldtype.
      *
