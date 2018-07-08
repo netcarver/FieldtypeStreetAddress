@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Quiet a PHP notice.
+
 ## [0.5.1] - 2018-06-29
 
 [Diff from 0.5.0]
