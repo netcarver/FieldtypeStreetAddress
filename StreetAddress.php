@@ -561,7 +561,7 @@ class StreetAddress
         // Load country option
         $format_info = self::getFormat($data['country_iso']);
         $data        = self::remapAddressFields($format_info, $data);
-        $required    = $format_info['require'];
+        $required    = @$format_info['require'];
 
         if (!empty($data['postal_code'])) {
             $results['postal_code_valid'] = self::checkPostalCode($data['postal_code'], $data['country_iso']);
