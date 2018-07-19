@@ -458,10 +458,10 @@ class InputfieldStreetAddress extends Inputfield
                         $regex = '';
                     }
 
-                    $out[] = "<input $regex $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
+                    $out[] = "<input $regex $width title='$title' data-field='$key' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
 
                 } else if (array_key_exists($fmtcode, $mappings)) {
-                    $out[] = "<input $width title='$title' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
+                    $out[] = "<input $width title='$title' class='$classes' data-field='$key' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
                 } else if ('n' === $fmtcode) {
                     // Pass over leading 'n' markers. These can be left over from removing the recipient and/or organisation.
                     if (!empty($out)) {
@@ -617,7 +617,7 @@ HTML;
                         }
                     }
                     $classes = implode(' ', $classes);
-                    $input = "<input $regex class='$classes' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/>";
+                    $input = "<input $regex class='$classes' data-field='$f' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/>";
                 }
                 $notes = "<span class='small'>" . self::makeTitle($parts) . "</span>";
                 if (!$in_layout && !$is_iso) $label = "<strike>$label</strike>";
