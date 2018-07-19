@@ -99,6 +99,40 @@ function updateInput() {
       $(cl3).removeClass(hidden);
     }
   }
+
+
+  // Check capitalisation (or lack thereof)...
+  value = this.value;
+  is_upper = value === value.toUpperCase();
+  is_lower = value === value.toLowerCase();
+  is_title = value === titleCase(value);
+  switch(field) {
+    case 'postal_code' :
+      $(this).toggleClass('streetaddress_malformed_caps', !is_upper);
+      break;
+
+    case 'country_iso':
+    case 'origin_iso' :
+      // Nothing to do!
+      break;
+
+    default:
+      $(this).toggleClass('streetaddress_malformed_caps', is_upper);
+      if (!is_upper) {
+        $(this).toggleClass('streetaddress_malformed_caps', is_lower);
+        if (!is_lower) {
+          $(this).toggleClass('streetaddress_malformed_caps', !is_title);
+          if (!is_title) {
+            this.title = "Not title-cased! Are you sure?";
+          }
+        } else {
+          this.title = "All lowercase? Are you sure?";
+        }
+      } else {
+        this.title = "All capitals? Are you sure?";
+      }
+      break;
+  }
 }
 
 
