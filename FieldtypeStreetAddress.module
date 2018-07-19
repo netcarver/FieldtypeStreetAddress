@@ -48,6 +48,15 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
+     * Allow checking for empty values in conditinals
+     */
+    public function isEmptyValue(Field $field, $value) {
+        return $value->isEmpty();
+    }
+
+
+
+    /**
      *
      */
     public static function prepareLinesCallback($line, $key, $data = [])
@@ -71,11 +80,6 @@ class FieldtypeStreetAddress extends Fieldtype
         return self::format($page, $field, $street_address);
     }
 
-
-
-    public function isEmptyValue(Field $field, $value) {
-        return $value->isEmpty();
-    }
 
 
     /**
