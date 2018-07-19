@@ -45,6 +45,9 @@ input.streetaddress_optional::placeholder {
     font-size: xx-small;
     text-align: right;
 }
+input.streetaddress_malformed_caps {
+    border-bottom: 1px solid #4d9ad2 !important;
+}
 input.streetaddress_malformed {
     border-bottom: 1px solid #e96969 !important;
 }
