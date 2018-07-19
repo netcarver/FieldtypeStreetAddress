@@ -154,20 +154,25 @@ class StreetAddress
     /**
      * Passes each address line to a definable callback function to prepare it for output.
      */
-    public function prepareLines(callable $callback, array $data = [])
+    public function prepareLines($callback, array $data = [])
     {
+        if (!is_callable($callback)) return $this;
+
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
         unset($vars['country']);
 
         if (count($vars)) {
             foreach ($vars as $key => $value) {
-                $newvalue = $callback($value, $key, $data);
+                //$newvalue = $callback($value, $key, $data);
+                $newvalue = call_user_func($callback, $value, $key, $data);
                 if ($newvalue != $value) {
                     $this->$key = $newvalue;
                 }
             }
         }
+
+        return $this;
     }
 
 
