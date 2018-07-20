@@ -566,7 +566,7 @@ HTML;
                 $raw_fieldvalue  = $value->$f;
                 $safe_fieldvalue = htmlspecialchars($raw_fieldvalue, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
                 $is_required = in_array($f, $required_fields);
-                $classes     = ['streetaddress'];
+                $classes     = ['streetaddress', 'streetaddress_static'];
                 if (!$is_required && !$is_iso) {
                     $classes[] = 'streetaddress_optional';
                 }

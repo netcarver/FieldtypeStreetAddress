@@ -22,6 +22,7 @@ function updateInput() {
   var is_optional          = $(this).hasClass('streetaddress_optional');
   var is_optional_nonempty = $(this).hasClass('streetaddress_optional_nonempty');
   var is_country           = $(this).hasClass('streetaddress_country');
+  var is_static            = $(this).hasClass('streetaddress_static');
   var has_content          = len > 0;
 
   // Adjust the field width...
@@ -68,7 +69,7 @@ function updateInput() {
   var is_address_2 = 'street_address_2' === field;
   var is_address_3 = 'street_address_3' === field;
 
-  if (is_address_1 || is_address_2 || is_address_3) {
+  if (!is_static && (is_address_1 || is_address_2 || is_address_3)) {
 
     var name = $(this).attr('data-name');
     var id1, cl2, cl3, id2, id3;
