@@ -13,6 +13,16 @@ function titleCase(str) {
   return words.join(' ');
 }
 
+function showLineWarning(el, icon, msg, suggested) {
+  $(el).addClass('streetaddress_malformed_caps');
+  icon.find('i').attr('title', msg);
+  icon.removeClass('streetaddress_hidden');
+}
+
+function hideLineWarning(el, icon) {
+  $(el).removeClass('streetaddress_malformed_caps');
+  icon.addClass('streetaddress_hidden');
+}
 
 
 function updateInput() {
@@ -109,12 +119,16 @@ function updateInput() {
 
 
   // Check capitalisation (or lack thereof)...
-  value    = this.value.trim();
+  value1   = this.value;
+  value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim();
+  //console.log('[' + value1 + '] => [' + value + ']');
+
   has_len  = value.length > 0;
   if (has_len) {
     is_upper = value === value.toUpperCase();
     is_lower = value === value.toLowerCase();
     is_title = value === titleCase(value);
+    suggested_value = titleCase(value1.trim());
 
     switch(field) {
       case 'postal_code' :
@@ -125,26 +139,18 @@ function updateInput() {
 
       default:
         if (has_len && is_upper) {
-          $(this).addClass('streetaddress_malformed_caps');
-          icon.find('i').attr('title', "All capitals? Are you sure?");
-          icon.removeClass('streetaddress_hidden');
+          showLineWarning(this, icon, 'ALL CAPITALS! Are you sure?', suggested_value);
         } else if (has_len && is_lower) {
-          $(this).addClass('streetaddress_malformed_caps');
-          icon.find('i').attr('title', "All lowercase? Are you sure?");
-          icon.removeClass('streetaddress_hidden');
+          showLineWarning(this, icon, 'all lowercase! Are you sure?', suggested_value);
         } else if (has_len && !is_title) {
-          $(this).addClass('streetaddress_malformed_caps');
-          icon.find('i').attr('title', "Not Title Case! Are you sure?");
-          icon.removeClass('streetaddress_hidden');
+          showLineWarning(this, icon, 'Not Title Case! Are you sure?', suggested_value);
         } else {
-          $(this).removeClass('streetaddress_malformed_caps');
-          icon.addClass('streetaddress_hidden');
+          hideLineWarning(this, icon);
         }
         break;
     }
   } else {
-    $(this).removeClass('streetaddress_malformed_caps');
-    icon.addClass('streetaddress_hidden');
+    hideLineWarning(this, icon);
   }
 }
 
