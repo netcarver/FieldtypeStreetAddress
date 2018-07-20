@@ -7,8 +7,10 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Bugfix: stop false positive "All caps" if numbers or punctuation in address line.
 
-## [0.7.0] - 2018-07-20
+
+## Version [0.7.0] - 2018-07-20
 
 [Diff from 0.6.0]
 
@@ -19,7 +21,7 @@ See the README.md file for more information.
 - Fix JS errors in static table layout.
 
 
-## [0.6.0] - 2018-07-12
+## Version [0.6.0] - 2018-07-12
 
 [Diff from 0.5.1]
 
@@ -27,14 +29,14 @@ See the README.md file for more information.
 - Allow use in repeater fields/repeater matrix.
 
 
-## [0.5.1] - 2018-06-29
+## Version [0.5.1] - 2018-06-29
 
 [Diff from 0.5.0]
 
 - Bugfix: Visual weirdness with SelectizeJs under Admin UiKit theme.
 
 
-## [0.5.0] - 2018-06-29
+## Version [0.5.0] - 2018-06-29
 
 [Diff from 0.4.0]
 
@@ -42,7 +44,7 @@ See the README.md file for more information.
 - Feature: Allow template-context config fields.
 
 
-## [0.4.0] - 2018-06-25
+## Version [0.4.0] - 2018-06-25
 
 [Diff from 0.3.0]
 
@@ -51,14 +53,14 @@ See the README.md file for more information.
 - Update fixed table input layout to show if a field is used in the address format of the given country.
 
 
-## [0.3.0] - 2018-06-24
+## Version [0.3.0] - 2018-06-24
 
 [Diff from 0.2.0]
 
 - Update fixed table input layout.
 
 
-## [0.2.0] - 2018-06-24
+## Version [0.2.0] - 2018-06-24
 
 [Diff from 0.1.0]
 
@@ -69,7 +71,7 @@ See the README.md file for more information.
 - Bugfix: Correct line joins in most modes.
 - Bugfix: Apply uppercase rule to all street address lines, not just the first.
 
-## [0.1.0] - 2018-06-23
+## Version [0.1.0] - 2018-06-23
 
 - Initial packaging as a module suite for ProcessWire
 
