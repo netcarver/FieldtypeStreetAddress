@@ -122,13 +122,16 @@ function updateInput() {
       default:
         if (has_len && is_upper) {
           $(this).addClass('streetaddress_malformed_caps');
-          icon.attr('title', "All capitals? Are you sure?").removeClass('streetaddress_hidden');
+          icon.find('i').attr('title', "All capitals? Are you sure?");
+          icon.removeClass('streetaddress_hidden');
         } else if (has_len && is_lower) {
           $(this).addClass('streetaddress_malformed_caps');
-          icon.attr('title', "All lowercase? Are you sure?").removeClass('streetaddress_hidden');
+          icon.find('i').attr('title', "All lowercase? Are you sure?");
+          icon.removeClass('streetaddress_hidden');
         } else if (has_len && !is_title) {
           $(this).addClass('streetaddress_malformed_caps');
-          icon.attr('title', "Not Title Case! Are you sure?").removeClass('streetaddress_hidden');
+          icon.find('i').attr('title', "Not Title Case! Are you sure?");
+          icon.removeClass('streetaddress_hidden');
         } else {
           $(this).removeClass('streetaddress_malformed_caps');
           icon.addClass('streetaddress_hidden');
