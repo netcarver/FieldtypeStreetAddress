@@ -617,7 +617,7 @@ HTML;
                         }
                     }
                     $classes = implode(' ', $classes);
-                    $input = "<input $regex class='$classes' data-field='$f' style='width:100%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/>";
+                    $input = "<input $regex class='$classes' data-field='$f' style='width:90%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$f}_icon'><i class='fa fa-question-circle' title=''></i></span>";
                 }
                 $notes = "<span class='small'>" . self::makeTitle($parts) . "</span>";
                 if (!$in_layout && !$is_iso) $label = "<strike>$label</strike>";
