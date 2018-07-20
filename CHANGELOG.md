@@ -7,6 +7,15 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+[Diff from 0.6.0]
+
+- Add JS detection of bad inputfield capitalisation.
+- Add consistent use of data-field attribute.
+- Change the way format callback functions are called.
+- Fix CSS bug in static table layout.
+- Fix JS errors in static table layout.
+
+
 ## [0.6.0] - 2018-07-12
 
 [Diff from 0.5.1]
