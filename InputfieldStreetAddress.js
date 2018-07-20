@@ -149,7 +149,7 @@ function updateInput() {
 
       default:
         if (has_len && is_upper) {
-          showLineWarning(this, icon, 'All CAPITALS! Are you sure?', suggested_value);
+          showLineWarning(this, icon, 'All UPPERCASE! Are you sure?', suggested_value);
         } else if (has_len && is_lower) {
           showLineWarning(this, icon, 'All lowercase! Are you sure?', suggested_value);
         } else if (has_len && !is_title) {
