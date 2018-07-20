@@ -130,15 +130,17 @@ function updateInput() {
 
 
   // Check capitalisation (or lack thereof)...
-  value1   = this.value;
+  value1   = this.value.trim();
   value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim(); // Discount numerics and non-word chars here.
 
   has_len  = value.length > 0;
   if (has_len) {
-    is_upper = value === value.toUpperCase();
-    is_lower = value === value.toLowerCase();
-    is_title = value === titleCase(value);
-    suggested_value = titleCase(value1.trim());
+    is_upper = value  === value.toUpperCase();
+    is_lower = value  === value.toLowerCase();
+    is_title = value1 === titleCase(value1);
+    suggested_value   = titleCase(value1);
+
+    // console.log('[' + value1 + '] => [' + value + '] :: [' + suggested_value + ']');
 
     switch(field) {
       case 'postal_code' :
