@@ -95,6 +95,9 @@ function updateInput() {
   $(this).toggleClass('streetaddress_malformed', malformed);
   icon.toggleClass('streetaddress_hidden', !malformed);
 
+
+  // Adjust the displayed street address field lines as needed. As content is deleted or added, lines are displayed or
+  // hidden.
   if (!is_static && (is_address_1 || is_address_2 || is_address_3)) {
 
     var name = $(this).attr('data-name');
@@ -105,8 +108,6 @@ function updateInput() {
     id2 = "#Inputfield_" + name + "_street_address_2";
     cl3 = "." + name + "_street_address_3_element";
     id3 = "#Inputfield_" + name + "_street_address_3";
-
-    var hidden = 'streetaddress_hidden';
 
     has_content_1 = $(id1).val().length > 0;
     has_content_2 = $(id2).val().length > 0;
@@ -130,8 +131,7 @@ function updateInput() {
 
   // Check capitalisation (or lack thereof)...
   value1   = this.value;
-  value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim();
-  //console.log('[' + value1 + '] => [' + value + ']');
+  value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim(); // Discount numerics and non-word chars here.
 
   has_len  = value.length > 0;
   if (has_len) {
@@ -149,9 +149,9 @@ function updateInput() {
 
       default:
         if (has_len && is_upper) {
-          showLineWarning(this, icon, 'ALL CAPITALS! Are you sure?', suggested_value);
+          showLineWarning(this, icon, 'All CAPITALS! Are you sure?', suggested_value);
         } else if (has_len && is_lower) {
-          showLineWarning(this, icon, 'all lowercase! Are you sure?', suggested_value);
+          showLineWarning(this, icon, 'All lowercase! Are you sure?', suggested_value);
         } else if (has_len && !is_title) {
           showLineWarning(this, icon, 'Not Title Case! Are you sure?', suggested_value);
         } else {
