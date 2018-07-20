@@ -7,6 +7,9 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+
+## [0.7.0] - 2018-07-20
+
 [Diff from 0.6.0]
 
 - Add JS detection of bad inputfield capitalisation.
@@ -72,7 +75,9 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.6.0
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.7.0
+[0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.0/
+[Diff from 0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.0..0.6.0#diff
 [0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.6.0/
 [Diff from 0.5.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.6.0..0.5.1#diff
 [0.5.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.5.1/
