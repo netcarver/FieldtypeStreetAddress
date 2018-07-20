@@ -24,6 +24,8 @@ function updateInput() {
   var is_country           = $(this).hasClass('streetaddress_country');
   var is_static            = $(this).hasClass('streetaddress_static');
   var has_content          = len > 0;
+  var icon_id              = '#' + this.id + '_icon';
+  var icon                 = $(icon_id);
 
   // Adjust the field width...
   if (!has_content) {
@@ -60,7 +62,11 @@ function updateInput() {
   } else {
     malformed = false;
   }
+  if (malformed) {
+    icon.find('i').attr('title', "This is not valid.");
+  }
   $(this).toggleClass('streetaddress_malformed', malformed);
+  icon.toggleClass('streetaddress_hidden', !malformed);
 
 
   // Show or hide extra street address lines as needed...
@@ -103,8 +109,6 @@ function updateInput() {
 
 
   // Check capitalisation (or lack thereof)...
-  icon_id  = '#' + this.id + '_icon';
-  icon     = $(icon_id);
   value    = this.value.trim();
   has_len  = value.length > 0;
   if (has_len) {
