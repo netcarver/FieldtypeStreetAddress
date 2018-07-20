@@ -430,9 +430,9 @@ class InputfieldStreetAddress extends Inputfield
                         $line3_class    .= ' streetaddress_hidden';
                     }
 
-                    $out[] = "<input $width  data-name='{$this->name}' data-field='street_address'   title='$title'  class='$classes'     placeholder='$ph'  type='text' name='{$this->name}_$key'  maxlength=128 id='Inputfield_{$this->name}_$key'  value='{$safe_fieldvalue}' /><br class='$line2_br_class'>";
-                    $out[] = "<input $width2 data-name='{$this->name}' data-field='street_address_2' title='$title2' class='$line2_class' placeholder='$ph2' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$safe_fieldvalue2}'/><br class='$line3_br_class'>";
-                    $out[] = "<input $width3 data-name='{$this->name}' data-field='street_address_3' title='$title3' class='$line3_class' placeholder='$ph3' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$safe_fieldvalue3}'/>";
+                    $out[] = "<input $width  data-name='{$this->name}' data-field='street_address'   title='$title'  class='$classes'     placeholder='$ph'  type='text' name='{$this->name}_$key'  maxlength=128 id='Inputfield_{$this->name}_$key'  value='{$safe_fieldvalue}' /> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-question-circle' title=''></i></span><br class='$line2_br_class'>";
+                    $out[] = "<input $width2 data-name='{$this->name}' data-field='street_address_2' title='$title2' class='$line2_class' placeholder='$ph2' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$safe_fieldvalue2}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key2}_icon'><i class='fa fa-question-circle' title=''></i></span><br class='$line3_br_class'>";
+                    $out[] = "<input $width3 data-name='{$this->name}' data-field='street_address_3' title='$title3' class='$line3_class' placeholder='$ph3' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$safe_fieldvalue3}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key3}_icon'><i class='fa fa-question-circle' title=''></i></span>";
                 } else if ('Z' === $fmtcode) {
                     // Regex verify the postal code field...
                     $regex = @$metadata['zip'];
@@ -458,10 +458,10 @@ class InputfieldStreetAddress extends Inputfield
                         $regex = '';
                     }
 
-                    $out[] = "<input $regex $width title='$title' data-field='$key' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
+                    $out[] = "<input $regex $width title='$title' data-field='$key' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-question-circle' title=''></i></span>";
 
                 } else if (array_key_exists($fmtcode, $mappings)) {
-                    $out[] = "<input $width title='$title' class='$classes' data-field='$key' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/>";
+                    $out[] = "<input $width title='$title' class='$classes' data-field='$key' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-question-circle' title=''></i></span>";
                 } else if ('n' === $fmtcode) {
                     // Pass over leading 'n' markers. These can be left over from removing the recipient and/or organisation.
                     if (!empty($out)) {

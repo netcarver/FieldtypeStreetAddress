@@ -33,7 +33,6 @@ input.streetaddress[readonly] {
 input.streetaddress_optional {
 }
 input.streetaddress_optional_nonempty {
-    font-size: inherit !important;
 }
 input.streetaddress_upper {
     text-transform: uppercase !important;

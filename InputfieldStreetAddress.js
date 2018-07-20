@@ -87,51 +87,56 @@ function updateInput() {
 
     if (!has_content_1 && !has_content_2 && !has_content_3) {
       $(id1).focus();
-      $(cl2).addClass(hidden);
-      $(cl3).addClass(hidden);
+      $(cl2).addClass('streetaddress_hidden');
+      $(cl3).addClass('streetaddress_hidden');
     } else if (!has_content_2 && !has_content_3) {
-      $(cl2).removeClass(hidden);
+      $(cl2).removeClass('streetaddress_hidden');
       if (is_address_3)
         $(id2).focus();
-      $(cl3).addClass(hidden);
+      $(cl3).addClass('streetaddress_hidden');
     } else {
-      $(cl2).removeClass(hidden);
-      $(cl3).removeClass(hidden);
+      $(cl2).removeClass('streetaddress_hidden');
+      $(cl3).removeClass('streetaddress_hidden');
     }
   }
 
 
   // Check capitalisation (or lack thereof)...
-  value = this.value;
-  is_upper = value === value.toUpperCase();
-  is_lower = value === value.toLowerCase();
-  is_title = value === titleCase(value);
-  switch(field) {
-    case 'postal_code' :
-      $(this).toggleClass('streetaddress_malformed_caps', !is_upper);
-      break;
+  icon_id  = '#' + this.id + '_icon';
+  icon     = $(icon_id);
+  value    = this.value.trim();
+  has_len  = value.length > 0;
+  if (has_len) {
+    is_upper = value === value.toUpperCase();
+    is_lower = value === value.toLowerCase();
+    is_title = value === titleCase(value);
 
-    case 'country_iso':
-    case 'origin_iso' :
-      // Nothing to do!
-      break;
+    switch(field) {
+      case 'postal_code' :
+      case 'country_iso':
+      case 'origin_iso' :
+        // Nothing to do!
+        break;
 
-    default:
-      $(this).toggleClass('streetaddress_malformed_caps', is_upper);
-      if (!is_upper) {
-        $(this).toggleClass('streetaddress_malformed_caps', is_lower);
-        if (!is_lower) {
-          $(this).toggleClass('streetaddress_malformed_caps', !is_title);
-          if (!is_title) {
-            this.title = "Not title-cased! Are you sure?";
-          }
+      default:
+        if (has_len && is_upper) {
+          $(this).addClass('streetaddress_malformed_caps');
+          icon.attr('title', "All capitals? Are you sure?").removeClass('streetaddress_hidden');
+        } else if (has_len && is_lower) {
+          $(this).addClass('streetaddress_malformed_caps');
+          icon.attr('title', "All lowercase? Are you sure?").removeClass('streetaddress_hidden');
+        } else if (has_len && !is_title) {
+          $(this).addClass('streetaddress_malformed_caps');
+          icon.attr('title', "Not Title Case! Are you sure?").removeClass('streetaddress_hidden');
         } else {
-          this.title = "All lowercase? Are you sure?";
+          $(this).removeClass('streetaddress_malformed_caps');
+          icon.addClass('streetaddress_hidden');
         }
-      } else {
-        this.title = "All capitals? Are you sure?";
-      }
-      break;
+        break;
+    }
+  } else {
+    $(this).removeClass('streetaddress_malformed_caps');
+    icon.addClass('streetaddress_hidden');
   }
 }
 
