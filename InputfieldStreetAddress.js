@@ -63,6 +63,23 @@ function updateInput() {
   }
 
 
+  // Show or hide extra street address lines as needed...
+  var field = $(this).attr('data-field');
+  var is_address_1 = 'street_address'   === field;
+  var is_address_2 = 'street_address_2' === field;
+  var is_address_3 = 'street_address_3' === field;
+  var is_post_code = 'postal_code' === field;
+
+  if (is_post_code) {
+    // Always coerce the value of the postal_code field to use capital letters.
+    // All known postal countries in the libaddressinput feed use just numerics or Uppercase chars and numerics.
+    var start = this.selectionStart;
+    var end   = this.selectionEnd;
+    this.value = this.value.toUpperCase();
+    this.setSelectionRange(start, end);
+  }
+
+
   // Check if we are malformed or OK...
   var regex = $(this).attr('data-regex');
   if (regex && has_content) {
@@ -77,13 +94,6 @@ function updateInput() {
   }
   $(this).toggleClass('streetaddress_malformed', malformed);
   icon.toggleClass('streetaddress_hidden', !malformed);
-
-
-  // Show or hide extra street address lines as needed...
-  var field = $(this).attr('data-field');
-  var is_address_1 = 'street_address'   === field;
-  var is_address_2 = 'street_address_2' === field;
-  var is_address_3 = 'street_address_3' === field;
 
   if (!is_static && (is_address_1 || is_address_2 || is_address_3)) {
 

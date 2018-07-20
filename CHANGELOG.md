@@ -8,6 +8,7 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Bugfix: stop false positive "All caps" if numbers or punctuation in address line.
+- Capitalise postcode field as it is typed, prior to regex check.
 
 
 ## Version [0.7.0] - 2018-07-20
