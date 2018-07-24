@@ -7,8 +7,14 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+
+## Version [0.7.1] - 2018-07-24
+
+[Diff from 0.7.0]
+
 - Bugfix: stop false positive "All caps" if numbers or punctuation in address line.
 - Capitalise postcode field as it is typed, prior to regex check.
+- Add sanitisation into the Sleep() and Wakeup() calls.
 
 
 ## Version [0.7.0] - 2018-07-20
@@ -79,6 +85,8 @@ See the README.md file for more information.
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.7.0
+[0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.1/
+[Diff from 0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.1..0.7.0#diff
 [0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.0/
 [Diff from 0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.0..0.6.0#diff
 [0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.6.0/
