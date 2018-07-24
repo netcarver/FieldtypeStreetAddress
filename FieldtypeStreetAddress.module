@@ -225,15 +225,16 @@ class FieldtypeStreetAddress extends Fieldtype
      */
     public function ___wakeupValue(Page $page, Field $field, $value)
     {
-        $address = $this->getBlankValue($page, $field);
+        $address   = $this->getBlankValue($page, $field);
         $subfields = StreetAddress::getAddressFieldNames();
+        $san       = $this->wire('sanitizer');
 
         // populate the address
-        $address->country_iso = $value['data'];
+        $address->country_iso = $san->text($value['data']);
         foreach ($subfields as $f) {
             if ('country_iso' === $f) continue;
             if ('origin_iso' === $f) continue;
-            $address->$f = $value["data_$f"];
+            $address->$f = $san->text(trim($value["data_$f"]));
         }
         $address->snapshot(); // Allow the isChanged() function to work.
 
@@ -252,13 +253,14 @@ class FieldtypeStreetAddress extends Fieldtype
             throw new WireException("Expecting an instance of StreetAddress");
         }
 
+        $san        = $this->wire('sanitizer');
         $sleepValue = [];
         $changed    = [];
-        $subfields = StreetAddress::getAddressFieldNames();
+        $subfields  = StreetAddress::getAddressFieldNames();
         foreach ($subfields as $f) {
             if (in_array($f, ['origin_iso', 'country'])) continue;
             $pre  = $value->$f;
-            $post = strip_tags(trim($pre));
+            $post = $san->text(trim($pre));
             if ('country_iso' === $f) {
                 $sleepValue["data"] = $post;
             } else {
