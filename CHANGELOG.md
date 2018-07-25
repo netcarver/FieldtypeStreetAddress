@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Use a little more width to allow for Kanji characters
+
 
 ## Version [0.7.1] - 2018-07-24
 
