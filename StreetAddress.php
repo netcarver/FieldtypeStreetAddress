@@ -483,7 +483,11 @@ class StreetAddress
         $international_layout = '%N%n%O%n%A%n%C, %S %Z %R';
 
         if (self::$country_formats === null) {
-            self::setFormats(include(__DIR__ . '/formats.php'));
+            $formats   = include_once(__DIR__.'/formats.php');
+            $overrides = include_once(__DIR__.'/formats_overrides.php');
+            $merged    = array_replace_recursive($formats, $overrides);
+            self::setFormats($merged);
+
         }
 
         $country_iso = strtoupper($country_iso);

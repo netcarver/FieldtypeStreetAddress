@@ -1401,7 +1401,7 @@ return [
     'zipex'=>'96898',
   ],
   'US'=>[
-    'fmt'=>'%N%n%O%n%A%n%C %S %Z',
+    'fmt'=>'%N%n%O%n%A%n%C, %S %Z',
     'lang'=>'en',
     'name'=>'UNITED STATES',
     'require'=>'ACSZ',
