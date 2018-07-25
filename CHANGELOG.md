@@ -7,6 +7,10 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+## Version [0.8.0] - 2018-07-25
+
+[Diff from 0.7.1]
+
 - Allow overrides to the libaddressinput feed data by merging the formats_overrides.php file.
 - Use a little more width to allow for Kanji characters.
 - Merge line checking JS code.
@@ -92,7 +96,9 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.7.0
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.8.0
+[0.8.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.8.0/
+[Diff from 0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.8.0..0.7.1#diff
 [0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.1/
 [Diff from 0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.1..0.7.0#diff
 [0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.0/
