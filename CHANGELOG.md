@@ -10,6 +10,10 @@ See the README.md file for more information.
 - Allow overrides to the libaddressinput feed data by merging the formats_overrides.php file.
 - Use a little more width to allow for Kanji characters.
 - Merge line checking JS code.
+- Update countries.php.
+- Rebuild formats.php from Google feeds.
+- Extend formats.php with State/Principality/Area regex checks.
+- Remove hard-coded data overrides out of the Inputfield into the data layer.
 
 
 ## Version [0.7.1] - 2018-07-24
