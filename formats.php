@@ -53,6 +53,9 @@ return [
     'zip'=>'(?:37)?\\d{4}',
     'zipex'=>'375010,0002,0010',
   ],
+  'AN'=>[
+    'name'=>'NETHERLANDS ANTILLES',
+  ],
   'AO'=>[
     'name'=>'ANGOLA',
   ],
@@ -309,6 +312,12 @@ return [
     'require'=>'ACS',
     'zip'=>'\\d{4,5}|\\d{3}-\\d{4}',
     'zipex'=>'1000,2010,1001',
+  ],
+  'CS'=>[
+    'fmt'=>'%N%n%O%n%A%n%Z %C',
+    'name'=>'SERBIA AND MONTENEGRO',
+    'zip'=>'\\d{5}',
+    'zipex'=>'11001',
   ],
   'CV'=>[
     'admin_area_regex'=>'(?:(Boa Vista|Brava|Fogo|Maio|Sal|Santiago|Santo Antão|São Nicolau|São Vicente))',
@@ -1594,6 +1603,12 @@ return [
     'upper'=>'ACX',
     'zip'=>'976\\d{2}',
     'zipex'=>'97600',
+  ],
+  'YU'=>[
+    'fmt'=>'%N%n%O%n%A%n%Z %C',
+    'name'=>'SERBIA AND MONTENEGRO',
+    'zip'=>'\\d{5}',
+    'zipex'=>'11001',
   ],
   'ZA'=>[
     'fmt'=>'%N%n%O%n%A%n%D%n%C%n%Z',
