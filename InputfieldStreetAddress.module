@@ -251,53 +251,12 @@ class InputfieldStreetAddress extends Inputfield
             $state_remap    = @$metadata['state_name_type'];
             $locality_remap = @$metadata['locality_name_type'];
             $zip_remap      = @$metadata['zip_name_type'];
+            $org_remap      = @$metadata['org_name_type']; // Not native to google feed
 
-            if ($state_remap)    $fields['admin_area']  = self::makeSafeString($state_remap, true);
-            if ($locality_remap) $fields['locality']    = self::makeSafeString($locality_remap, true);
-            if ($zip_remap)      $fields['postal_code'] = self::makeSafeString($zip_remap, true);
-
-            $iso = strtolower($iso);
-            switch ($iso) {
-            case 'ca':
-                $fields['admin_area']   = __('Province');
-                break;
-
-            case 'br':
-                $fields['postal_code']  = __('CEP');
-                break;
-
-            case 'in':
-                $fields['postal_code']  = __('Pin Code');
-                break;
-
-            case 'ie':
-                $fields['postal_code']  = __('Eircode');
-                break;
-
-            case 'gb':
-            case 'nl':
-            case 'au':
-                $fields['postal_code']  = __('Postcode');
-                break;
-
-            case 'de':
-            case 'at':
-            case 'li':
-                $fields['postal_code']  = __('PLZ');
-                break;
-
-            case 'it':
-                $fields['postal_code']  = __('CAP');
-                break;
-
-            case 'ph':
-                $fields['postal_code']  = __('Zip Code');
-                break;
-
-            case 'us':
-                $fields['organization'] = __('Organization');
-                break;
-            }
+            if ($state_remap)    $fields['admin_area']   = self::makeSafeString($state_remap, true);
+            if ($locality_remap) $fields['locality']     = self::makeSafeString($locality_remap, true);
+            if ($zip_remap)      $fields['postal_code']  = self::makeSafeString($zip_remap, true);
+            if ($org_remap)      $fields['organization'] = self::makeSafeString($org_remap, true);
         }
 
         $label = @$fields[$original];
