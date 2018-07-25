@@ -80,22 +80,6 @@ function updateInput() {
   }
 
 
-  // Check if we are malformed or OK...
-  var regex = $(this).attr('data-regex');
-  if (regex && has_content) {
-    malformed = null === this.value.match('^' + regex + '$');
-  } else if (!is_optional && !has_content) {
-    malformed = true;
-  } else {
-    malformed = false;
-  }
-  if (malformed) {
-    icon.find('i').attr('title', "This is not valid.");
-  }
-  $(this).toggleClass('streetaddress_malformed', malformed);
-  icon.toggleClass('streetaddress_hidden', !malformed);
-
-
   // Adjust the displayed street address field lines as needed. As content is deleted or added, lines are displayed or
   // hidden.
   if (!is_static && (is_address_1 || is_address_2 || is_address_3)) {
@@ -128,41 +112,61 @@ function updateInput() {
     }
   }
 
+  var regex = $(this).attr('data-regex');
 
-  // Check capitalisation (or lack thereof)...
-  value1   = this.value.trim();
-  value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim(); // Discount numerics and non-word chars here.
-
-  has_len  = value.length > 0;
-  if (has_len) {
-    is_upper = value  === value.toUpperCase();
-    is_lower = value  === value.toLowerCase();
-    is_title = value1 === titleCase(value1);
-    suggested_value   = titleCase(value1);
-
-    // console.log('[' + value1 + '] => [' + value + '] :: [' + suggested_value + ']');
-
-    switch(field) {
-      case 'postal_code' :
-      case 'country_iso':
-      case 'origin_iso' :
-        // Nothing to do!
-        break;
-
-      default:
-        if (has_len && is_upper) {
-          showLineWarning(this, icon, 'All UPPERCASE! Are you sure?', suggested_value);
-        } else if (has_len && is_lower) {
-          showLineWarning(this, icon, 'All lowercase! Are you sure?', suggested_value);
-        } else if (has_len && !is_title) {
-          showLineWarning(this, icon, 'Not Title Case! Are you sure?', suggested_value);
-        } else {
-          hideLineWarning(this, icon);
-        }
-        break;
+  if (!is_optional && !has_content) {
+    // Required field is empty!
+    icon.find('i').attr('title', "Cannot be blank.");
+    $(this).toggleClass('streetaddress_malformed', true);
+    icon.toggleClass('streetaddress_hidden', false);
+  } else if (regex && has_content) {
+    // Check if we are malformed or OK...
+    malformed = null === this.value.match('^' + regex + '$');
+    if (malformed) {
+      icon.find('i').attr('title', "This is not a valid value.");
     }
+    $(this).toggleClass('streetaddress_malformed', malformed);
+    icon.toggleClass('streetaddress_hidden', !malformed);
   } else {
-    hideLineWarning(this, icon);
+    // Clear the malformed markers and...
+    $(this).toggleClass('streetaddress_malformed', false);
+    icon.toggleClass('streetaddress_hidden', true);
+
+    // ...check capitalisation (or lack thereof)...
+    value1   = this.value.trim();
+    value    = value1.replace(/[\d]/g, '').replace(/[\W]/g, '').trim(); // Discount numerics and non-word chars here.
+
+    has_len  = value.length > 0;
+    if (has_len) {
+      is_upper = value  === value.toUpperCase();
+      is_lower = value  === value.toLowerCase();
+      is_title = value1 === titleCase(value1);
+      suggested_value   = titleCase(value1);
+
+      // console.log('[' + value1 + '] => [' + value + '] :: [' + suggested_value + ']');
+
+      switch(field) {
+        case 'postal_code' :
+        case 'country_iso':
+        case 'origin_iso' :
+          // Nothing to do!
+          break;
+
+        default:
+          if (has_len && is_upper) {
+            showLineWarning(this, icon, 'All UPPERCASE! Are you sure?', suggested_value);
+          } else if (has_len && is_lower) {
+            showLineWarning(this, icon, 'All lowercase! Are you sure?', suggested_value);
+          } else if (has_len && !is_title) {
+            showLineWarning(this, icon, 'Not Title Case! Are you sure?', suggested_value);
+          } else {
+            hideLineWarning(this, icon);
+          }
+          break;
+      }
+    } else {
+      hideLineWarning(this, icon);
+    }
   }
 }
 
