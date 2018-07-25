@@ -214,7 +214,7 @@ class InputfieldStreetAddress extends Inputfield
     {
         $width      = (int) mb_strlen($string, 'utf-8');
         if ($width > 0) {
-            $width += 1;
+            $width += 2;
         } else {
             $width = (int) mb_strlen($placeholder_text, 'utf-8');
             if ($width > 0) {

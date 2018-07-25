@@ -26,7 +26,7 @@ function hideLineWarning(el, icon) {
 
 
 function updateInput() {
-  var add                  = 1;
+  var add                  = 2;
   var len                  = this.value.length;
   var mathlen              = len;
   var is_optional          = $(this).hasClass('streetaddress_optional');
