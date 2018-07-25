@@ -7,6 +7,9 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Extend State/Principality/Area regex checking to the static table view.
+
+
 ## Version [0.8.0] - 2018-07-25
 
 [Diff from 0.7.1]
