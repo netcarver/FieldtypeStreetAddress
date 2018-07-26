@@ -7,6 +7,7 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Add popups offering corrective action choices.
 - Extend State/Principality/Area regex checking to the static table view.
 - Rebuild formats.php from Google feeds.
 - Bugfix: js conversion to title case when there are multiple spaces between words.
