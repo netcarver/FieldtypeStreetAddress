@@ -9,6 +9,7 @@ See the README.md file for more information.
 
 - Extend State/Principality/Area regex checking to the static table view.
 - Rebuild formats.php from Google feeds.
+- Bugfix: js conversion to title case when there are multiple spaces between words.
 
 
 ## Version [0.8.0] - 2018-07-25
