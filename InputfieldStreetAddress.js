@@ -3,6 +3,7 @@
  * https://www.sitepoint.com/community/t/capitalizing-first-letter-of-each-word-in-string/209644/2
  */
 function titleCase(str) {
+  str = str.replace(/[ ]+/g, ' ');       // runs of spaces -> single space
   words = str.toLowerCase().split(' ');
 
   for(var i = 0; i < words.length; i++) {
@@ -13,16 +14,21 @@ function titleCase(str) {
   return words.join(' ');
 }
 
+
+
 function showLineWarning(el, icon, msg, suggested) {
   $(el).addClass('streetaddress_malformed_caps');
   icon.find('i').attr('title', msg);
   icon.removeClass('streetaddress_hidden');
 }
 
+
+
 function hideLineWarning(el, icon) {
   $(el).removeClass('streetaddress_malformed_caps');
   icon.addClass('streetaddress_hidden');
 }
+
 
 
 function updateInput() {
