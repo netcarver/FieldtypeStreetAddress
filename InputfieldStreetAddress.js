@@ -270,7 +270,8 @@ $(document).on('click', 'span.streetaddress_icon', function(e) {
   if (text.length > 0) {
     text = escapeHtml(text);
     titlecase = titleCase(text);
-    this.title = "<h5>Actions</h5><a class='streetaddress_entitle streetaddress_choice' data-target-id='" + id + "' data-replacement='" + titlecase + "'>Replace with <strong>'" + titlecase + "'</strong>?</a><br><a class='streetaddress_choice'>Leave it unchanged.</a>";
+    this.title = "<h5>Actions</h5><a class='streetaddress_entitle streetaddress_choice' data-target-id='" + id + "' data-replacement='" + titlecase + "'>Replace with <strong>'" + titlecase + "'</strong>?</a>" +
+      "<br><a class='streetaddress_choice'><strong>Leave it unchanged.</strong></a>";
     this.modal_flag = !this.modal_flag;
     this.modal_flag ? tlite.show(this, {grav: 'w'}): tlite.hide(this);
   }

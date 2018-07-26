@@ -115,7 +115,7 @@ div.streetaddress_unused_fields {
 
 .tlite-visible {
   visibility: visible;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .tlite::before {
