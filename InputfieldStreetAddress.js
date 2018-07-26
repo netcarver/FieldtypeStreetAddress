@@ -1,3 +1,7 @@
+function tlite(t){document.addEventListener("mouseover",function(e){var i=e.target,n=t(i);n||(n=(i=i.parentElement)&&t(i)),n&&tlite.show(i,n,!0)})}tlite.show=function(t,e,i){var n="data-tlite";e=e||{},(t.tooltip||function(t,e){function o(){tlite.hide(t,!0)}function l(){r||(r=function(t,e,i){function n(){o.className="tlite tlite-"+r+s;var e=t.offsetTop,i=t.offsetLeft;o.offsetParent===t&&(e=i=0);var n=t.offsetWidth,l=t.offsetHeight,d=o.offsetHeight,f=o.offsetWidth,a=i+n/2;o.style.top=("s"===r?e-d-10:"n"===r?e+l+10:e+l/2-d/2)+"px",o.style.left=("w"===s?i:"e"===s?i+n-f:"w"===r?i+n+10:"e"===r?i-f-10:a-f/2)+"px"}var o=document.createElement("span"),l=i.grav||t.getAttribute("data-tlite")||"n";o.innerHTML=e,t.appendChild(o);var r=l[0]||"",s=l[1]||"";n();var d=o.getBoundingClientRect();return"s"===r&&d.top<0?(r="n",n()):"n"===r&&d.bottom>window.innerHeight?(r="s",n()):"e"===r&&d.left<0?(r="w",n()):"w"===r&&d.right>window.innerWidth&&(r="e",n()),o.className+=" tlite-visible",o}(t,d,e))}var r,s,d;return t.addEventListener("mousedown",o),t.addEventListener("mouseleave",o),t.tooltip={show:function(){d=t.title||t.getAttribute(n)||d,t.title="",t.setAttribute(n,""),d&&!s&&(s=setTimeout(l,i?150:1))},hide:function(t){if(i===t){s=clearTimeout(s);var e=r&&r.parentNode;e&&e.removeChild(r),r=void 0}}}}(t,e)).show()},tlite.hide=function(t,e){t.tooltip&&t.tooltip.hide(e)},"undefined"!=typeof module&&module.exports&&(module.exports=tlite);
+
+
+
 /**
  * Found in sitepoint forums...
  * https://www.sitepoint.com/community/t/capitalizing-first-letter-of-each-word-in-string/209644/2
@@ -160,11 +164,11 @@ function updateInput() {
 
         default:
           if (has_len && is_upper) {
-            showLineWarning(this, icon, 'All UPPERCASE! Are you sure?', suggested_value);
+            showLineWarning(this, icon, 'All UPPERCASE! Click to change.', suggested_value);
           } else if (has_len && is_lower) {
-            showLineWarning(this, icon, 'All lowercase! Are you sure?', suggested_value);
+            showLineWarning(this, icon, 'All lowercase! Click to change.', suggested_value);
           } else if (has_len && !is_title) {
-            showLineWarning(this, icon, 'Not Title Case! Are you sure?', suggested_value);
+            showLineWarning(this, icon, 'Not Title Case! Click to change.', suggested_value);
           } else {
             hideLineWarning(this, icon);
           }
@@ -236,6 +240,51 @@ $(document).ready(function() {
      */
     $('.streetaddress_country').removeClass('streetaddress_hidden');
 });
+
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string) {
+  string = string.replace(/<\/?[^>]+(>|$)/g, "");
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
+}
+
+/**
+ * Handle actions when user clicks a warning icon...
+ */
+$(document).on('click', 'span.streetaddress_icon', function(e) {
+  id = $(this).attr('id').replace(/_icon$/, '');
+  id = escapeHtml(id);
+  text = $('#'+id).val().trim();
+  titlecase = '';
+  if (text.length > 0) {
+    text = escapeHtml(text);
+    titlecase = titleCase(text);
+    this.title = "<h5>Actions</h5><a class='streetaddress_entitle streetaddress_choice' data-target-id='" + id + "' data-replacement='" + titlecase + "'>Replace with <strong>'" + titlecase + "'</strong>?</a><br><a class='streetaddress_choice'>Leave it unchanged.</a>";
+    this.modal_flag = !this.modal_flag;
+    this.modal_flag ? tlite.show(this, {grav: 'w'}): tlite.hide(this);
+  }
+});
+
+$(document).on('click', 'a.streetaddress_entitle', function(e) {
+  // target_id = '#' + escapeHtml(e.target.attributes['data-target-id'].value);
+  // replacement = escapeHtml(e.target.attributes['data-replacement'].value);
+  target_id = '#' + e.target.attributes['data-target-id'].value;
+  replacement = e.target.attributes['data-replacement'].value;
+  $(target_id).val(replacement).removeClass('streetaddress_malformed_caps');
+  $(target_id+'_icon').addClass('streetaddress_hidden');
+});
+
 
 
 $(document).on('reloaded', '.InputfieldStreetAddress', function(event) {
