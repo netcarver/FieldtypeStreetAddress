@@ -126,7 +126,7 @@ function updateInput() {
 
   if (!is_optional && !has_content) {
     // Required field is empty!
-    icon.find('i').attr('title', "Cannot be blank.");
+    icon.find('i').attr('title', "Should not be left blank.");
     $(this).toggleClass('streetaddress_malformed', true);
     icon.toggleClass('streetaddress_hidden', false);
   } else if (regex && has_content) {
