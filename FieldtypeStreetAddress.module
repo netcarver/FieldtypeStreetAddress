@@ -28,7 +28,7 @@ class FieldtypeStreetAddress extends Fieldtype
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.8.0',
             'author'   => 'Netcarver',
-            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect, TextfomatterTagParser',
+            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
             'icon'     => 'envelope',
             'require'  => 'php>5.4.0',
         ];
@@ -48,7 +48,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
-     * Allow checking for empty values in conditinals
+     * Allow checking for empty values in conditionals
      */
     public function isEmptyValue(Field $field, $value) {
         return $value->isEmpty();

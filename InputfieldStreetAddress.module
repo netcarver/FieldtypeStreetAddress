@@ -18,7 +18,7 @@ class InputfieldStreetAddress extends Inputfield
             'version'  => '0.8.0',
             'icon'     => 'envelope',
             'author'   => 'Netcarver',
-            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize", "TextformatterTagParser"],
+            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize"],
         ];
     }
 
