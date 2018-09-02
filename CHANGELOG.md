@@ -7,8 +7,9 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
-- Add popups offering corrective action choices.
+- Add popups offering corrective action choices. Uses the MIT-licensed [tlite] library.
 - Extend State/Principality/Area regex checking to the static table view.
+- Allow locality and postal_code to the surpressable fields in the config settings.
 - Rebuild formats.php from Google feeds.
 - Bugfix: js conversion to title case when there are multiple spaces between words.
 
@@ -102,6 +103,7 @@ See the README.md file for more information.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
+[tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.8.0
 [0.8.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.8.0/
 [Diff from 0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.8.0..0.7.1#diff
