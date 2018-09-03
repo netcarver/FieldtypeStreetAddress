@@ -12,7 +12,7 @@ See the README.md file for more information.
 - Allow locality and postal_code to the surpressable fields in the config settings.
 - Rebuild formats.php from Google feeds.
 - Bugfix: JS conversion to title case when there are multiple spaces between words.
-- Bugfix: Don't do all-uppercase tests on single character inputs as they could validly start with an uppercase letter.
+- Bugfix: Don't do all-uppercase tests on single-character inputs, as they could validly start with an uppercase letter.
 
 ## Version [0.8.0] - 2018-07-25
 
