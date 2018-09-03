@@ -1,0 +1,8 @@
+# Prevent export of the feed->cache build scripts and partial results dir.
+buildFromFeed.php   export-ignore
+formats_default.php export-ignore
+Locales/            export-ignore
+TODO.md             export-ignore
+
+# Prevent export of any tests.
+Tests/            export-ignore
