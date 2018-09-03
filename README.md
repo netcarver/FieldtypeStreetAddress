@@ -7,7 +7,7 @@ Inputfield and storage for addresses in ProcessWire. Based upon the address meta
 Prerequisites
 -------------
 
-- If you don't have the module [TextformatterTagParser](http://modules.processwire.com/modules/textformatter-tag-parser/) installed, please log in to your PW admin interface and install it.
+- A working PW3+ installation.
 
 
 

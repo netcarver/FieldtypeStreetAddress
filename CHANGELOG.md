@@ -7,6 +7,9 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Docs: Remove outdated prerequisites.
+
+
 ## Version [0.9.0] - 2018-09-03
 
 [Diff from 0.8.0]
