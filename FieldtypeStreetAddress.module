@@ -28,7 +28,7 @@ class FieldtypeStreetAddress extends Fieldtype
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
             'version'  => '0.8.0',
             'author'   => 'Netcarver',
-            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect, TextfomatterTagParser',
+            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
             'icon'     => 'envelope',
             'require'  => 'php>5.4.0',
         ];
@@ -48,7 +48,7 @@ class FieldtypeStreetAddress extends Fieldtype
 
 
     /**
-     * Allow checking for empty values in conditinals
+     * Allow checking for empty values in conditionals
      */
     public function isEmptyValue(Field $field, $value) {
         return $value->isEmpty();
@@ -453,11 +453,13 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->attr('id+name', 'hideEmptyFields');
         $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
         $f->attr('value', $field->hideEmptyFields);
+        $f->addOption('admin_area');
+        $f->addOption('locality');
         $f->addOption('recipient');
         $f->addOption('organization');
         $f->addOption('dependent_locality');
+        $f->addOption('postal_code');
         $f->addOption('sorting_code');
-        $f->addOption('admin_area');
         $f->showIf = "inputFormat=0";
         $input_wrapper->append($f);
 

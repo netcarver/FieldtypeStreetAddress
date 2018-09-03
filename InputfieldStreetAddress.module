@@ -18,7 +18,7 @@ class InputfieldStreetAddress extends Inputfield
             'version'  => '0.8.0',
             'icon'     => 'envelope',
             'author'   => 'Netcarver',
-            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize", "TextformatterTagParser"],
+            'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize"],
         ];
     }
 
@@ -390,9 +390,9 @@ class InputfieldStreetAddress extends Inputfield
                         $line3_class    .= ' streetaddress_hidden';
                     }
 
-                    $out[] = "<input $width  data-name='{$this->name}' data-field='street_address'   title='$title'  class='$classes'     placeholder='$ph'  type='text' name='{$this->name}_$key'  maxlength=128 id='Inputfield_{$this->name}_$key'  value='{$safe_fieldvalue}' /> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span><br class='$line2_br_class'>";
-                    $out[] = "<input $width2 data-name='{$this->name}' data-field='street_address_2' title='$title2' class='$line2_class' placeholder='$ph2' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$safe_fieldvalue2}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key2}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span><br class='$line3_br_class'>";
-                    $out[] = "<input $width3 data-name='{$this->name}' data-field='street_address_3' title='$title3' class='$line3_class' placeholder='$ph3' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$safe_fieldvalue3}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key3}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
+                    $out[] = "<input $width  data-name='{$this->name}' data-field='street_address'   title='$title'  class='$classes'     placeholder='$ph'  type='text' name='{$this->name}_$key'  maxlength=128 id='Inputfield_{$this->name}_$key'  value='{$safe_fieldvalue}' /> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span><br class='$line2_br_class'>";
+                    $out[] = "<input $width2 data-name='{$this->name}' data-field='street_address_2' title='$title2' class='$line2_class' placeholder='$ph2' type='text' name='{$this->name}_$key2' maxlength=128 id='Inputfield_{$this->name}_$key2' value='{$safe_fieldvalue2}'/> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$key2}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span><br class='$line3_br_class'>";
+                    $out[] = "<input $width3 data-name='{$this->name}' data-field='street_address_3' title='$title3' class='$line3_class' placeholder='$ph3' type='text' name='{$this->name}_$key3' maxlength=128 id='Inputfield_{$this->name}_$key3' value='{$safe_fieldvalue3}'/> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$key3}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
                 } else if ('Z' === $fmtcode || 'S' === $fmtcode) {
                     $example = '';
                     $regex = ('Z' === $fmtcode) ? @$metadata['zip'] : @$metadata['admin_area_regex'];
@@ -425,14 +425,14 @@ class InputfieldStreetAddress extends Inputfield
                         $regex = '';
                     }
 
-                    $out[] = "<input $regex $width title='$title' data-field='$key' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
+                    $out[] = "<input $regex $width title='$title' data-field='$key' class='$classes' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
                 } else if (array_key_exists($fmtcode, $mappings)) {
                     if ('S' === $fmtcode && $regex) {
                         $regex = ' data-regex="' . htmlspecialchars($regex, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '"';
                     } else {
                         $regex = '';
                     }
-                    $out[] = "<input $width title='$title' class='$classes' data-field='$key' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
+                    $out[] = "<input $width title='$title' class='$classes' data-field='$key' placeholder='$ph' type='text' name='{$this->name}_$key' maxlength=128 id='Inputfield_{$this->name}_$key' value='{$safe_fieldvalue}'/> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$key}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
                 } else if ('n' === $fmtcode) {
                     // Pass over leading 'n' markers. These can be left over from removing the recipient and/or organisation.
                     if (!empty($out)) {
@@ -595,7 +595,7 @@ HTML;
                         }
                     }
                     $classes = implode(' ', $classes);
-                    $input = "<input $regex title='$title' class='$classes' data-field='$f' style='width:90%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/> <span class='streetaddress_hidden' id='Inputfield_{$this->name}_{$f}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
+                    $input = "<input $regex title='$title' class='$classes' data-field='$f' style='width:90%' type='text' name='{$this->name}_$f' maxlength=128 id='Inputfield_{$this->name}_$f' value='{$safe_fieldvalue}'/> <span class='streetaddress_icon streetaddress_hidden' id='Inputfield_{$this->name}_{$f}_icon'><i class='fa fa-{$icon_to_use}' title=''></i></span>";
                 }
                 $notes = "<span class='small'>" . self::makeTitle($parts) . "</span>";
                 if (!$in_layout && !$is_iso) $label = "<strike>$label</strike>";
