@@ -152,7 +152,7 @@ function updateInput() {
 
     has_len  = value.length > 0;
     if (has_len) {
-      is_upper = value  === value.toUpperCase();
+      is_upper = (value.length > 1) && (value  === value.toUpperCase()); // Don't warn if first (and only) entered char is uppercase.
       is_lower = value  === value.toLowerCase();
       is_title = value1 === titleCase(value1);
       suggested_value   = titleCase(value1);
