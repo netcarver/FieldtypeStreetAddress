@@ -8,6 +8,7 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Docs: Remove outdated prerequisites.
+- Add .gitattributes file.
 
 
 ## Version [0.9.0] - 2018-09-03
