@@ -74,6 +74,18 @@ class InputfieldStreetAddress extends Inputfield
         $this->modules->JquerySelectize;
         $dir = dirname(__FILE__);
         require_once "$dir/StreetAddress.php";
+        $this->config->js('InputfieldStreetAddress', [
+            'i18n' => [
+                'noblanks'    => __("Should not be left blank."),
+                'malformed'   => __("This is not a valid value."),
+                'uppercase'   => __("All UPPERCASE! Click to change."),
+                'lowercase'   => __("All lowercase! Click to change."),
+                'nottitle'    => __("Not Title Case! Click to change."),
+                'actions'     => __("Actions"),
+                'replacewith' => __("Replace with: "),
+                'leaveit'     => __("Leave unchanged."),
+            ],
+        ]);
         return parent::init();
     }
 
@@ -141,7 +153,8 @@ class InputfieldStreetAddress extends Inputfield
     {
         $id  = htmlspecialchars(strip_tags($id), ENT_HTML5 | ENT_QUOTES, 'utf-8');
         $w   = 'width: 30ch;';
-        $out = "<select $attr id='$id' name='$name' placeholder='Country (required)' style='$w' class='streetaddress streetaddress_country streetaddress_hidden'>";
+        $ph  = __("Country (required)", __FILE__);
+        $out = "<select $attr id='$id' name='$name' placeholder='$ph' style='$w' class='streetaddress streetaddress_country streetaddress_hidden'>";
         foreach ($data as $iso => $country) {
             //$country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
             $selected = ($current === $iso) ? 'selected=selected ' : '';

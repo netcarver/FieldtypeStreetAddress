@@ -40,6 +40,7 @@ function hideLineWarning(el, icon) {
 
 
 function updateInput() {
+  var conf                 = config.InputfieldStreetAddress;
   var add                  = 2;
   var len                  = this.value.length;
   var mathlen              = len;
@@ -130,14 +131,14 @@ function updateInput() {
 
   if (!is_optional && !has_content) {
     // Required field is empty!
-    icon.find('i').attr('title', "Should not be left blank.");
+    icon.find('i').attr('title', config.i18n.noblanks);
     $(this).toggleClass('streetaddress_malformed', true);
     icon.toggleClass('streetaddress_hidden', false);
   } else if (regex && has_content) {
     // Check if we are malformed or OK...
     malformed = null === this.value.match('^' + regex + '$');
     if (malformed) {
-      icon.find('i').attr('title', "This is not a valid value.");
+      icon.find('i').attr('title', conf.i18n.malformed);
     }
     $(this).toggleClass('streetaddress_malformed', malformed);
     icon.toggleClass('streetaddress_hidden', !malformed);
@@ -168,11 +169,11 @@ function updateInput() {
 
         default:
           if (has_len && is_upper) {
-            showLineWarning(this, icon, 'All UPPERCASE! Click to change.', suggested_value);
+            showLineWarning(this, icon, conf.i18n.uppercase, suggested_value);
           } else if (has_len && is_lower) {
-            showLineWarning(this, icon, 'All lowercase! Click to change.', suggested_value);
+            showLineWarning(this, icon, conf.i18n.lowercase, suggested_value);
           } else if (has_len && !is_title) {
-            showLineWarning(this, icon, 'Not Title Case! Click to change.', suggested_value);
+            showLineWarning(this, icon, conf.i18n.nottitle, suggested_value);
           } else {
             hideLineWarning(this, icon);
           }
@@ -267,6 +268,7 @@ function escapeHtml(string) {
  * Handle actions when user clicks a warning icon...
  */
 $(document).on('click', 'span.streetaddress_icon', function(e) {
+  var conf = config.InputfieldStreetAddress;
   id = $(this).attr('id').replace(/_icon$/, '');
   id = escapeHtml(id);
   text = $('#'+id).val().trim();
@@ -274,8 +276,10 @@ $(document).on('click', 'span.streetaddress_icon', function(e) {
   if (text.length > 0) {
     text = escapeHtml(text);
     titlecase = titleCase(text);
-    this.title = "<h5>Actions</h5><a class='streetaddress_entitle streetaddress_choice' data-target-id='" + id + "' data-replacement='" + titlecase + "'>Replace with <strong>'" + titlecase + "'</strong>?</a>" +
-      "<br><a class='streetaddress_choice'><strong>Leave it unchanged.</strong></a>";
+    this.title = "<h5>" + conf.i18n.actions + "</h5>" +
+      "<a class='streetaddress_entitle streetaddress_choice' data-target-id='" + id + "' data-replacement='" + titlecase +
+      "'>" + conf.i18n.replacewith + " <strong>'" + titlecase + "'</strong></a>" +
+      "<br><a class='streetaddress_choice'><strong>" + conf.i18n.leaveit + "</strong></a>";
     this.modal_flag = !this.modal_flag;
     this.modal_flag ? tlite.show(this, {grav: 'w'}): tlite.hide(this);
   }
