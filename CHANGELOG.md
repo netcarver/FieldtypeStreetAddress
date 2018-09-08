@@ -8,6 +8,14 @@ See the README.md file for more information.
 ## [Upcoming]
 
 
+## Version [1.0.0] - 2018-09-08
+
+[Diff from 0.9.1]
+
+- Add MIT License
+- First public release
+
+
 ## Version [0.9.1] - 2018-09-07
 
 [Diff from 0.9.0]
@@ -118,7 +126,9 @@ See the README.md file for more information.
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
-[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..0.9.1
+[Upcoming]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/HEAD..1.0.0
+[1.0.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/1.0.0/
+[Diff from 0.9.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/1.0.0..0.9.1#diff
 [0.9.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.9.1/
 [Diff from 0.9.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.9.1..0.9.0#diff
 [0.9.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.9.0/
