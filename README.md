@@ -14,6 +14,13 @@ Prerequisites
 Installation
 ------------
 
+### Via Modules Page In Admin
+
+- Install using module class name of "FieldtypeStreetAddress"
+
+
+### Manually
+
 - Create a new directory under your ```site/modules``` folder called "FieldtypeStreetAddress"
 - Save the files from this package into the new directory.
 - Log into your PW admin interface and go to Modules > Refresh and then install the "FieldtypeStreetAddress" & "InputfieldStreetAddress" modules.
