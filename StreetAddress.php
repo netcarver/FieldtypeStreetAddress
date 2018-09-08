@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 /**
- *
+ * 2018 Netcarver.
  *
  */
 
@@ -9,8 +9,6 @@ class StreetAddress
 {
     /**
      * Store initial wakeup values to allow detection of changed fields.
-     *
-     * @var $snapshot array
      */
     protected $snapshot = [];
 
@@ -221,19 +219,20 @@ class StreetAddress
         return self::$remappings;
     }
 
+
     /**
-     * Used when formatting an address...
+     * Google's address field shortcut letters. Used when formatting an address.
      */
     protected static $address_mapping = [
-        'S' => 'admin_area',
-        'C' => 'locality',          // city
-        'N' => 'recipient',         // name
-        'O' => 'organization',      // organization
-        'D' => 'dependent_locality',
-        'Z' => 'postal_code',
-        'X' => 'sorting_code',
         'A' => 'street_address',
+        'C' => 'locality',
+        'D' => 'dependent_locality',
+        'N' => 'recipient',
+        'O' => 'organization', // Yes, dealing with American spelling from Google.
         'R' => 'country',
+        'S' => 'admin_area',
+        'X' => 'sorting_code',
+        'Z' => 'postal_code',
     ];
 
 
@@ -241,6 +240,7 @@ class StreetAddress
     {
         return self::$address_mapping;
     }
+
 
     /**
      * Itemprops for generating HTML with PostalAddress schema markup.
@@ -260,7 +260,7 @@ class StreetAddress
 
 
     /**
-     * @var array
+     * Scratch for values.
      */
     protected static $address_lines = [
         'recipient'          => '',

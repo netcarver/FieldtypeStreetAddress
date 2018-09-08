@@ -3,7 +3,7 @@
 
 /**
  * ProcessWire Address Fieldtype
- * by Netcarver.
+ * Copyright 2018 Netcarver.
  *
  * Field that stores string values for street addresses.
  *
