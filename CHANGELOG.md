@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Switch formats.php and countries.php over to the Apache2.0 license (as derived works from [libaddressinput].)
+
 
 ## Version [1.0.0] - 2018-09-08
 

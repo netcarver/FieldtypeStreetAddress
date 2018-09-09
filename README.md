@@ -118,5 +118,10 @@ object via the ```getUnformatted()``` call.
 ```
 
 
+## License(s)
 
-2018/06
+The files _formats.php_ and _countries.php_ are derived from LibAddressInput meta data and are released under the
+Apache-2.0 license as that seems to be what the project is using.
+
+All other files are released under the MIT license.
+
