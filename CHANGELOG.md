@@ -9,6 +9,7 @@ See the README.md file for more information.
 
 - Bugfix: correct access to noblanks i18n string in JS file.
 - Switch formats.php and countries.php over to the Apache2.0 license (as derived works from [libaddressinput].)
+- Changelog: Convert diff links to github.
 
 
 ## Version [1.0.0] - 2018-09-08
@@ -130,28 +131,28 @@ See the README.md file for more information.
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.0...HEAD
-[1.0.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/1.0.0/
-[Diff from 0.9.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/1.0.0..0.9.1#diff
-[0.9.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.9.1/
-[Diff from 0.9.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.9.1..0.9.0#diff
-[0.9.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.9.0/
-[Diff from 0.8.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.9.0..0.8.0#diff
-[0.8.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.8.0/
-[Diff from 0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.8.0..0.7.1#diff
-[0.7.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.1/
-[Diff from 0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.1..0.7.0#diff
-[0.7.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.7.0/
-[Diff from 0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.7.0..0.6.0#diff
-[0.6.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.6.0/
-[Diff from 0.5.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.6.0..0.5.1#diff
-[0.5.1]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.5.1/
-[Diff from 0.5.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.5.1..0.5.0#diff
-[0.5.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.5.0/
-[Diff from 0.4.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.5.0..0.4.0#diff
-[0.4.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.4.0/
-[Diff from 0.3.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.4.0..0.3.0#diff
-[0.3.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.3.0/
-[Diff from 0.2.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.3.0..0.2.0#diff
-[0.2.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.2.0/
-[Diff from 0.1.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/branches/compare/0.2.0..0.1.0#diff
-[0.1.0]: https://bitbucket.org/netcarver/fieldtypestreetaddress/src/0.1.0/
+[1.0.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.0/
+[Diff from 0.9.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.9.1...1.0.0
+[0.9.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.9.1/
+[Diff from 0.9.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.9.0...0.9.1#diff
+[0.9.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.9.0/
+[Diff from 0.8.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.8.0...0.9.0#diff
+[0.8.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.8.0/
+[Diff from 0.7.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.7.1...0.8.0#diff
+[0.7.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.7.1/
+[Diff from 0.7.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.7.0...0.7.1#diff
+[0.7.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.7.0/
+[Diff from 0.6.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.6.0...0.7.0#diff
+[0.6.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.6.0/
+[Diff from 0.5.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.5.1...0.6.0#diff
+[0.5.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.5.1/
+[Diff from 0.5.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.5.0...0.5.1#diff
+[0.5.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.5.0/
+[Diff from 0.4.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.4.0...0.5.0#diff
+[0.4.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.4.0/
+[Diff from 0.3.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.3.0...0.4.0#diff
+[0.3.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.3.0/
+[Diff from 0.2.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.2.0...0.3.0#diff
+[0.2.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.2.0/
+[Diff from 0.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.1.0...0.2.0#diff
+[0.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.1.0/
