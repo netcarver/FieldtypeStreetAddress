@@ -7,6 +7,11 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+
+## Version [1.0.1] - 2018-09-10
+
+[Diff from 1.0.0]
+
 - Bugfix: correct access to noblanks i18n string in JS file.
 - Switch formats.php and countries.php over to the Apache2.0 license (as derived works from [libaddressinput].)
 - Changelog: Convert diff links to github.
@@ -130,7 +135,9 @@ See the README.md file for more information.
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
-[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.0...HEAD
+[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.1/
+[Diff from 1.0.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.0/
 [Diff from 0.9.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/0.9.1...1.0.0
 [0.9.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/0.9.1/
