@@ -7,6 +7,7 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Bugfix: correct access to noblanks i18n string in JS file.
 - Switch formats.php and countries.php over to the Apache2.0 license (as derived works from [libaddressinput].)
 
 

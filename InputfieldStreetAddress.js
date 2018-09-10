@@ -131,7 +131,7 @@ function updateInput() {
 
   if (!is_optional && !has_content) {
     // Required field is empty!
-    icon.find('i').attr('title', config.i18n.noblanks);
+    icon.find('i').attr('title', conf.i18n.noblanks);
     $(this).toggleClass('streetaddress_malformed', true);
     icon.toggleClass('streetaddress_hidden', false);
   } else if (regex && has_content) {
