@@ -7,6 +7,8 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- Update formats_override.php example.
+
 
 ## Version [1.0.1] - 2018-09-10
 
