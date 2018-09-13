@@ -20,6 +20,7 @@ class InputfieldStreetAddress extends Inputfield
             'icon'     => 'envelope',
             'author'   => 'Netcarver',
             'requires' => ["FieldtypeStreetAddress", "MarkupAdminDataTable", "JquerySelectize"],
+            'installs' => 'JquerySelectize',
         ];
     }
 
