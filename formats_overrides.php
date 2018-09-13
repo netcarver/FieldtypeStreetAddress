@@ -1,12 +1,14 @@
 <?php
 
 /**
- * Whatever you define here will override the values from the libaddressinput feed.
+ * This file allows you to override the LibAddressInput derived metadata cached in the
+ * formats.php file. To override...
  *
- * For example, to override the US address format to remove the comma after the City field you'd add this...
- * 'US'=>[
- *     'fmt'=>'%N%n%O%n%A%n%C %S %Z',
- * ],
+ * 1) Rename this file: formats_overrides.php
+ * 2) Update the returned array to override whatever metadata field you wish.
+ *
+ * For example, to override the US address format to remove the comma after the City field
+ * simply uncomment the lines below.
  */
 
 return [
