@@ -475,18 +475,25 @@ class StreetAddress
 
 
     /**
-     * @param string $country
-     * @return mixed
      */
     public static function getFormat($country_iso)
     {
         $international_layout = '%N%n%O%n%A%n%C, %S %Z %R';
 
         if (self::$country_formats === null) {
-            $formats   = include_once(__DIR__.'/formats.php');
-            $overrides = include_once(__DIR__.'/formats_overrides.php');
-            $merged    = array_replace_recursive($formats, $overrides);
-            self::setFormats($merged);
+            $formats        = include_once(__DIR__.'/formats.php');
+            $overrides      = false;
+            $overrides_file = __DIR__.'/formats_overrides.php';
+
+            if (file_exists($overrides_file)) {
+                $overrides = include_once($overrides_file);
+            }
+
+            if (is_array($overrides)) {
+                $formats = array_replace_recursive($formats, $overrides);
+            }
+
+            self::setFormats($formats);
 
         }
 

@@ -26,7 +26,7 @@ class FieldtypeStreetAddress extends Fieldtype
         return [
             'title'    => __('Street Address'),
             'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
-            'version'  => '1.0.2',
+            'version'  => '1.0.3',
             'author'   => 'Netcarver',
             'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
             'icon'     => 'envelope',
@@ -529,5 +529,25 @@ class FieldtypeStreetAddress extends Fieldtype
         $inputfields->append($output_wrapper);
 
         return $inputfields;
+    }
+
+
+    public function upgrade($fromVersion, $toVersion) {
+        if ($fromVersion !== $toVersion) {
+            // Try copying the format overrides file back into our location from where the PW Upgrades module may have
+            // moved it. This allows preservation of an installation's formats_overrides.php file between upgrades done
+            // with the PW Upgrades module. Manual upgrades by unpacking a zip in place should not overwrite the
+            // destination file as it doesn't exist in the source zip.
+
+            $sitemods = wire('config')->paths->siteModules;
+            $backup   = "$sitemods/.FieldtypeStreetAddress";
+            $file     = "formats_overrides.php";
+            $src      = "$backup/$file";
+            $dest     = __DIR__."/$file";
+
+            if (file_exists($src) && !file_exists($dest)) {
+                copy($src, $dest);
+            }
+        }
     }
 }
