@@ -7,7 +7,14 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
-- Update formats_override.php example.
+
+## Version [1.0.2] - 2018-09-13
+
+[Diff from 1.0.1]
+
+- Update formats_override.php example and comments.
+- Rename formats_overrides.php to example.format_overrides.php to prevent overwrite on update.
+- Add missing install of JquerySelectize module to InputfieldStreetAddress.
 
 
 ## Version [1.0.1] - 2018-09-10
@@ -138,6 +145,8 @@ See the README.md file for more information.
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.1...HEAD
+[1.0.2]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.2/
+[Diff from 1.0.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.1/
 [Diff from 1.0.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.0/
