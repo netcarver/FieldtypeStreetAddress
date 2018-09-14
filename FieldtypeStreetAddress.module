@@ -532,22 +532,52 @@ class FieldtypeStreetAddress extends Fieldtype
     }
 
 
-    public function upgrade($fromVersion, $toVersion) {
-        if ($fromVersion !== $toVersion) {
-            // Try copying the format overrides file back into our location from where the PW Upgrades module may have
-            // moved it. This allows preservation of an installation's formats_overrides.php file between upgrades done
-            // with the PW Upgrades module. Manual upgrades by unpacking a zip in place should not overwrite the
-            // destination file as it doesn't exist in the source zip.
+    /**
+     * Try copying the format overrides file back into our location from where the PW Upgrades module may have
+     * moved it. This allows preservation of an installation's formats_overrides.php file between upgrades done
+     * with the PW Upgrades module. Manual upgrades by unpacking a zip in place should not overwrite the
+     * destination file as it doesn't exist in the source zip.
+     */
+    public function ___upgrade($fromVersion, $toVersion) {
+        $sitemods   = wire('config')->paths->siteModules;
+        $backup     = $sitemods . ".FieldtypeStreetAddress";
+        $file       = "formats_overrides.php";
+        $src        = "$backup/$file";
+        $dst        = __DIR__."/$file";
+        $result     = false;
+        $exists     = __("exists");
+        $dnexist    = __("does not exist");
+        $src_exists = file_exists($src);
+        $dst_exists = file_exists($dst);
+        $msg        = '';
+        $do_copy    = false;
 
-            $sitemods = wire('config')->paths->siteModules;
-            $backup   = "$sitemods/.FieldtypeStreetAddress";
-            $file     = "formats_overrides.php";
-            $src      = "$backup/$file";
-            $dest     = __DIR__."/$file";
+        if ($dst_exists) {
+            // Do not overwrite the current version of the override file - the user may have updated it.
+            $msg = __("Override file exists, will not overwrite.");
+        } elseif ($src_exists && !$dst_exists) {
+            // Copy the backed-up overrides into our installation.
+            $do_copy = true;
+        } elseif (!$src_exists && !$dst_exists) {
+            // Create the default, empty, overrides file from the example file?
+            $src = __DIR__."/example.formats_overrides.php";
+            $do_copy = true;
+        }
 
-            if (file_exists($src) && !file_exists($dest)) {
-                copy($src, $dest);
+        if ($do_copy) {
+            $result = copy($src, $dst);
+            if ($result) {
+                $msg = sprintf(__("Successfully copied %s to %s"), $src, $dst);
+            } else {
+                $src_exists = ($src_exists) ? $exists : $dnexist;
+                $dst_exists = ($dst_exists) ? $exists : $dnexist;
+                $msg = sprintf(__("Failed to copy %s (%s) to %s (%s)"), $src, $src_exists, $dst, $dst_exists);
             }
         }
+
+        if (!empty($msg)) {
+            wire('pages')->message($msg);
+        }
+
     }
 }

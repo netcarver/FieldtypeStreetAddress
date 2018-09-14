@@ -7,7 +7,7 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
-- None.
+- Attempt to fix format override persistance.
 
 
 ## Version [1.0.3] - 2018-09-14
