@@ -542,8 +542,8 @@ class FieldtypeStreetAddress extends Fieldtype
         $sitemods   = wire('config')->paths->siteModules;
         $backup     = $sitemods . ".FieldtypeStreetAddress";
         $file       = "formats_overrides.php";
-        $src        = "$backup/$file";
-        $dst        = __DIR__."/$file";
+        $src        = $backup . DIRECTORY_SEPARATOR . $file;
+        $dst        = __DIR__ . DIRECTORY_SEPARATOR . $file;
         $result     = false;
         $exists     = __("exists");
         $dnexist    = __("does not exist");
@@ -560,7 +560,7 @@ class FieldtypeStreetAddress extends Fieldtype
             $do_copy = true;
         } elseif (!$src_exists && !$dst_exists) {
             // Create the default, empty, overrides file from the example file?
-            $src = __DIR__."/example.formats_overrides.php";
+            $src = __DIR__ . DIRECTORY_SEPARATOR . "example.formats_overrides.php";
             $do_copy = true;
         }
 

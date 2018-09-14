@@ -7,7 +7,7 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
-- None.
+- Use correct directory separator.
 
 
 ## Version [1.0.4] - 2018-09-14
