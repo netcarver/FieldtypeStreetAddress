@@ -24,13 +24,14 @@ class FieldtypeStreetAddress extends Fieldtype
     public static function getModuleInfo()
     {
         return [
-            'title'    => __('Street Address'),
-            'summary'  => __("Fieldtype to store a street address and allows access to it's subfields."),
-            'version'  => '1.0.4',
-            'author'   => 'Netcarver',
-            'installs' => 'InputfieldStreetAddress, InputfieldAsmSelect',
-            'icon'     => 'envelope',
-            'require'  => 'php>5.4.0',
+            'title'      => __('Street Address'),
+            'summary'    => __("Fieldtype to store a street address and allows access to it's subfields."),
+            'version'    => '1.0.5',
+            'author'     => 'Netcarver',
+            'installs'   => 'InputfieldStreetAddress, InputfieldAsmSelect',
+            'requiredBy' => 'InputfieldStreetAddress',
+            'icon'       => 'envelope',
+            'require'    => 'php>5.4.0',
         ];
     }
 

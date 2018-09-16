@@ -7,8 +7,17 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- No changes.
+
+
+## Version [1.0.5] - 2018-09-16
+
+[Diff from 1.0.4]
+
 - Use correct directory separator.
 - Do not show "Not Title Case" warning for postal_code field.
+- Reduce example postal codes to 8 from 12.
+- Add requiredBy entry to module info.
 
 
 ## Version [1.0.4] - 2018-09-14
@@ -163,6 +172,8 @@ See the README.md file for more information.
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.1...HEAD
+[1.0.5]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.5/
+[Diff from 1.0.4]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.4/
 [Diff from 1.0.3]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.3/
