@@ -8,6 +8,7 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Use correct directory separator.
+- Do not show "Not Title Case" warning for postal_code field.
 
 
 ## Version [1.0.4] - 2018-09-14
