@@ -45,6 +45,7 @@ class InputfieldStreetAddress extends Inputfield
         $this->set('outputHTML', 0);                   // Controls inclusion of HTML spans in formatted output
         $this->set('outputSingleLine', 0);             // Controls formatting as single vs multiple lines
         $this->set('outputSingleLineGlue', __(', '));  // The glue to use if formatting as a single line.
+        $this->set('appendDestinationISO', 1);         // Should the destination country ISO be appended to the output address?
         parent::__construct();
     }
 

@@ -116,6 +116,8 @@ class FieldtypeStreetAddress extends Fieldtype
             break;
         }
 
+        $street_address->append_destination_iso = $field->appendDestinationISO;
+
         $street_address->prepareLines(
             [__CLASS__, 'prepareLinesCallback'],
             [
@@ -330,6 +332,7 @@ class FieldtypeStreetAddress extends Fieldtype
             'outputHTML',
             'outputSingleLine',
             'showOutputCountry',
+            'appendDestinationISO',
             /* 'originISO', */
         ];
     }
@@ -506,7 +509,7 @@ class FieldtypeStreetAddress extends Fieldtype
         $f->addOption(1, $this->_('Always - All addresses are international.'));
         $f->addOption(2, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
         $f->attr('value', (int) $field->showOutputCountry);
-        $f->columnWidth = 100;
+        /* $f->columnWidth = 50; */
         $output_wrapper->add($f);
 
 
@@ -516,15 +519,28 @@ class FieldtypeStreetAddress extends Fieldtype
         $f = $this->modules->get('InputfieldSelect');
         $f->label = $this->_('Country of Origin');
         $f->attr('name', 'originISO');
-        $f->description = $this->_('please specify the country of origin for any post you might send.');
+        $f->description = $this->_('Specify the country of origin for any post you might send.');
         foreach($this->getCountryList() as $iso => $country) {
             $code    = strtoupper($iso);
             $f->addOption($iso, "$country ($code)");
         }
         $f->attr('value', $field->originISO);
-        $f->columnWidth = 50;
-        $f->showIf = 'showOutputCountry=2';
+        /* $f->columnWidth = 50; */
+        /* $f->showIf = 'showOutputCountry=2'; */
         $output_wrapper->append($f);
+
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Append Country ISO to the destination country, if it is shown?');
+        $f->description = $this->_('As the country codes are standardised, this can better indicate the country to the postal system in the country of origin.');
+        $f->attr('name', 'appendDestinationISO');
+        $f->addOption(0, $this->_('No - Do not append it.'));
+        $f->addOption(1, $this->_('Yes - Append it.'));
+        $f->attr('value', (int) $field->appendDestinationISO);
+        $output_wrapper->add($f);
 
 
         $inputfields->append($output_wrapper);

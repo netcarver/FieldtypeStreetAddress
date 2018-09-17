@@ -7,7 +7,7 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
-- No changes.
+- Add configuration option to allow the inclusion of the destination country ISO in the output address.
 
 
 ## Version [1.0.5] - 2018-09-16

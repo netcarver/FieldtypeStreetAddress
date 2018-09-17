@@ -139,6 +139,7 @@ class StreetAddress
         unset($vars['country']);
         unset($vars['origin_iso']);
         unset($vars['country_iso']);
+        unset($vars['append_destination_iso']);
 
         $num_set_fields = 0;
 
@@ -159,6 +160,7 @@ class StreetAddress
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
         unset($vars['country']);
+        unset($vars['append_destination_iso']);
 
         if (count($vars)) {
             foreach ($vars as $key => $value) {
@@ -417,6 +419,11 @@ class StreetAddress
 
             // Use the country_iso field to define the destination country field.
             $country = @$format_info['name'];
+
+            if (isset($data['append_destination_iso']) && 1 == $data['append_destination_iso']) {
+                $ISO      = strtoupper($address_country_iso);
+                $country .= " ($ISO)";
+            }
             $data['country'] = $country;
         }
 
