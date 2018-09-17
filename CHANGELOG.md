@@ -7,6 +7,13 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+- No changes.
+
+
+## Version [1.0.6] - 2018-09-18
+
+[Diff from 1.0.5]
+
 - Add configuration option to allow the inclusion of the destination country ISO in the output address.
 
 
@@ -171,7 +178,9 @@ See the README.md file for more information.
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
-[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.1...HEAD
+[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.6...HEAD
+[1.0.6]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.6/
+[Diff from 1.0.5]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.5/
 [Diff from 1.0.4]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.4/
