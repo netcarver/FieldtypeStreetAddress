@@ -534,7 +534,7 @@ class FieldtypeStreetAddress extends Fieldtype
          * Force display of the country field in the output, even if it is fixed?
          */
         $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Append Country ISO to the destination country, if it is shown?');
+        $f->label = $this->_('Append Country ISO to the destination country line, if it is shown?');
         $f->description = $this->_('As the country codes are standardised, this can better indicate the country to the postal system in the country of origin.');
         $f->attr('name', 'appendDestinationISO');
         $f->addOption(0, $this->_('No - Do not append it.'));
