@@ -71,7 +71,7 @@ class StreetAddress
      * @see Contents of formats.php
      * @see StreetAddress::formatLines()
      */
-    public function format(bool $html = false, $line_glue = false, $format_overrides = [])
+    public function format($html = false, $line_glue = false, $format_overrides = [])
     {
         $vars = get_object_vars($this);
         unset($vars['snapshot']);
