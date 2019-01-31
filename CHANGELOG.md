@@ -10,6 +10,8 @@ See the README.md file for more information.
 
 ## Version [1.1.0] - 2019-01-31
 
+[Diff from 1.0.6]
+
 - Update default countries list (in English) with names from the country-list project.
 - Use LibLocalisation (if installed) to localise country select lists in Inputfield.
 - Allow localisation of config and inputfield select lists to the language of the user's browser.
