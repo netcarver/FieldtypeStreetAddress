@@ -5,9 +5,15 @@ address layouts and other postal metadata.
 
 See the README.md file for more information.
 
-## [Upcoming]
+## [Upcoming] 1.1.0 - 2019-02-
 
-- No changes.
+- Update default countries list (in English) with names from the country-list project.
+- Use LibLocalisation (if installed) to localise country select lists in Inputfield.
+- Allow localisation of config and inputfield select lists to the language of the user's browser.
+- Switch to storing ISOs in uppercase, can still handle stored lowercase ISO codes.
+- Unify country list loading code.
+- Detect changes to input address when saving page.
+- Add compatibility with FormBuilder.
 
 
 ## Version [1.0.6] - 2018-09-18

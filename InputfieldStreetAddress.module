@@ -2,7 +2,7 @@
 
 
 /**
- * Copyright 2018 Netcarver
+ * Copyright 2018-2019 Netcarver
  */
 
 class InputfieldStreetAddress extends Inputfield
@@ -31,20 +31,21 @@ class InputfieldStreetAddress extends Inputfield
      */
     public function __construct()
     {
-        $this->set('permittedISOs', '');               // Allowable country codes
-        $this->set('defaultISO', 'us');                // The default country code for new address fields when there is more than one allowable
+        $this->set('permittedISOs', '');               // Allowable country codes.
+        $this->set('defaultISO', 'US');                // The default country code for new address fields when there is more than one allowable.
         $this->set('showInputCountry', 0);             // Show country input if there is only one allowable country?
-        $this->set('showOutputCountry', 0);            // Show country in output (never/always/if international)
-        $this->set('inputFormat', 0);                  // Controls how the inputfield looks
+        $this->set('showOutputCountry', 0);            // Show country in output (never/always/if international).
+        $this->set('inputFormat', 0);                  // Controls how the inputfield looks.
         $this->set('hideEmptyFields', []);
         $this->set('surpressUnneededFields', 0);       // Show optional fields by default.
         $this->set('validatePostalCode', 0);           // Off by default.
-        $this->set('originISO', 'us');                 // Helps control address formatting output.
+        $this->set('originISO', 'US');                 // Helps control address formatting output.
         $this->set('showAddressPreview', 0);           // Show a preview pane with the formatted address.
-        $this->set('showAddressPreviewHTML', 0);       // Controls display of HTML spans in preview field
-        $this->set('outputHTML', 0);                   // Controls inclusion of HTML spans in formatted output
-        $this->set('outputSingleLine', 0);             // Controls formatting as single vs multiple lines
+        $this->set('showAddressPreviewHTML', 0);       // Controls display of HTML spans in preview field.
+        $this->set('outputHTML', 0);                   // Controls inclusion of HTML spans in formatted output.
+        $this->set('outputSingleLine', 0);             // Controls formatting as single vs multiple lines.
         $this->set('outputSingleLineGlue', __(', '));  // The glue to use if formatting as a single line.
+        $this->set('destinationCountryFormat', 0);     // How the destination country should be localised.
         $this->set('appendDestinationISO', 1);         // Should the destination country ISO be appended to the output address?
         parent::__construct();
     }
@@ -89,6 +90,8 @@ class InputfieldStreetAddress extends Inputfield
                 'leaveit'     => __("Leave unchanged."),
             ],
         ]);
+        $this->modname      = "LibLocalisation";
+        $this->can_localise = wire('modules')->isInstalled($this->modname);
         return parent::init();
     }
 
@@ -126,20 +129,68 @@ class InputfieldStreetAddress extends Inputfield
 
 
 
+    public function renderValue()
+    {
+        $value = $this->attr('value');
+/* echo var_dump($value); */
+        if (!$value instanceof StreetAddress) {
+            $value = new StreetAddress($value);
+            $value->origin_iso = $this->originISO;
+        }
+
+/* echo var_dump($value); */
+
+        $overrides = [
+            'append_destination_iso'  => $this->appendDestinationISO,
+            'destination_country_fmt' => $this->destinationCountryFormat,
+        ];
+
+        $d  =[
+            'overrides' => $overrides,
+            'value'     => $value,
+            'this'      => $this,
+            'forms'     => $this->forms,
+        ];
+
+        // TODO Remove debug
+        /* if (class_exists("\TD")) { */
+        /*     \TD::barDump($d); */
+        /* } else { */
+        /*     unset ($d['this']); */
+        /*     unset ($d['forms']); */
+        /*     echo var_dump($d); */
+        /* } */
+
+        return $value->formatMultiHtml($overrides); // TODO add a "Show in formbuilder entries as * Single * Multiple" option.
+    }
+
+
     /**
      *
      */
-    protected static function getCountryList()
+    public function ___getCountryList()
     {
-        $list = include __DIR__."/countries.php";
-        if (!is_array($list)) {
-            $list = ['gb' => 'United Kingdom'];
-        } else {
-            array_walk($list, function(&$item) {
-                //$item = htmlspecialchars(mb_convert_case(strip_tags($item), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
-                $item = htmlentities(strip_tags($item), ENT_HTML5 | ENT_QUOTES, 'utf-8');
-            });
+        $country_file = __DIR__."/countries.php";
+        if ($this->can_localise) {
+            $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+            $locale = locale_accept_from_http($header); // TODO add config setting to control this?
+
+            $localisation = wire('modules')->get($this->modname)->setLocale($locale);
+            $list = $localisation->country('');
+        } else if(is_readable($country_file)) {
+            $list = include($country_file);
         }
+
+        if (!is_array($list)) {
+            $list = ['GB' => 'United Kingdom'];
+        }
+
+        array_walk($list, function(&$item) {
+            $item = strip_tags($item); // TODO remove this? Is it needed?
+        });
+
+        unset($list['ZZ']);
+
         return $list;
     }
 
@@ -160,9 +211,9 @@ class InputfieldStreetAddress extends Inputfield
         $out = "<select $attr id='$id' name='$name' placeholder='$ph' style='$w' class='streetaddress streetaddress_country streetaddress_hidden'>";
         foreach ($data as $iso => $country) {
             //$country = htmlspecialchars(mb_convert_case(strip_tags($country), MB_CASE_TITLE, 'UTF-8'), ENT_HTML5 | ENT_QUOTES, 'utf-8');
-            $selected = ($current === $iso) ? 'selected=selected ' : '';
-            $code     = strtoupper($iso);
-            $out .= "<option {$selected}value=\"$iso\" data-name=\"$country\">$country ($code)</option>";
+            $iso      = strtoupper($iso);
+            $selected = (strtoupper($current) === $iso) ? 'selected=selected ' : '';
+            $out .= "<option {$selected}value=\"$iso\" data-name=\"$country\">$country ($iso)</option>";
         }
         $out.= "</select>";
         return $out;
@@ -175,8 +226,9 @@ class InputfieldStreetAddress extends Inputfield
      */
     protected function makeCountryInput($allowed_country_codes, $default_country_iso, StreetAddress &$value)
     {
-        $all_countries       = self::getCountryList();
-        $current_country_iso = strtolower($value->country_iso);
+        $all_countries       = $this->getCountryList();
+        $current_country_iso = strtoupper($value->country_iso);
+        $default_country_iso = strtoupper($default_country_iso);
 
         // An empty allowed countries list => free choice of any country, so populate the array.
         if (empty($allowed_country_codes)) {
@@ -195,7 +247,7 @@ class InputfieldStreetAddress extends Inputfield
             // Handle new, blank iso values. For a single entry list, the value overrides any default country as that is
             // only used when there is a multiple choice.
             $value->country_iso = (1 === $num_allowed) ? $allowed_country_codes[0] : $default_country_iso;
-            $current_country_iso = $value->country_iso;
+            $current_country_iso = strtoupper($value->country_iso);
         } else if (!in_array($current_country_iso, $allowed_country_codes)) {
             // Ensure the non-blank current country is in the list...
             $allowed_country_codes[] = $current_country_iso;
@@ -289,9 +341,13 @@ class InputfieldStreetAddress extends Inputfield
     public function ___render()
     {
         $value             = $this->attr('value') ? $this->attr('value') : new StreetAddress();
-        $country_input     = $this->makeCountryInput($this->permittedISOs, $this->defaultISO, $value);
-        $iso               = ('' === trim($value->country_iso)) ? $this->defaultISO : trim(strtolower($value->country_iso));
-        $country_of_origin = $this->originISO;
+        if (!$value instanceof StreetAddress) {
+            $value = new StreetAddress($value);
+        }
+        $default_iso       = strtoupper($this->defaultISO);
+        $country_input     = $this->makeCountryInput($this->permittedISOs, $default_iso, $value);
+        $iso               = ('' === trim($value->country_iso)) ? $default_iso : trim(strtoupper($value->country_iso));
+        $country_of_origin = strtoupper($this->originISO);
         $show_country      = $this->inputShowCountryField;
         $fields            = StreetAddress::getAddressFieldNames();
         $mappings          = StreetAddress::getAddressMappings();
@@ -487,7 +543,9 @@ class InputfieldStreetAddress extends Inputfield
              * Generate an address preview (if needed)
              */
             $address_preview = '';
-            if (1 == $this->showAddressPreview) {
+            $have_page  = ($this->page instanceof \ProcessWire\Page);   // NB: When editing entries in FB, there may be no associated page or field to allow address formatting.
+            $have_field = ($this->field instanceof \ProcessWire\Field); // TODO make address formatting no longer require these data.
+            if (1 == $this->showAddressPreview && $have_page && $have_field) {
                 $value->origin_iso = $iso;
                 $formatted_address = $value->format();
                 $blank_formatted_address = StreetAddress::getBlankFormattedValue($iso);
@@ -630,23 +688,304 @@ HTML;
     /**
      * Process the input
      *
+     * When editing a page, the value will already be a StreetAddress object (the Fieldtype will have created it)
+     * When using Formbuilder, the value will be null. So we create a StreetAddress, populate and store it in the value attribute.
+     *
      * @param WireInputData $input
      * @return $this
      *
      */
     public function ___processInput(WireInputData $input)
     {
-        $name  = $this->attr('name');
-        $value = $this->attr('value');
+        $name    = $this->attr('name');
+        $value   = $this->attr('value');
+        $assign  = false;
+        $changes = 0;
+
+        if (!$value instanceof StreetAddress) {
+            $value  = new StreetAddress;
+            $assign = true;
+        }
 
         $fields = StreetAddress::getAddressFieldNames();
+
         foreach ($fields as $f) {
             $name      = "{$this->name}_$f";
             $newvalue  = strip_tags($input->$name);
             $value->$f = $newvalue;
+            if (!isset($value->shapshot[$f]) || $value->shapshot[$f] !== $newvalue) {
+                $changes++;
+            }
         }
-        $this->trackChange('value');
+
+        if ($changes > 0) {
+            $this->trackChange('value');
+        }
+
+        if ($assign) {
+            $value->form_builder = true;
+            $this->setAttribute('value', $value);
+        }
 
         return $this;
     }
+
+
+
+    /**
+     *
+     */
+    public function ___getConfigAllowContext($field) {
+        return [
+            'permittedISOs',
+            'defaultISO',
+            'showInputCountry',
+            'inputFormat',
+            'showAddressPreview',
+            'showAddressPreviewHTML',
+            'hideEmptyFields',
+            'outputHTML',
+            'outputSingleLine',
+            'showOutputCountry',
+            'destinationCountryFormat',
+            'appendDestinationISO',
+            'originISO',
+        ];
+    }
+
+
+    public function ___getConfigInputfields()
+    {
+        $inputfields = parent::___getConfigInputfields();
+
+        $input_wrapper = $this->modules->get('InputfieldFieldset');
+        $input_wrapper->label = __("Input Options");
+        $inputfields->append($input_wrapper);
+
+        $default_iso    = strtoupper($this->defaultISO);
+        $permitted_isos = $this->permittedISOs;
+        if (is_array($permitted_isos)) {
+            $permitted_isos = array_flip($permitted_isos);
+            $permitted_isos = array_change_key_case($permitted_isos, CASE_UPPER);
+            $permitted_isos = array_flip($permitted_isos);
+        }
+
+        $country_list = $this->getCountryList();
+
+        /**
+         * Set the allowable countries for this address field.
+         *
+         * This determines the field layout for the inputfield and also the format of the output address (as it varies
+         * from country to country.)
+         *
+         * not set => user has unrestricted choice of countries and the defaultISO defines the default country
+         *  1  set => user has no input choice, the addresses have a fixed country (and therefore format)
+         *  n  set => user has a restricted choice of n countries in the input field.
+         */
+        $f = $this->modules->get('InputfieldAsmSelect');
+        $f->label = $this->_('Allowable Countries');
+        $f->attr('id+name', 'permittedISOs');
+        $f->description = $this->_('Destination countries control the layout of the inputfields and the formatted output.');
+        $f->notes = $this->_('For a single country, please choose one country from the list.') . ' ' .
+            $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
+        $f->attr('value', $permitted_isos);
+        foreach($country_list as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $input_wrapper->append($f);
+
+        /**
+         * Set the default address format - country ISO.
+         */
+        $f = $this->modules->get('InputfieldSelect');
+        $f->label = $this->_('Default Country');
+        $f->attr('id+name', 'defaultISO');
+        $f->description = $this->_('Which country will be selected by default - this country will be added to the "Allowable Countries" if needed.');
+        $f->attr('value', $default_iso);
+        foreach($country_list as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $f->showIf = "permittedISOs.count!=1";
+        $input_wrapper->append($f);
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Country Input?');
+        $f->attr('id+name', 'showInputCountry');
+        $f->description = $this->_('Should the country field be shown, even though these addresses all use the same country?');
+        $f->addOption(0, $this->_('No, do not show the country field.'));
+        $f->addOption(1, $this->_('Yes, show the country field.'));
+        $f->attr('value', (int) $this->showInputCountry);
+        $f->showIf = "permittedISOs.count=1";
+        $input_wrapper->add($f);
+
+        /**
+         * How should the input fields be shown?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Select Input Format');
+        //$f->attr('id+name', 'inputFormat');
+        $f->attr('name', 'inputFormat');
+        $f->description = $this->_('How should the inputfields be configured?');
+        $f->addOption(0, $this->_("Use destination country's field layout."));
+        $f->addOption(1, $this->_('Fixed data table showing all fields.'));
+        $f->attr('value', (int) $this->inputFormat);
+        $f->columnWidth = 33;
+        $input_wrapper->add($f);
+
+        /**
+         * Show address preview panel?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Address Preview?');
+        $f->attr('name', 'showAddressPreview');
+        $f->description = $this->_('Choose "Yes" to see what the address looks like once submitted.');
+        $f->addOption(0, $this->_('No.'));
+        $f->addOption(1, $this->_('Yes.'));
+        $f->attr('value', (int) $this->showAddressPreview);
+        $f->columnWidth = 34;
+        $f->showIf = "inputFormat=0";
+        $input_wrapper->add($f);
+
+        /**
+         * Include preview of HTML output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show Underlying HTML in Preview?');
+        $f->attr('id+name', 'showAddressPreviewHTML');
+        $f->description = $this->_('Choose "Yes" to see underlying HTML (if any)');
+        $f->addOption(0, $this->_('No.'));
+        $f->addOption(1, $this->_('Yes.'));
+        $f->attr('value', (int) $this->showAddressPreviewHTML);
+        $f->columnWidth = 33;
+        $f->showIf = "inputFormat=0, showAddressPreview=1";
+        $input_wrapper->add($f);
+
+        /**
+         * Surpress fields...
+         */
+        $f = $this->modules->get('InputfieldAsmSelect');
+        $f->label = $this->_('Hide Empty Fields...');
+        $f->attr('id+name', 'hideEmptyFields');
+        $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
+        $f->attr('value', $this->hideEmptyFields);
+        $f->addOption('admin_area');
+        $f->addOption('locality');
+        $f->addOption('recipient');
+        $f->addOption('organization');
+        $f->addOption('dependent_locality');
+        $f->addOption('postal_code');
+        $f->addOption('sorting_code');
+        $f->showIf = "inputFormat=0";
+        $input_wrapper->append($f);
+
+
+
+        $output_wrapper = $this->modules->get('InputfieldFieldset');
+        $output_wrapper->label = __("Output Formatting Options");
+
+        /**
+         * HTML or plaintext output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Include HTML Microformat Spans In Output?');
+        $f->attr('id+name', 'outputHTML');
+        $f->addOption(0, $this->_('Yes, include spans.'));
+        $f->addOption(1, $this->_('No, just plaintext.'));
+        $f->attr('value', (int) $this->outputHTML);
+        $f->columnWidth = 50;
+        $output_wrapper->add($f);
+
+
+        /**
+         * Single or Multiline output?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Format as Single/Multiline Output?');
+        $f->attr('id+name', 'outputSingleLine');
+        $f->addOption(0, $this->_('Use as many lines as needed.'));
+        $f->addOption(1, $this->_('Just a single line.'));
+        $f->attr('value', (int) $this->outputSingleLine);
+        $f->columnWidth = 50;
+        $output_wrapper->add($f);
+
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Show the destination country field?');
+        $f->description = $this->_('Sometimes it is not necessary to show the destination country, such as when mail is being sent domestically.');
+        $f->attr('name', 'showOutputCountry');
+        $f->addOption(0, $this->_('Never - All addresses are domestic.'));
+        $f->addOption(1, $this->_('Always - All addresses are international.'));
+        $f->addOption(2, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
+        $f->attr('value', (int) $this->showOutputCountry);
+        /* $f->columnWidth = 50; */
+        $output_wrapper->add($f);
+
+
+        /**
+         * Set the Country-of-Origin ISO.
+         */
+        $f = $this->modules->get('InputfieldSelect');
+        $f->label = $this->_('Country-of-Origin');
+        $f->attr('name', 'originISO');
+        $f->description = $this->_('Specify the Country-of-Origin for any post you might send.');
+        if (!$this->can_localise) {
+            $f->notes = $this->_("The name of the destination country can appear in the output using the language of this country if LibLocalisation is installed.");
+        }
+        foreach($country_list as $iso => $country) {
+            $f->addOption($iso, "$country ($iso)");
+        }
+        $f->attr('value', strtoupper($this->originISO));
+        /* $f->columnWidth = 50; */
+        /* $f->showIf = 'showOutputCountry=2'; */
+        $output_wrapper->append($f);
+
+
+        /**
+         *
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Format for the destination country line, if it is shown?');
+        $f->attr('name', 'destinationCountryFormat');
+        $f->addOption(0, $this->_('Use the English name for the destination country'));
+        if ($this->can_localise) {
+            $f->addOption(1, $this->_("Use the Country-of-Origin's name for the destination country"));
+            $f->addOption(2, $this->_("Use both names for the destination country (if names are different)"));
+            $f->attr('value',  $this->destinationCountryFormat);
+        } else {
+            $f->notes = $this->_("Other options become available if LibLocalisation is installed.");
+            $f->attr('value', 0);
+        }
+        $f->columnWidth = 50;
+        $f->showIf = 'showOutputCountry>0';
+        $output_wrapper->add($f);
+
+
+
+        /**
+         * Force display of the country field in the output, even if it is fixed?
+         */
+        $f = $this->wire('modules')->get('InputfieldRadios');
+        $f->label = $this->_('Append Country ISO to the destination country line, if it is shown?');
+        /* $f->description = $this->_('As the country codes are standardised, this can better indicate the country to the postal system in the country of origin.'); */
+        $f->attr('name', 'appendDestinationISO');
+        $f->addOption(0, $this->_('No - Do not append it.'));
+        $f->addOption(1, $this->_('Yes - Append it.'));
+        $f->attr('value', (int) $this->appendDestinationISO);
+        $f->columnWidth = 50;
+        $f->showIf = 'showOutputCountry>0';
+        $output_wrapper->add($f);
+
+
+        $inputfields->append($output_wrapper);
+
+        return $inputfields;
+    }
+
+
 }

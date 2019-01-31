@@ -3,7 +3,7 @@
 
 /**
  * ProcessWire Address Fieldtype
- * Copyright 2018 Netcarver.
+ * Copyright 2018-2019 Netcarver.
  *
  * Field that stores string values for street addresses.
  *
@@ -104,7 +104,7 @@ class FieldtypeStreetAddress extends Fieldtype
          */
         switch ($field->showOutputCountry) {
         case 0:
-            $street_address->origin_iso = $street_address->country_iso;
+            $street_address->origin_iso = strtoupper($street_address->country_iso);
             break;
 
         case 1:
@@ -112,11 +112,10 @@ class FieldtypeStreetAddress extends Fieldtype
             break;
 
         case 2:
-            $street_address->origin_iso = $field->originISO;
+            $street_address->origin_iso = strtoupper($field->originISO);
             break;
         }
 
-        $street_address->append_destination_iso = $field->appendDestinationISO;
 
         $street_address->prepareLines(
             [__CLASS__, 'prepareLinesCallback'],
@@ -126,13 +125,21 @@ class FieldtypeStreetAddress extends Fieldtype
             ]
         );
 
+
+        /* $street_address->append_destination_iso  = $field->appendDestinationISO; */
+        /* $street_address->destination_country_fmt = $field->destinationCountryFormat; */
+        $overrides = [
+            'append_destination_iso'  => $field->appendDestinationISO,
+            'destination_country_fmt' => $field->destinationCountryFormat,
+        ];
+
         /**
          * Get the address to format itself...
          */
         if ($field->outputSingleLine == 1) {
-            $address = $street_address->formatSingle($html);
+            $address = $street_address->formatSingle($html, ', ', $overrides);
         } else {
-            $address = $street_address->format($html);
+            $address = $street_address->format($html, false, $overrides);
         }
 
         return $address;
@@ -302,251 +309,6 @@ class FieldtypeStreetAddress extends Fieldtype
         return $schema;
     }
 
-
-
-    protected function ___getCountryList()
-    {
-        $dir = dirname(__FILE__);
-        $countries = include "$dir/countries.php";
-        array_walk($countries, function(&$country) {
-            $country = str_replace('_', ' ', strip_tags($country));
-            $country = mb_convert_case($country, MB_CASE_TITLE, 'UTF-8');
-        });
-        return $countries;
-    }
-
-
-
-    /**
-     *
-     */
-    public function ___getConfigAllowContext(Field $field) {
-        return [
-            'permittedISOs',
-            'defaultISO',
-            'showInputCountry',
-            'inputFormat',
-            'showAddressPreview',
-            'showAddressPreviewHTML',
-            'hideEmptyFields',
-            'outputHTML',
-            'outputSingleLine',
-            'showOutputCountry',
-            'appendDestinationISO',
-            /* 'originISO', */
-        ];
-    }
-
-
-
-    /**
-     * Get any inputfields used for configuration of this Fieldtype.
-     *
-     * This is in addition any configuration fields supplied by the parent Inputfield.
-     *
-     * @param Field $field
-     * @return InputfieldWrapper
-     *
-     */
-    public function ___getConfigInputfields(Field $field)
-    {
-        $inputfields = parent::___getConfigInputfields($field);
-
-        $input_wrapper = $this->modules->get('InputfieldFieldset');
-        $input_wrapper->label = __("Input Options");
-        $inputfields->append($input_wrapper);
-
-        /**
-         * Set the allowable countries for this address field.
-         *
-         * This determines the field layout for the inputfield and also the format of the output address (as it varies
-         * from country to country.)
-         *
-         * not set => user has unrestricted choice of countries and the defaultISO defines the default country
-         *  1  set => user has no input choice, the addresses have a fixed country (and therefore format)
-         *  n  set => user has a restricted choice of n countries in the input field.
-         */
-        $f = $this->modules->get('InputfieldAsmSelect');
-        $f->label = $this->_('Allowable Countries');
-        $f->attr('id+name', 'permittedISOs');
-        $f->description = $this->_('Destination countries control the layout of the inputfields and the formatted output.');
-        $f->notes = $this->_('For a single country, please choose one country from the list.') . ' ' .
-            $this->_('To allow a limited choice of formats, choose all applicable countries or simply leave this empty to allow free choice from all formats.');
-        $f->attr('value', $field->permittedISOs);
-        foreach($this->getCountryList() as $iso => $country) {
-            $code    = strtoupper($iso);
-            $f->addOption($iso, "$country ($code)");
-        }
-        $input_wrapper->append($f);
-
-        /**
-         * Set the default address format - country ISO.
-         */
-        $f = $this->modules->get('InputfieldSelect');
-        $f->label = $this->_('Default Country');
-        $f->attr('id+name', 'defaultISO');
-        $f->description = $this->_('Which country will be selected by default - this country will be added to the "Allowable Countries" if needed.');
-        $f->attr('value', $field->defaultISO);
-        foreach($this->getCountryList() as $iso => $country) {
-            $code    = strtoupper($iso);
-            $f->addOption($iso, "$country ($code)");
-        }
-        $f->showIf = "permittedISOs.count!=1";
-        $input_wrapper->append($f);
-
-        /**
-         * Force display of the country field in the output, even if it is fixed?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Show Country Input?');
-        $f->attr('id+name', 'showInputCountry');
-        $f->description = $this->_('Should the country field be shown, even though these addresses all use the same country?');
-        $f->addOption(0, $this->_('No, do not show the country field.'));
-        $f->addOption(1, $this->_('Yes, show the country field.'));
-        $f->attr('value', (int) $field->showInputCountry);
-        $f->showIf = "permittedISOs.count=1";
-        $input_wrapper->add($f);
-
-        /**
-         * How should the input fields be shown?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Select Input Format');
-        //$f->attr('id+name', 'inputFormat');
-        $f->attr('name', 'inputFormat');
-        $f->description = $this->_('How should the inputfields be configured?');
-        $f->addOption(0, $this->_("Use destination country's field layout."));
-        $f->addOption(1, $this->_('Fixed data table showing all fields.'));
-        $f->attr('value', (int) $field->inputFormat);
-        $f->columnWidth = 33;
-        $input_wrapper->add($f);
-
-        /**
-         * Show address preview panel?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Show Address Preview?');
-        $f->attr('name', 'showAddressPreview');
-        $f->description = $this->_('Choose "Yes" to see what the address looks like once submitted.');
-        $f->addOption(0, $this->_('No.'));
-        $f->addOption(1, $this->_('Yes.'));
-        $f->attr('value', (int) $field->showAddressPreview);
-        $f->columnWidth = 34;
-        $f->showIf = "inputFormat=0";
-        $input_wrapper->add($f);
-
-        /**
-         * Include preview of HTML output?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Show Underlying HTML in Preview?');
-        $f->attr('id+name', 'showAddressPreviewHTML');
-        $f->description = $this->_('Choose "Yes" to see underlying HTML (if any)');
-        $f->addOption(0, $this->_('No.'));
-        $f->addOption(1, $this->_('Yes.'));
-        $f->attr('value', (int) $field->showAddressPreviewHTML);
-        $f->columnWidth = 33;
-        $f->showIf = "inputFormat=0, showAddressPreview=1";
-        $input_wrapper->add($f);
-
-        /**
-         * Surpress fields...
-         */
-        $f = $this->modules->get('InputfieldAsmSelect');
-        $f->label = $this->_('Hide Empty Fields...');
-        $f->attr('id+name', 'hideEmptyFields');
-        $f->description = $this->_('Which fields should be hidden from the input by default? Choose all that apply.');
-        $f->attr('value', $field->hideEmptyFields);
-        $f->addOption('admin_area');
-        $f->addOption('locality');
-        $f->addOption('recipient');
-        $f->addOption('organization');
-        $f->addOption('dependent_locality');
-        $f->addOption('postal_code');
-        $f->addOption('sorting_code');
-        $f->showIf = "inputFormat=0";
-        $input_wrapper->append($f);
-
-
-
-        $output_wrapper = $this->modules->get('InputfieldFieldset');
-        $output_wrapper->label = __("Output Formatting Options");
-
-        /**
-         * HTML or plaintext output?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Include HTML Microformat Spans In Output?');
-        $f->attr('id+name', 'outputHTML');
-        $f->addOption(0, $this->_('Yes, include spans.'));
-        $f->addOption(1, $this->_('No, just plaintext.'));
-        $f->attr('value', (int) $field->outputHTML);
-        $f->columnWidth = 50;
-        $output_wrapper->add($f);
-
-
-        /**
-         * Single or Multiline output?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Format as Single/Multiline Output?');
-        $f->attr('id+name', 'outputSingleLine');
-        $f->addOption(0, $this->_('Use as many lines as needed.'));
-        $f->addOption(1, $this->_('Just a single line.'));
-        $f->attr('value', (int) $field->outputSingleLine);
-        $f->columnWidth = 50;
-        $output_wrapper->add($f);
-
-
-        /**
-         * Force display of the country field in the output, even if it is fixed?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Show the destination country field?');
-        $f->description = $this->_('Sometimes it is not necessary to show the destination country, such as when mail is being sent domestically.');
-        $f->attr('name', 'showOutputCountry');
-        $f->addOption(0, $this->_('Never - All addresses are domestic.'));
-        $f->addOption(1, $this->_('Always - All addresses are international.'));
-        $f->addOption(2, $this->_('Conditionally - Only show if the Country of Origin is different from the country in the address.'));
-        $f->attr('value', (int) $field->showOutputCountry);
-        /* $f->columnWidth = 50; */
-        $output_wrapper->add($f);
-
-
-        /**
-         * Set the Country-of-Origin ISO.
-         */
-        $f = $this->modules->get('InputfieldSelect');
-        $f->label = $this->_('Country of Origin');
-        $f->attr('name', 'originISO');
-        $f->description = $this->_('Specify the country of origin for any post you might send.');
-        foreach($this->getCountryList() as $iso => $country) {
-            $code    = strtoupper($iso);
-            $f->addOption($iso, "$country ($code)");
-        }
-        $f->attr('value', $field->originISO);
-        /* $f->columnWidth = 50; */
-        /* $f->showIf = 'showOutputCountry=2'; */
-        $output_wrapper->append($f);
-
-
-        /**
-         * Force display of the country field in the output, even if it is fixed?
-         */
-        $f = $this->wire('modules')->get('InputfieldRadios');
-        $f->label = $this->_('Append Country ISO to the destination country line, if it is shown?');
-        $f->description = $this->_('As the country codes are standardised, this can better indicate the country to the postal system in the country of origin.');
-        $f->attr('name', 'appendDestinationISO');
-        $f->addOption(0, $this->_('No - Do not append it.'));
-        $f->addOption(1, $this->_('Yes - Append it.'));
-        $f->attr('value', (int) $field->appendDestinationISO);
-        $output_wrapper->add($f);
-
-
-        $inputfields->append($output_wrapper);
-
-        return $inputfields;
-    }
 
 
     /**

@@ -1,7 +1,7 @@
 <?php namespace ProcessWire;
 
 /**
- * 2018 Netcarver.
+ * 2018-2019 Netcarver.
  *
  */
 
@@ -16,8 +16,10 @@ class StreetAddress
     /**
      * Consrtuctor can optionally take an array of address lines.
      */
-    public function __construct(array $lines = [])
+    public function __construct(string $value = '{}')
     {
+        $lines = json_decode($value, TRUE);
+
         // Make sure address data uses lowercase keys...
         $lines = array_change_key_case($lines, CASE_LOWER);
 
@@ -30,6 +32,16 @@ class StreetAddress
         }
     }
 
+
+    public function getValue()
+    {
+        $vars = get_object_vars($this);
+        unset($vars['snapshot']);
+        unset($vars['country']);
+        /* unset($vars['append_destination_iso']); */
+        /* unset($vars['destination_country_fmt']); */
+        return $vars;
+    }
 
     /**
      * Convenience Format Methods...
@@ -71,14 +83,14 @@ class StreetAddress
      * @see Contents of formats.php
      * @see StreetAddress::formatLines()
      */
-    public function format(bool $html = false, $line_glue = false, $format_overrides = [])
+    public function format($html = false, $line_glue = false, $format_overrides = [])
     {
-        $vars = get_object_vars($this);
-        unset($vars['snapshot']);
-        unset($vars['country']);
+        $vars = $this->getValue();
+        /* $vars = get_object_vars($this); */
+        /* unset($vars['snapshot']); */
+        /* unset($vars['country']); */
         return self::formatLines($vars, $html, $line_glue, $format_overrides);
     }
-
 
 
 
@@ -88,7 +100,13 @@ class StreetAddress
      */
     public function __toString()
     {
-        return $this->format();
+        if (!empty($this->form_builder)) {
+            $value = $this->getValue();
+            unset($value['form_builder']);
+            $value = array_filter($value, function($v) { return $v !== ''; }); // Remove empty fields as not needed.
+            return json_encode($value);
+        }
+        return $this->formatSingle();
     }
 
 
@@ -98,7 +116,8 @@ class StreetAddress
      */
     public function validate()
     {
-        return self::validateLines(get_object_vars($this));
+        $vars = $this->getValue();
+        return self::validateLines($vars);
     }
 
 
@@ -108,9 +127,7 @@ class StreetAddress
      */
     public function snapshot()
     {
-        $snapshot = get_object_vars($this);
-        unset($snapshot['snapshot']);
-        unset($snapshot['country']);
+        $snapshot = $this->getValue();
         unset($snapshot['origin_iso']);
         $this->snapshot = $snapshot;
         return $this;
@@ -134,12 +151,14 @@ class StreetAddress
      */
     public function isEmpty()
     {
-        $vars = get_object_vars($this);
-        unset($vars['snapshot']);
-        unset($vars['country']);
-        unset($vars['origin_iso']);
+        $vars = $this->getValue();
+        /* $vars = get_object_vars($this); */
+        /* unset($vars['snapshot']); */
+        /* unset($vars['country']); */
         unset($vars['country_iso']);
-        unset($vars['append_destination_iso']);
+        unset($vars['origin_iso']);
+        /* unset($vars['append_destination_iso']); */
+        /* unset($vars['destination_country_fmt']); */
 
         $num_set_fields = 0;
 
@@ -156,11 +175,7 @@ class StreetAddress
     public function prepareLines($callback, array $data = [])
     {
         if (!is_callable($callback)) return $this;
-
-        $vars = get_object_vars($this);
-        unset($vars['snapshot']);
-        unset($vars['country']);
-        unset($vars['append_destination_iso']);
+        $vars = $this->getValue();
 
         if (count($vars)) {
             foreach ($vars as $key => $value) {
@@ -333,41 +348,41 @@ class StreetAddress
         $country_iso = $data['country_iso'];
         $lang        = @$info['lang'];
         if ('en' === $lang) {
-            if ($country_iso === 'us' || $country_iso === 'ph') {
+            if ($country_iso === 'US' || $country_iso === 'PH') {
                 self::remapAddressField('zip', 'postal_code', $data);
                 self::remapAddressField('zipcode', 'postal_code', $data);
                 self::remapAddressField('zip_code', 'postal_code', $data);
-            } else if ($country_iso === 'ie') {
+            } else if ($country_iso === 'IE') {
                 self::remapAddressField('eircode', 'postal_code', $data);
             } else {
                 self::remapAddressField('postcode', 'postal_code', $data);
             }
         }
         switch ($country_iso) {
-        case 'nl':
+        case 'NL':
             self::remapAddressField('postcode', 'postal_code', $data);
             break;
 
-        case 'br':
+        case 'BR':
             self::remapAddressField('cep', 'postal_code', $data);
             break;
 
-        case 'in':
+        case 'IN':
             self::remapAddressField('pincode', 'postal_code', $data);
             self::remapAddressField('pin_code', 'postal_code', $data);
             break;
 
-        case 'gb':
+        case 'GB':
             self::remapAddressField('postcode', 'postal_code', $data);
             break;
 
-        case 'de':
-        case 'at':
-        case 'li':
+        case 'DE':
+        case 'AT':
+        case 'LI':
             self::remapAddressField('plz', 'postal_code', $data);
             break;
 
-        case 'it':
+        case 'IT':
             self::remapAddressField('cap', 'postal_code', $data);
             break;
         }
@@ -380,6 +395,65 @@ class StreetAddress
         }
 
         return $data;
+    }
+
+
+    protected static $country_cache = [];
+
+
+    /**
+     *
+     */
+    public static function country($data, $format_info, $dest_iso, $origin_iso)
+    {
+        $modname      = "LibLocalisation";
+        $can_localise = wire('modules')->isInstalled($modname);
+        $country      = '';
+        $locale       = '';
+        $load         = !isset(self::$country_cache[$origin_iso]) || !is_array(self::$country_cache[$origin_iso]);
+
+        // TODO remove use of '++' for appending destination country to output.
+        // Would be better to keep "origin_iso" and "append_destination" settings separately.
+        // This will allow localisation no matter what the append settings are.
+        if ('++' === $origin_iso || !isset($format_info['destination_country_fmt']) || 0 == $format_info['destination_country_fmt'] || !$can_localise) {
+            if (isset($format_info['name'])) {
+                $list = [$dest_iso => $format_info['name']];
+            }
+        } else {
+            if ($load) {
+                $localisation = wire('modules')->get($modname);
+                $locale = LibLocalisation::countryToLocale(strtolower($origin_iso));
+                $localisation->setLocale($locale);
+                $list = $localisation->country('');
+
+                if (!isset($list) || !is_array($list) || !isset($list[$dest_iso])) {
+                    $country_file = __DIR__."/countries.php";
+                    if(is_readable($country_file)) {
+                        $list = include($country_file);
+                    }
+                }
+                self::$country_cache[$origin_iso] = $list;
+            } else {
+                $list = self::$country_cache[$origin_iso];
+            }
+        }
+
+        if (isset($list[$dest_iso])) {
+            $country = $list[$dest_iso];
+        }
+
+        if (isset($format_info['destination_country_fmt']) && 2 == $format_info['destination_country_fmt']) {
+            $en_name = isset($format_info['name']) ? $format_info['name'] : '';
+            if (!empty($en_name) && mb_strtoupper($en_name) != mb_strtoupper($country)) {
+                $country .= " / " . $en_name;
+            }
+        }
+
+        if (isset($format_info['append_destination_iso']) && 1 == $format_info['append_destination_iso']) {
+            $country .= " ($dest_iso)";
+        }
+
+        return $country;
     }
 
 
@@ -396,9 +470,9 @@ class StreetAddress
         $data                = array_change_key_case($data, CASE_LOWER);
         $format_info         = array_change_key_case($format_info, CASE_LOWER);
         $data                = array_merge(self::$address_lines, $data);
-        $address_country_iso = $data['country_iso'];
-        $origin_iso          = $data['origin_iso'];
-        $format_info         = array_merge(self::getFormat($data['country_iso']), $format_info);
+        $address_country_iso = strtoupper($data['country_iso']);
+        $origin_iso          = strtoupper($data['origin_iso']);
+        $format_info         = array_merge(self::getFormat($address_country_iso), $format_info);
         $data                = self::remapAddressFields($format_info, $data);
         $upper               = isset($format_info['upper']) ? $format_info['upper'] : '';
         $formatted_address   = $format_info['fmt'];
@@ -410,20 +484,14 @@ class StreetAddress
             $glue = $html ? '<br>' : "\n";
         }
 
-        if (isset($data['origin_iso']) && ($address_country_iso !== $data['origin_iso'])) {
+        if ($address_country_iso !== $origin_iso) {
             // This is an international address - add the country to the format if it is not already present...
             $pos = strpos($formatted_address, '%R');
             if (false === $pos) {
                 $formatted_address .= '%n%R';
             }
-
-            // Use the country_iso field to define the destination country field.
-            $country = @$format_info['name'];
-
-            if (isset($data['append_destination_iso']) && 1 == $data['append_destination_iso']) {
-                $ISO      = strtoupper($address_country_iso);
-                $country .= " ($ISO)";
-            }
+            $upper .= "R"; // Make sure country is uppercase
+            $country = self::country($data, $format_info, $address_country_iso, $origin_iso);
             $data['country'] = $country;
         }
 
@@ -435,7 +503,7 @@ class StreetAddress
             $is_upper = (false !== stripos($upper, $id));
 
             if ('Z' === $id) {
-                $value = self::sanitizePostalCode($value, $data['country_iso']);
+                $value = self::sanitizePostalCode($value, $address_country_iso);
             }
 
             // Make sure the fields marked as "upper" in the google feed are converted to uppercase.

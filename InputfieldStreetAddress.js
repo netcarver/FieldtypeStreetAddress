@@ -231,7 +231,7 @@ $(document).ready(function() {
         closeAfterSelect: true,
         selectOnTab: true,
         onFocus: function(value) {
-            this.clear();
+            // this.clear();
         }
     });
 
@@ -312,7 +312,7 @@ $(document).on('reloaded', '.InputfieldStreetAddress', function(event) {
     closeAfterSelect: true,
     selectOnTab: true,
     onFocus: function(value) {
-      this.clear();
+      // this.clear();
     }
   });
   p = $t.parent().parent();
