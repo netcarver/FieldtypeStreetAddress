@@ -85,6 +85,8 @@ class FieldtypeStreetAddress extends Fieldtype
 
     /**
      * Format street address for output
+     *
+     * TODO consider removing requirement for the $field input.
      */
     public static function format(Page $page, Field $field, $street_address)
     {
