@@ -5,7 +5,10 @@ address layouts and other postal metadata.
 
 See the README.md file for more information.
 
-## [Upcoming] 1.1.0 - 2019-02-
+## [Upcoming]
+
+
+## Version [1.1.0] - 2019-01-31
 
 - Update default countries list (in English) with names from the country-list project.
 - Use LibLocalisation (if installed) to localise country select lists in Inputfield.
@@ -14,6 +17,7 @@ See the README.md file for more information.
 - Unify country list loading code.
 - Detect changes to input address when saving page.
 - Add compatibility with FormBuilder.
+- Fix type hint. Thanks Matjaž.
 
 
 ## Version [1.0.6] - 2018-09-18
@@ -184,7 +188,9 @@ See the README.md file for more information.
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
-[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.0.6...HEAD
+[Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.0/
+[Diff from 1.0.6]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.6...1.1.0
 [1.0.6]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.6/
 [Diff from 1.0.5]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.5/
