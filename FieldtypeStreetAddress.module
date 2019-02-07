@@ -161,6 +161,13 @@ class FieldtypeStreetAddress extends Fieldtype
         } else if (in_array($subfield, $subfields)) {
             $subfield = 'data_' . $subfield;
         }
+
+        if ($operator == '%=') {
+            $ft = new DatabaseQuerySelectFulltext($query);
+            $ft->match($table, $subfield, $operator, $value);
+            return $query;
+        }
+
         return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
     }
 

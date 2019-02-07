@@ -1,11 +1,16 @@
-# **Change Log** - [Keep a Changelog]
+# **Change Log**
+
+[Keep a Changelog]
 
 ProcessWire Fieldtype and Inputfield for storing postal addresses. Utilises Google's [libaddressinput] project for
 address layouts and other postal metadata.
 
 See the README.md file for more information.
 
+
 ## [Upcoming]
+
+- Add support for the %= operator in selectors. Thanks gebeer.
 
 
 ## Version [1.1.0] - 2019-01-31
