@@ -11,6 +11,8 @@ See the README.md file for more information.
 ## [Upcoming]
 
 - Add support for the %= operator in selectors. Thanks gebeer.
+- Fix docblock argument order.
+- Check for failed json encode.
 
 
 ## Version [1.1.0] - 2019-01-31

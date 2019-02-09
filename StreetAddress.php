@@ -75,9 +75,9 @@ class StreetAddress
     /**
      * Format address
      *
-     * @param $html bool Controls formatting for HTML. If true, HTML wrappers will be used and output will be escaped.
-     * @param $line_glue mixed False => Multiline output. A string acts as glue for joining the address lines.
-     * @param $format_overrides array Allows optional overrides of the formatting metadata. Most useful field is probably
+     * @param bool $html Controls formatting for HTML. If true, HTML wrappers will be used and output will be escaped.
+     * @param string|bool $line_glue False => Multiline output. A string acts as glue for joining the address lines.
+     * @param array $format_overrides Allows optional overrides of the formatting metadata. Most useful field is probably
      * the 'upper' string. To prevent output from uppercasing fields use ['upper' => '']
      *
      * @see Contents of formats.php
@@ -104,7 +104,10 @@ class StreetAddress
             $value = $this->getValue();
             unset($value['form_builder']);
             $value = array_filter($value, function($v) { return $v !== ''; }); // Remove empty fields as not needed.
-            return json_encode($value);
+            $result = json_encode($value);
+            if (false === $result)
+                return "";
+            return $result;
         }
         return $this->formatSingle();
     }
