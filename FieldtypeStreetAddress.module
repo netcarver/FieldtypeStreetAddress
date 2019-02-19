@@ -162,7 +162,7 @@ class FieldtypeStreetAddress extends Fieldtype
             $subfield = 'data_' . $subfield;
         }
 
-        if ($this->wire('database')->isOperator($operator))
+        if ($this->wire('database')->isOperator($operator)) {
             return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
         }
 
