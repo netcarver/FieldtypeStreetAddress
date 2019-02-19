@@ -162,13 +162,13 @@ class FieldtypeStreetAddress extends Fieldtype
             $subfield = 'data_' . $subfield;
         }
 
-        if ($operator == '%=') {
-            $ft = new DatabaseQuerySelectFulltext($query);
-            $ft->match($table, $subfield, $operator, $value);
-            return $query;
+        if ($this->wire('database')->isOperator($operator))
+            return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
         }
 
-        return parent::getMatchQuery($query, $table, $subfield, $operator, $value);
+        $ft = new DatabaseQuerySelectFulltext($query);
+        $ft->match($table, $subfield, $operator, $value);
+        return $query;
     }
 
 
