@@ -10,6 +10,11 @@ See the README.md file for more information.
 
 ## [Upcoming]
 
+
+## Version [1.1.1] - 2019-03-17
+
+[Diff from 1.1.0]
+
 - Add support for the %= operator in selectors. Thanks gebeer.
 - Fix docblock argument order.
 - Check for failed json encode.
@@ -198,6 +203,8 @@ See the README.md file for more information.
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.1.0...HEAD
+[1.1.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.1/
+[Diff from 1.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.0/
 [Diff from 1.0.6]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.0.6...1.1.0
 [1.0.6]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.0.6/
