@@ -171,7 +171,7 @@ class InputfieldStreetAddress extends Inputfield
     public function ___getCountryList()
     {
         $country_file = __DIR__."/countries.php";
-        if ($this->can_localise) {
+        if ($this->can_localise && function_exists('locale_accept_from_http')) {
             $header = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
             $locale = locale_accept_from_http($header); // TODO add config setting to control this?
 
