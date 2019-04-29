@@ -11,6 +11,13 @@ See the README.md file for more information.
 ## [Upcoming]
 
 
+## Version [1.1.2] - 2019-04-29
+
+[Diff from 1.1.1]
+
+- Bugfix: Add check for locale_accept_from_http() method.
+
+
 ## Version [1.1.1] - 2019-03-17
 
 [Diff from 1.1.0]
@@ -203,6 +210,8 @@ See the README.md file for more information.
 [libaddressinput]: https://github.com/googlei18n/libaddressinput
 [tlite]: https://github.com/chrisdavies/tlite
 [Upcoming]: https://github.com/netcarver/FieldtypestreetAddress/compare/1.1.0...HEAD
+[1.1.2]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.2/
+[Diff from 1.1.1]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.1/
 [Diff from 1.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/netcarver/FieldtypeStreetAddress/tree/1.1.0/
