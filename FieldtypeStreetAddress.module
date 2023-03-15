@@ -127,6 +127,11 @@ class FieldtypeStreetAddress extends Fieldtype
             ]
         );
 
+        // Use the default ISO for formatting if the address field does not have an ISO code
+        if (empty($street_address->country_iso)) {
+            $street_address->country_iso = $field->defaultISO;
+        }
+
 
         /* $street_address->append_destination_iso  = $field->appendDestinationISO; */
         /* $street_address->destination_country_fmt = $field->destinationCountryFormat; */
