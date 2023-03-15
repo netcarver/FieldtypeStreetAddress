@@ -7,9 +7,13 @@ address layouts and other postal metadata.
 
 See the README.md file for more information.
 
-
 ## [Upcoming]
 
+## Version [1.1.3] - 2023-03-14
+
+[Diff from 1.1.2]
+
+-   Bugfix: Use default ISO when an address has no country defined.
 
 ## Version [1.1.2] - 2019-04-29
 
