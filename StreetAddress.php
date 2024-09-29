@@ -12,6 +12,22 @@ class StreetAddress
      */
     protected $snapshot = [];
 
+    /**
+     * Address fields
+     */
+    public $recipient = '';
+    public $organization = '';
+    public $street_address = '';
+    public $street_address_2 = '';
+    public $street_address_3 = '';
+    public $locality = '';
+    public $dependent_locality = '';
+    public $admin_area = '';
+    public $postal_code = '';
+    public $sorting_code = '';
+    public $country = '';
+    public $country_iso = '';
+    public $origin_iso = '';
 
     /**
      * Consrtuctor can optionally take an array of address lines.
