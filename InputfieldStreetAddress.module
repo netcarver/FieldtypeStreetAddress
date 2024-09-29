@@ -107,6 +107,10 @@ class InputfieldStreetAddress extends Inputfield
      *
      */
     protected static function makeSafeString($string, $titlecase = false) {
+        // make sure $string is not null
+        if (is_null($string)) {
+            $string = '';
+        }
         $string = str_replace('_', ' ', trim($string));
         $string = htmlentities(strip_tags($string), ENT_HTML5 | ENT_QUOTES, 'utf-8');
         if ($titlecase) {
@@ -711,7 +715,9 @@ HTML;
 
         foreach ($fields as $f) {
             $name      = "{$this->name}_$f";
-            $newvalue  = strip_tags($input->$name);
+            $newvalue  = $input->$name;
+            // Check if $newvalue is null or not a string before passing to strip_tags
+            $newvalue  = (is_null($newvalue) || !is_string($newvalue)) ? '' : strip_tags($newvalue);
             $value->$f = $newvalue;
             if (!isset($value->shapshot[$f]) || $value->shapshot[$f] !== $newvalue) {
                 $changes++;
